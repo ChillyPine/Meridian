@@ -59,6 +59,7 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
         val textY = y + TITLE_TOP_PADDING
         guiGraphics.drawString(font, TITLE_TEXT, textX, textY, TITLE_COLOR, false)
 
+
         // Version number — pinned to bottom-left of left panel
         val versionTextX = x + 5
         val versionTextY = y + PANEL_HEIGHT - font.lineHeight - 5
@@ -83,6 +84,7 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
 
     override fun mouseReleased(mouseButtonEvent: MouseButtonEvent): Boolean {
         return super.mouseReleased(mouseButtonEvent)
+
     }
 
     override fun isPauseScreen(): Boolean = false
