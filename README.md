@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-# DawnAddons
+# Meridian
 ### Feature List 
 
 #### Dungeons
