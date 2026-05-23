@@ -5,6 +5,7 @@ import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.client.input.MouseButtonEvent
 import net.minecraft.network.chat.Component
+import net.fabricmc.loader.api.FabricLoader
 
 class MeridianScreen : Screen(Component.literal("Meridian")) {
 
@@ -15,7 +16,10 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
         private const val BAR_WIDTH = 3
         private const val BAR_COLOR = 0xFFBB86FC.toInt()
 
-        private const val VERSION_TEXT = "v1.0.0"
+        private val VERSION_TEXT = "v" + FabricLoader.getInstance()
+            .getModContainer("meridian")
+            .map { it.metadata.version.friendlyString }
+            .orElse("?.?.?")
         private const val VERSION_COLOR = 0xFFBB86FC.toInt()
 
         private const val PANEL_COLOR = 0x1E1E22       // RGB only (no alpha byte)
