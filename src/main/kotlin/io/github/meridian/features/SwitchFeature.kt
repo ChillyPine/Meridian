@@ -1,7 +1,6 @@
 package io.github.meridian.features
 
 import com.google.gson.JsonObject
-import io.github.meridian.gui.drawRoundedRect
 import io.github.meridian.utils.playClickSound
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphics
@@ -36,8 +35,7 @@ open class SwitchFeature(
         mouseX: Int,
         mouseY: Int
     ): Int {
-        drawRoundedRect(guiGraphics, x, y, width, ROW_HEIGHT, ROW_BG_COLOR, ROW_CORNER_RADIUS)
-
+        guiGraphics.fill(x, y, x + width, y + ROW_HEIGHT, ROW_BG_COLOR)
         guiGraphics.drawString(font, name, x + ROW_PADDING_X, y + ROW_PADDING_Y, NAME_COLOR, false)
         guiGraphics.drawString(
             font, description,
@@ -54,7 +52,7 @@ open class SwitchFeature(
 
     private fun renderSwitch(g: GuiGraphics) {
         val bgColor = if (enabled) SWITCH_ON_BG else SWITCH_OFF_BG
-        drawRoundedRect(g, switchX, switchY, SWITCH_WIDTH, SWITCH_HEIGHT, bgColor, SWITCH_CORNER_RADIUS)
+        g.fill(switchX, switchY, switchX + SWITCH_WIDTH, switchY + SWITCH_HEIGHT, bgColor)
 
         val ballX = if (enabled) {
             switchX + SWITCH_WIDTH - SWITCH_BALL_SIZE - SWITCH_BALL_PADDING
@@ -62,7 +60,7 @@ open class SwitchFeature(
             switchX + SWITCH_BALL_PADDING
         }
         val ballY = switchY + (SWITCH_HEIGHT - SWITCH_BALL_SIZE) / 2
-        drawRoundedRect(g, ballX, ballY, SWITCH_BALL_SIZE, SWITCH_BALL_SIZE, SWITCH_BALL_COLOR, SWITCH_CORNER_RADIUS)
+        g.fill(ballX, ballY, ballX + SWITCH_BALL_SIZE, ballY + SWITCH_BALL_SIZE, SWITCH_BALL_COLOR)
     }
 
     override fun mouseClicked(mouseX: Int, mouseY: Int): Boolean {
@@ -90,15 +88,13 @@ open class SwitchFeature(
         private const val ROW_HEIGHT = 38
         private const val ROW_PADDING_X = 8
         private const val ROW_PADDING_Y = 6
-        private const val ROW_CORNER_RADIUS = 3
-        private const val ROW_BG_COLOR = 0x66000000.toInt()  // ~40% black, layered over the panel
+        private const val ROW_BG_COLOR = 0x66000000  // ~40% black, layered over the panel
 
         private const val NAME_COLOR = 0xFFFFFFFF.toInt()
         private const val DESC_COLOR = 0xFFAAAAAA.toInt()
 
         private const val SWITCH_WIDTH = 28
         private const val SWITCH_HEIGHT = 14
-        private const val SWITCH_CORNER_RADIUS = 3    // shared by outer rect and inner square
         private const val SWITCH_RIGHT_PADDING = 8
         private const val SWITCH_OFF_BG = 0xFF555555.toInt()
         private const val SWITCH_ON_BG = 0xFFBB86FC.toInt()
