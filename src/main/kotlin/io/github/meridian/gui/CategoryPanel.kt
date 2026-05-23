@@ -44,8 +44,8 @@ class CategoryPanel(
 
             // draw background highlight — selected takes priority over hovered
             when {
-                isSelected -> guiGraphics.fill(x, itemY, x + width - 3, itemY + ITEM_HEIGHT, SELECTED_COLOR)
-                isHovered -> guiGraphics.fill(x, itemY, x + width - 3, itemY + ITEM_HEIGHT, HOVER_COLOR)
+                isSelected -> guiGraphics.fill(x, itemY, x + width, itemY + ITEM_HEIGHT, SELECTED_COLOR)
+                isHovered -> guiGraphics.fill(x, itemY, x + width, itemY + ITEM_HEIGHT, HOVER_COLOR)
             }
 
             // draw label with color based on selection state

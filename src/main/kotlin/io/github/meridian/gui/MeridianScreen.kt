@@ -91,7 +91,7 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
         var currentY = contentY
         for ((subcat, feats) in grouped) {
             if (subcat.isNotEmpty()) {
-                g.drawString(font, subcat, contentX, currentY, BAR_COLOR, false)
+                g.drawString(font, subcat, contentX + (contentWidth - font.width(subcat)) / 2, currentY, BAR_COLOR, false)
                 currentY += font.lineHeight + 4
             }
             for (feat in feats) {
