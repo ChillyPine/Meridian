@@ -89,7 +89,7 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
 
     override fun isPauseScreen(): Boolean = false
 
-    // catagories
+    // categories TODO: change names
 
     private fun renderCombatSettings(guiGraphics: GuiGraphics, panelX: Int, panelY: Int) {
         val contentX = panelX + LEFT_PANEL_WIDTH + 8
