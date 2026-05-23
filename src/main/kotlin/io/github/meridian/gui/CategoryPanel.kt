@@ -1,10 +1,8 @@
 package io.github.meridian.gui
 
+import io.github.meridian.utils.playClickSound
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphics
-import net.minecraft.client.Minecraft
-import net.minecraft.sounds.SoundEvents
-import net.minecraft.client.resources.sounds.SimpleSoundInstance
 
 data class Category(val name: String, val id: String)
 
@@ -60,10 +58,7 @@ class CategoryPanel(
             val itemY = y + ITEM_TOP + (index * ITEM_HEIGHT)
             if (mouseX in x until (x + width) && mouseY in itemY until (itemY + ITEM_HEIGHT)) {
                 selected = category.id
-                // play ui click sound, pitch 1.5f to match the snappier feel of the original CT sound
-                Minecraft.getInstance().soundManager.play(
-                    SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.5f)
-                )
+                playClickSound()
                 return true
             }
         }

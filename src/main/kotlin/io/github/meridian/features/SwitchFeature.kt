@@ -2,11 +2,9 @@ package io.github.meridian.features
 
 import com.google.gson.JsonObject
 import io.github.meridian.gui.drawRoundedRect
-import net.minecraft.client.Minecraft
+import io.github.meridian.utils.playClickSound
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphics
-import net.minecraft.client.resources.sounds.SimpleSoundInstance
-import net.minecraft.sounds.SoundEvents
 
 open class SwitchFeature(
     name: String,
@@ -56,7 +54,7 @@ open class SwitchFeature(
 
     private fun renderSwitch(g: GuiGraphics) {
         val bgColor = if (enabled) SWITCH_ON_BG else SWITCH_OFF_BG
-        drawRoundedRect(g, switchX, switchY, SWITCH_WIDTH, SWITCH_HEIGHT, bgColor, SWITCH_HEIGHT / 2)
+        drawRoundedRect(g, switchX, switchY, SWITCH_WIDTH, SWITCH_HEIGHT, bgColor, SWITCH_CORNER_RADIUS)
 
         val ballX = if (enabled) {
             switchX + SWITCH_WIDTH - SWITCH_BALL_SIZE - SWITCH_BALL_PADDING
@@ -64,7 +62,7 @@ open class SwitchFeature(
             switchX + SWITCH_BALL_PADDING
         }
         val ballY = switchY + (SWITCH_HEIGHT - SWITCH_BALL_SIZE) / 2
-        drawRoundedRect(g, ballX, ballY, SWITCH_BALL_SIZE, SWITCH_BALL_SIZE, SWITCH_BALL_COLOR, SWITCH_BALL_SIZE / 2)
+        drawRoundedRect(g, ballX, ballY, SWITCH_BALL_SIZE, SWITCH_BALL_SIZE, SWITCH_BALL_COLOR, SWITCH_CORNER_RADIUS)
     }
 
     override fun mouseClicked(mouseX: Int, mouseY: Int): Boolean {
@@ -72,9 +70,7 @@ open class SwitchFeature(
             mouseY in switchY until (switchY + SWITCH_HEIGHT)
         ) {
             toggle()
-            Minecraft.getInstance().soundManager.play(
-                SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.5f)
-            )
+            playClickSound()
             return true
         }
         return false
@@ -100,13 +96,14 @@ open class SwitchFeature(
         private const val NAME_COLOR = 0xFFFFFFFF.toInt()
         private const val DESC_COLOR = 0xFFAAAAAA.toInt()
 
-        private const val SWITCH_WIDTH = 22
-        private const val SWITCH_HEIGHT = 12
+        private const val SWITCH_WIDTH = 28
+        private const val SWITCH_HEIGHT = 14
+        private const val SWITCH_CORNER_RADIUS = 3    // shared by outer rect and inner square
         private const val SWITCH_RIGHT_PADDING = 8
         private const val SWITCH_OFF_BG = 0xFF555555.toInt()
         private const val SWITCH_ON_BG = 0xFFBB86FC.toInt()
         private const val SWITCH_BALL_COLOR = 0xFFFFFFFF.toInt()
-        private const val SWITCH_BALL_SIZE = 8
+        private const val SWITCH_BALL_SIZE = 10
         private const val SWITCH_BALL_PADDING = 2
     }
 }
