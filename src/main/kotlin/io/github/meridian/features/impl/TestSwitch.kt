@@ -12,3 +12,4 @@ object TestSwitch : SwitchFeature(
     configKey = "test_switch",
     subcategory = "Testing"
 )
+

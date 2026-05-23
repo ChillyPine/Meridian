@@ -41,7 +41,7 @@ object FeatureManager {
             for (feat in features) {
                 val featJson = JsonObject()
                 feat.saveTo(featJson)
-                featuresJson.add(feat.configKey, featJson)
+                if (featJson.size() > 0) featuresJson.add(feat.configKey, featJson)
             }
             root.add("features", featuresJson)
             configFile.writeText(gson.toJson(root))

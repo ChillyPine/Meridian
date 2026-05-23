@@ -1,6 +1,13 @@
 package io.github.meridian.features
 
 import com.google.gson.JsonObject
+import io.github.meridian.gui.DESC_COLOR
+import io.github.meridian.gui.NAME_COLOR
+import io.github.meridian.gui.ROW_BG_COLOR
+import io.github.meridian.gui.ROW_HEIGHT
+import io.github.meridian.gui.ROW_PADDING_X
+import io.github.meridian.gui.ROW_PADDING_Y
+import io.github.meridian.gui.ACCENT_COLOR
 import io.github.meridian.utils.playClickSound
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphics
@@ -51,7 +58,7 @@ open class SwitchFeature(
     }
 
     private fun renderSwitch(g: GuiGraphics) {
-        val bgColor = if (enabled) SWITCH_ON_BG else SWITCH_OFF_BG
+        val bgColor = if (enabled) ACCENT_COLOR else SWITCH_OFF_BG
         g.fill(switchX, switchY, switchX + SWITCH_WIDTH, switchY + SWITCH_HEIGHT, bgColor)
 
         val ballX = if (enabled) {
@@ -85,19 +92,10 @@ open class SwitchFeature(
     }
 
     companion object {
-        private const val ROW_HEIGHT = 38
-        private const val ROW_PADDING_X = 8
-        private const val ROW_PADDING_Y = 6
-        private const val ROW_BG_COLOR = 0x66000000  // ~40% black, layered over the panel
-
-        private const val NAME_COLOR = 0xFFFFFFFF.toInt()
-        private const val DESC_COLOR = 0xFFAAAAAA.toInt()
-
         private const val SWITCH_WIDTH = 28
         private const val SWITCH_HEIGHT = 14
         private const val SWITCH_RIGHT_PADDING = 8
         private const val SWITCH_OFF_BG = 0xFF555555.toInt()
-        private const val SWITCH_ON_BG = 0xFFBB86FC.toInt()
         private const val SWITCH_BALL_COLOR = 0xFFFFFFFF.toInt()
         private const val SWITCH_BALL_SIZE = 10
         private const val SWITCH_BALL_PADDING = 2
