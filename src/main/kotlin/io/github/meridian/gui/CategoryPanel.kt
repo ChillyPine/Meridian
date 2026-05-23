@@ -2,6 +2,9 @@ package io.github.meridian.gui
 
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.Minecraft
+import net.minecraft.sounds.SoundEvents
+import net.minecraft.client.resources.sounds.SimpleSoundInstance
 
 data class Category(val name: String, val id: String)
 
@@ -42,7 +45,7 @@ class CategoryPanel(
             // draw background highlight — selected takes priority over hovered
             when {
                 isSelected -> guiGraphics.fill(x, itemY, x + width - 3, itemY + ITEM_HEIGHT, SELECTED_COLOR)
-                isHovered  -> guiGraphics.fill(x, itemY, x + width - 3, itemY + ITEM_HEIGHT, HOVER_COLOR)
+                isHovered -> guiGraphics.fill(x, itemY, x + width - 3, itemY + ITEM_HEIGHT, HOVER_COLOR)
             }
 
             // draw label with color based on selection state
@@ -57,6 +60,10 @@ class CategoryPanel(
             val itemY = y + ITEM_TOP + (index * ITEM_HEIGHT)
             if (mouseX in x..(x + width) && mouseY in itemY..(itemY + ITEM_HEIGHT)) {
                 selected = category.id
+                // play ui click sound, pitch 1.5f to match the snappier feel of the original CT sound
+                Minecraft.getInstance().soundManager.play(
+                    SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.5f)
+                )
                 return true
             }
         }
