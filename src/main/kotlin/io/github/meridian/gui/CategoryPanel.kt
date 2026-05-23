@@ -58,7 +58,7 @@ class CategoryPanel(
     fun mouseClicked(mouseX: Int, mouseY: Int): Boolean {
         categories.forEachIndexed { index, category ->
             val itemY = y + ITEM_TOP + (index * ITEM_HEIGHT)
-            if (mouseX in x..(x + width) && mouseY in itemY..(itemY + ITEM_HEIGHT)) {
+            if (mouseX in x until (x + width) && mouseY in itemY until (itemY + ITEM_HEIGHT)) {
                 selected = category.id
                 // play ui click sound, pitch 1.5f to match the snappier feel of the original CT sound
                 Minecraft.getInstance().soundManager.play(

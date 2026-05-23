@@ -1,6 +1,8 @@
 package io.github.meridian
 
 import io.github.meridian.commands.MeridianCommand
+import io.github.meridian.features.FeatureManager
+import io.github.meridian.features.Features
 import net.fabricmc.api.ClientModInitializer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -14,6 +16,8 @@ object Meridian : ClientModInitializer {
 
     override fun onInitializeClient() {
         MeridianCommand.register()
+        Features.registerAll()
+        FeatureManager.load()
         logger.info("Meridian loaded")
     }
 }

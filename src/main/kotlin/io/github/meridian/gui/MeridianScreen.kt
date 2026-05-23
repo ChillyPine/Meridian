@@ -1,5 +1,6 @@
 package io.github.meridian.gui
 
+import io.github.meridian.features.FeatureManager
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.client.input.MouseButtonEvent
@@ -68,50 +69,47 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
         // Category panel
         categoryPanel.render(guiGraphics, font, mouseX, mouseY)
 
-        // Right panel content
-        when (categoryPanel.selected) {
-            "1"   -> renderCombatSettings(guiGraphics, x, y)
-            "2" -> renderMovementSettings(guiGraphics, x, y)
-            "3"   -> renderRenderSettings(guiGraphics, x, y)
-            "4"     -> renderMiscSettings(guiGraphics, x, y)
+        // Right panel content — features in the currently selected category
+        renderFeaturesForCategory(guiGraphics, x, y, categoryPanel.selected, mouseX, mouseY)
+    }
+
+    private fun renderFeaturesForCategory(
+        g: GuiGraphics,
+        panelX: Int,
+        panelY: Int,
+        category: String,
+        mouseX: Int,
+        mouseY: Int
+    ) {
+        val contentX = panelX + LEFT_PANEL_WIDTH + 8
+        val contentY = panelY + 10
+        val contentWidth = PANEL_WIDTH - LEFT_PANEL_WIDTH - 16
+
+        val features = FeatureManager.byCategory(category)
+        val grouped = features.groupBy { it.subcategory }
+
+        var currentY = contentY
+        for ((subcat, feats) in grouped) {
+            if (subcat.isNotEmpty()) {
+                g.drawString(font, subcat, contentX, currentY, BAR_COLOR, false)
+                currentY += font.lineHeight + 4
+            }
+            for (feat in feats) {
+                val rowHeight = feat.render(g, font, contentX, currentY, contentWidth, mouseX, mouseY)
+                currentY += rowHeight + 4
+            }
         }
     }
 
     override fun mouseClicked(mouseButtonEvent: MouseButtonEvent, bl: Boolean): Boolean {
-        if (categoryPanel.mouseClicked(mouseButtonEvent.x.toInt(), mouseButtonEvent.y.toInt())) return true
+        val mx = mouseButtonEvent.x.toInt()
+        val my = mouseButtonEvent.y.toInt()
+        if (categoryPanel.mouseClicked(mx, my)) return true
+        for (feat in FeatureManager.byCategory(categoryPanel.selected)) {
+            if (feat.mouseClicked(mx, my)) return true
+        }
         return super.mouseClicked(mouseButtonEvent, bl)
     }
 
-    override fun mouseReleased(mouseButtonEvent: MouseButtonEvent): Boolean {
-        return super.mouseReleased(mouseButtonEvent)
-
-    }
-
     override fun isPauseScreen(): Boolean = false
-
-    // categories TODO: change names
-
-    private fun renderCombatSettings(guiGraphics: GuiGraphics, panelX: Int, panelY: Int) {
-        val contentX = panelX + LEFT_PANEL_WIDTH + 8
-        val contentY = panelY + 10
-        guiGraphics.drawString(font, "100000", contentX, contentY, 0xFFBB86FC.toInt(), false)
-    }
-
-    private fun renderMovementSettings(guiGraphics: GuiGraphics, panelX: Int, panelY: Int) {
-        val contentX = panelX + LEFT_PANEL_WIDTH + 8
-        val contentY = panelY + 10
-        guiGraphics.drawString(font, "2", contentX, contentY, 0xFFBB86FC.toInt(), false)
-    }
-
-    private fun renderRenderSettings(guiGraphics: GuiGraphics, panelX: Int, panelY: Int) {
-        val contentX = panelX + LEFT_PANEL_WIDTH + 8
-        val contentY = panelY + 10
-        guiGraphics.drawString(font, "3", contentX, contentY, 0xFFBB86FC.toInt(), false)
-    }
-
-    private fun renderMiscSettings(guiGraphics: GuiGraphics, panelX: Int, panelY: Int) {
-        val contentX = panelX + LEFT_PANEL_WIDTH + 8
-        val contentY = panelY + 10
-        guiGraphics.drawString(font, "4", contentX, contentY, 0xFFBB86FC.toInt(), false)
-    }
 }
