@@ -2,8 +2,11 @@ package io.github.meridian.features
 
 import com.google.gson.JsonObject
 import io.github.meridian.gui.drawRoundedRect
+import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.resources.sounds.SimpleSoundInstance
+import net.minecraft.sounds.SoundEvents
 
 open class SwitchFeature(
     name: String,
@@ -69,6 +72,9 @@ open class SwitchFeature(
             mouseY in switchY until (switchY + SWITCH_HEIGHT)
         ) {
             toggle()
+            Minecraft.getInstance().soundManager.play(
+                SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.5f)
+            )
             return true
         }
         return false
