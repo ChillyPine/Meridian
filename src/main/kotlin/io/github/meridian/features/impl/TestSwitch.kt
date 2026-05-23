@@ -8,7 +8,7 @@ import io.github.meridian.features.SwitchFeature
 object TestSwitch : SwitchFeature(
     name = "Test Switch",
     description = "Verify the feature system works.",
-    category = "1",
+    category = "general",
     configKey = "test_switch",
     subcategory = "Testing"
 )
