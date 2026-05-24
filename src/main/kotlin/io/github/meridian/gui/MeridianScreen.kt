@@ -26,9 +26,9 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
         private const val VERSION_COLOR = 0xFFBB86FC.toInt()
 
         private const val PANEL_COLOR = 0x1E1E22       // RGB only (no alpha byte)
-        private const val PANEL_OPACITY = 200          // 0 = invisible, 255 = fully opaque
+        private const val PANEL_OPACITY = 210          // 0 = invisible, 255 = fully opaque
 
-        private const val TITLE_TEXT = "Meridian"
+        private const val TITLE_TEXT = "§lMeridian"
         private const val TITLE_COLOR = 0xFFFFFFFF.toInt()
         private const val TITLE_TOP_PADDING = 8
 
