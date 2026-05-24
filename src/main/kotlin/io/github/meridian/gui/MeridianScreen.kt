@@ -29,10 +29,41 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
 
         private const val TITLE_TEXT = "Meridian"
         private const val TITLE_COLOR = 0xFFFFFFFF.toInt()
-        private const val TITLE_TOP_PADDING = 8        // distance from panel top to text
+        private const val TITLE_TOP_PADDING = 8
+
+        private const val CONTENT_TOP_PADDING = 10
+        private const val CONTENT_BOTTOM_PADDING = 10
+        private const val SCROLLBAR_WIDTH = 4
+        private const val SCROLLBAR_PADDING = 4
+        private const val SCROLLBAR_TRACK_COLOR = 0x55000000.toInt()
+        private const val SCROLLBAR_THUMB_COLOR = 0xFFBB86FC.toInt()
+        private const val SCROLLBAR_THUMB_HOVER = 0xFFD0A6FF.toInt()
+        private const val MIN_THUMB_HEIGHT = 16
+        private const val WHEEL_STEP_PX = 16
     }
 
     private lateinit var categoryPanel: CategoryPanel
+
+    // Scroll state for the right-side content area.
+    private var scrollOffset = 0
+    private var lastTotalContentH = 0
+    private var lastViewportH = 0
+    private var lastMaxScroll = 0
+    private var lastScrollbarShown = false
+
+    // Cached layout for hit-testing (set during render).
+    private var contentLeft = 0
+    private var contentRight = 0
+    private var contentTop = 0
+    private var contentBottom = 0
+    private var scrollbarTrackX = 0
+    private var scrollbarTrackY = 0
+    private var scrollbarTrackH = 0
+    private var thumbY = 0
+    private var thumbH = 0
+
+    private var draggingThumb = false
+    private var thumbDragOffsetY = 0
 
     override fun init() {
         super.init()
@@ -52,30 +83,21 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
         val y = (height - PANEL_HEIGHT) / 2
         val color = (PANEL_OPACITY shl 24) or PANEL_COLOR
 
-        // Main panel
         guiGraphics.fill(x, y, x + PANEL_WIDTH, y + PANEL_HEIGHT, color)
-        // Left overlay panel — sits on top of the main panel's left portion
         guiGraphics.fill(x, y, x + LEFT_PANEL_WIDTH, y + PANEL_HEIGHT, color)
-        // Colored bar
         guiGraphics.fill(x + LEFT_PANEL_WIDTH - BAR_WIDTH, y, x + LEFT_PANEL_WIDTH, y + PANEL_HEIGHT, BAR_COLOR)
-        // Dividing bar for categories/title
         guiGraphics.fill(x + 5, y + 22, x + (LEFT_PANEL_WIDTH - 8), y + 22 + (BAR_WIDTH - 2), BAR_COLOR)
 
-        // Title centered over the main panel's full width
         val textX = x + (LEFT_PANEL_WIDTH - font.width(TITLE_TEXT)) / 2
         val textY = y + TITLE_TOP_PADDING
         guiGraphics.drawString(font, TITLE_TEXT, textX, textY, TITLE_COLOR, false)
 
-
-        // Version number — pinned to bottom-left of left panel
         val versionTextX = x + 5
         val versionTextY = y + PANEL_HEIGHT - font.lineHeight - 5
         guiGraphics.drawString(font, VERSION_TEXT, versionTextX, versionTextY, VERSION_COLOR, false)
 
-        // Category panel
         categoryPanel.render(guiGraphics, font, mouseX, mouseY)
 
-        // Right panel content — features in the currently selected category
         renderFeaturesForCategory(guiGraphics, x, y, categoryPanel.selected, mouseX, mouseY)
     }
 
@@ -87,34 +109,136 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
         mouseX: Int,
         mouseY: Int
     ) {
-        val contentX = panelX + LEFT_PANEL_WIDTH + 8
-        val contentY = panelY + 10
-        val contentWidth = PANEL_WIDTH - LEFT_PANEL_WIDTH - 16
+        val rightEdge = panelX + PANEL_WIDTH - 8
 
+        contentLeft = panelX + LEFT_PANEL_WIDTH + 8
+        contentTop = panelY + CONTENT_TOP_PADDING
+        contentBottom = panelY + PANEL_HEIGHT - CONTENT_BOTTOM_PADDING
+
+        val viewportH = contentBottom - contentTop
         val features = FeatureManager.byCategory(category)
         val grouped = features.groupBy { it.subcategory }
 
-        var currentY = contentY
+        var totalH = 0
+        for ((subcat, feats) in grouped) {
+            if (subcat.isNotEmpty()) totalH += font.lineHeight + 4
+            for (@Suppress("UNUSED_VARIABLE") f in feats) totalH += ROW_HEIGHT + 4
+        }
+        if (totalH > 0) totalH -= 4 // last gap not visible
+
+        val maxScroll = maxOf(0, totalH - viewportH)
+        val showScrollbar = maxScroll > 0
+        scrollOffset = scrollOffset.coerceIn(0, maxScroll)
+
+        contentRight = if (showScrollbar) rightEdge - SCROLLBAR_WIDTH - SCROLLBAR_PADDING else rightEdge
+        val contentW = contentRight - contentLeft
+
+        lastTotalContentH = totalH
+        lastViewportH = viewportH
+        lastMaxScroll = maxScroll
+        lastScrollbarShown = showScrollbar
+
+        g.enableScissor(contentLeft, contentTop, contentRight, contentBottom)
+        var currentY = contentTop - scrollOffset
         for ((subcat, feats) in grouped) {
             if (subcat.isNotEmpty()) {
-                g.drawString(font, subcat, contentX + (contentWidth - font.width(subcat)) / 2, currentY, BAR_COLOR, false)
+                g.drawString(font, subcat, contentLeft + (contentW - font.width(subcat)) / 2, currentY, BAR_COLOR, false)
                 currentY += font.lineHeight + 4
             }
             for (feat in feats) {
-                val rowHeight = feat.render(g, font, contentX, currentY, contentWidth, mouseX, mouseY)
+                val rowHeight = feat.render(g, font, contentLeft, currentY, contentW, mouseX, mouseY)
                 currentY += rowHeight + 4
             }
         }
+        g.disableScissor()
+
+        if (showScrollbar) renderScrollbar(g, rightEdge - SCROLLBAR_WIDTH, mouseX, mouseY)
     }
+
+    private fun renderScrollbar(g: GuiGraphics, trackX: Int, mouseX: Int, mouseY: Int) {
+        scrollbarTrackX = trackX
+        scrollbarTrackY = contentTop
+        scrollbarTrackH = lastViewportH
+
+        g.fill(scrollbarTrackX, scrollbarTrackY,
+               scrollbarTrackX + SCROLLBAR_WIDTH, scrollbarTrackY + scrollbarTrackH,
+               SCROLLBAR_TRACK_COLOR)
+
+        thumbH = ((scrollbarTrackH.toLong() * lastViewportH / lastTotalContentH).toInt())
+            .coerceAtLeast(MIN_THUMB_HEIGHT)
+            .coerceAtMost(scrollbarTrackH)
+        val thumbTravel = scrollbarTrackH - thumbH
+        thumbY = if (lastMaxScroll == 0) scrollbarTrackY
+                 else scrollbarTrackY + (scrollOffset.toLong() * thumbTravel / lastMaxScroll).toInt()
+
+        val hovering = mouseX in scrollbarTrackX..(scrollbarTrackX + SCROLLBAR_WIDTH) &&
+                       mouseY in thumbY..(thumbY + thumbH)
+        val thumbColor = if (hovering || draggingThumb) SCROLLBAR_THUMB_HOVER else SCROLLBAR_THUMB_COLOR
+        g.fill(scrollbarTrackX, thumbY, scrollbarTrackX + SCROLLBAR_WIDTH, thumbY + thumbH, thumbColor)
+    }
+
+    private fun inContentArea(mx: Int, my: Int) =
+        mx in contentLeft until contentRight && my in contentTop until contentBottom
 
     override fun mouseClicked(mouseButtonEvent: MouseButtonEvent, bl: Boolean): Boolean {
         val mx = mouseButtonEvent.x.toInt()
         val my = mouseButtonEvent.y.toInt()
+
         if (categoryPanel.mouseClicked(mx, my)) return true
-        for (feat in FeatureManager.byCategory(categoryPanel.selected)) {
-            if (feat.mouseClicked(mx, my)) return true
+
+        // Scrollbar
+        if (lastScrollbarShown &&
+            mx in scrollbarTrackX..(scrollbarTrackX + SCROLLBAR_WIDTH) &&
+            my in scrollbarTrackY..(scrollbarTrackY + scrollbarTrackH)) {
+            if (my in thumbY..(thumbY + thumbH)) {
+                draggingThumb = true
+                thumbDragOffsetY = my - thumbY
+            } else {
+                // Click on track outside the thumb: jump-scroll one viewport.
+                val direction = if (my < thumbY) -1 else 1
+                scrollOffset = (scrollOffset + direction * lastViewportH).coerceIn(0, lastMaxScroll)
+            }
+            return true
+        }
+
+        // Feature rows — gate by viewport so clipped rows aren't clickable.
+        if (inContentArea(mx, my)) {
+            for (feat in FeatureManager.byCategory(categoryPanel.selected)) {
+                if (feat.mouseClicked(mx, my)) return true
+            }
+        } else {
+            // Click outside the input area still needs to unfocus any focused TextFeature.
+            for (feat in FeatureManager.byCategory(categoryPanel.selected)) {
+                feat.mouseClicked(mx, my)
+            }
         }
         return super.mouseClicked(mouseButtonEvent, bl)
+    }
+
+    override fun mouseReleased(event: MouseButtonEvent): Boolean {
+        draggingThumb = false
+        return super.mouseReleased(event)
+    }
+
+    override fun mouseDragged(event: MouseButtonEvent, dx: Double, dy: Double): Boolean {
+        if (draggingThumb && lastMaxScroll > 0) {
+            val my = event.y.toInt()
+            val newThumbTop = my - thumbDragOffsetY - scrollbarTrackY
+            val thumbTravel = (scrollbarTrackH - thumbH).coerceAtLeast(1)
+            scrollOffset = (newThumbTop.toLong() * lastMaxScroll / thumbTravel)
+                .toInt().coerceIn(0, lastMaxScroll)
+            return true
+        }
+        return super.mouseDragged(event, dx, dy)
+    }
+
+    override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
+        if (lastMaxScroll > 0 && inContentArea(mouseX.toInt(), mouseY.toInt())) {
+            scrollOffset = (scrollOffset - (scrollY * WHEEL_STEP_PX).toInt())
+                .coerceIn(0, lastMaxScroll)
+            return true
+        }
+        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY)
     }
 
     override fun keyPressed(event: KeyEvent): Boolean {
