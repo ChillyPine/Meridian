@@ -13,8 +13,8 @@ import net.fabricmc.loader.api.FabricLoader
 class MeridianScreen : Screen(Component.literal("Meridian")) {
 
     companion object {
-        private const val PANEL_WIDTH = 400            // main panel
-        private const val PANEL_HEIGHT = 250
+        private const val PANEL_WIDTH = 510            // main panel
+        private const val PANEL_HEIGHT = 310
         private const val LEFT_PANEL_WIDTH = 100       // overlay panel for category buttons
         private const val BAR_WIDTH = 3
         private const val BAR_COLOR = 0xFFBB86FC.toInt()
@@ -43,8 +43,9 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
         private const val WHEEL_STEP_PX = 16
 
         private const val SEARCH_TOP_GAP = 6
-        // Search bar takes 2/3 of the panel width, centered below it.
-        private const val SEARCH_WIDTH = (PANEL_WIDTH * 2) / 3
+        // Fixed width so the search bar size doesn't grow with the main panel.
+        // Sits centered below the panel.
+        private const val SEARCH_WIDTH = 266
     }
 
     private lateinit var categoryPanel: CategoryPanel
@@ -130,8 +131,9 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
 
         val viewportH = contentBottom - contentTop
         val searching = searchBar.query.isNotEmpty()
-        val features = if (searching) searchResults(searchBar.query)
-                       else FeatureManager.byCategory(category)
+        val features = (if (searching) searchResults(searchBar.query)
+                        else FeatureManager.byCategory(category))
+            .filter { it.isVisible() }
         val grouped = if (searching) features.groupBy {
                           if (it.subcategory.isEmpty()) it.category
                           else "${it.category}→${it.subcategory}"
@@ -164,7 +166,13 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
                 currentY += font.lineHeight + 4
             }
             for (feat in feats) {
-                val rowHeight = feat.render(g, font, contentLeft, currentY, contentW, mouseX, mouseY)
+                val indent = feat.depth() * CHILD_INDENT_PX
+                val rowHeight = feat.render(
+                    g, font,
+                    contentLeft + indent, currentY,
+                    contentW - indent,
+                    mouseX, mouseY
+                )
                 currentY += rowHeight + 4
             }
         }
@@ -230,13 +238,17 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
         }
 
         // Feature rows — gate by viewport so clipped rows aren't clickable.
+        // Hidden (parent-gated) features must not be clickable either; their last
+        // rendered hit-bounds are stale once the parent goes off.
+        val visibleInCategory = FeatureManager.byCategory(categoryPanel.selected)
+            .filter { it.isVisible() }
         if (inContentArea(mx, my)) {
-            for (feat in FeatureManager.byCategory(categoryPanel.selected)) {
+            for (feat in visibleInCategory) {
                 if (feat.mouseClicked(mx, my)) return true
             }
         } else {
             // Click outside the input area still needs to unfocus any focused TextFeature.
-            for (feat in FeatureManager.byCategory(categoryPanel.selected)) {
+            for (feat in visibleInCategory) {
                 feat.mouseClicked(mx, my)
             }
         }
@@ -275,7 +287,7 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
             return true
         }
         for (feat in FeatureManager.byCategory(categoryPanel.selected)) {
-            if (feat.keyPressed(event)) return true
+            if (feat.isVisible() && feat.keyPressed(event)) return true
         }
         return super.keyPressed(event)
     }
@@ -286,7 +298,7 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
             return true
         }
         for (feat in FeatureManager.byCategory(categoryPanel.selected)) {
-            if (feat.charTyped(event)) return true
+            if (feat.isVisible() && feat.charTyped(event)) return true
         }
         return super.charTyped(event)
     }

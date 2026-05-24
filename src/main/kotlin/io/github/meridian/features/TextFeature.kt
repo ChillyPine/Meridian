@@ -24,10 +24,11 @@ open class TextFeature(
     category: String,
     configKey: String,
     subcategory: String = "",
+    dependsOn: Feature? = null,
     val placeholder: String = "",
     val maxLength: Int = 256,
     defaultValue: String = ""
-) : Feature(name, description, category, configKey, subcategory) {
+) : Feature(name, description, category, configKey, subcategory, dependsOn) {
 
     var value: String = defaultValue
         private set

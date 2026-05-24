@@ -3,6 +3,7 @@ package io.github.meridian.features
 import io.github.meridian.features.impl.TestButton
 import io.github.meridian.features.impl.TestColor
 import io.github.meridian.features.impl.TestSwitch
+import io.github.meridian.features.impl.TestSwitch2
 import io.github.meridian.features.impl.TestText
 
 
@@ -11,8 +12,9 @@ import io.github.meridian.features.impl.TestText
 object FeatureList {
     private val all: List<Feature> = listOf(
         TestSwitch,
-        TestButton,
+        TestSwitch2,
         TestColor,
+        TestButton,
         TestText,
         // add new features here
     )

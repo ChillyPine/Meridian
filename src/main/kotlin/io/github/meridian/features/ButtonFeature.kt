@@ -22,8 +22,9 @@ open class ButtonFeature(
     configKey: String,
     val buttonLabel: String,
     val onClick: () -> Unit,
-    subcategory: String = ""
-) : Feature(name, description, category, configKey, subcategory) {
+    subcategory: String = "",
+    dependsOn: Feature? = null
+) : Feature(name, description, category, configKey, subcategory, dependsOn) {
 
     // Hit-test bounds, set during render.
     private var buttonX = 0

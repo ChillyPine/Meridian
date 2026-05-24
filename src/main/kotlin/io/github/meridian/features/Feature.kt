@@ -11,8 +11,41 @@ abstract class Feature(
     val description: String,
     val category: String,        // matches CategoryPanel selected ids
     val configKey: String,       // persisted key in config.json — keep stable
-    val subcategory: String = "" // optional grouping inside a category
+    val subcategory: String = "", // optional grouping inside a category
+    // If set, this feature is a child of another: it's only shown and only "active"
+    // when every ancestor's gate is satisfied. Reference the parent by object
+    // (e.g. dependsOn = TestSwitch) — type-safe and refactor-safe.
+    // Only types that override isDependencyActive() (currently SwitchFeature) usefully
+    // gate children. Using a non-gating type as a parent is allowed but meaningless —
+    // children of it will always be visible.
+    val dependsOn: Feature? = null
 ) {
+    // True if every ancestor's gate is currently satisfied.
+    fun isVisible(): Boolean {
+        val parent = dependsOn ?: return true
+        return parent.isDependencyActive() && parent.isVisible()
+    }
+
+    // True if this feature would do work right now: visible AND its own gate
+    // is satisfied. Behavior hooks (chat listeners, tick callbacks, etc.) should
+    // check isActive() rather than reading raw state like SwitchFeature.enabled,
+    // so a child stays inert when its parent is off.
+    fun isActive(): Boolean = isVisible() && isDependencyActive()
+
+    // Override in types whose own state gates children. Default: ungated (true).
+    // SwitchFeature returns `enabled`; a future dropdown would return e.g.
+    // `value != defaultValue`.
+    open fun isDependencyActive(): Boolean = true
+
+    // Number of ancestors above this feature (0 for top-level). Used by the GUI
+    // to indent child rows.
+    fun depth(): Int {
+        var d = 0
+        var p = dependsOn
+        while (p != null) { d++; p = p.dependsOn }
+        return d
+    }
+
     // Render this feature as a row anchored at (x, y) with the given width.
     // Returns the row's pixel height so the caller can stack the next row beneath.
     abstract fun render(

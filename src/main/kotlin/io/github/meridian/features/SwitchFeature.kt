@@ -18,10 +18,13 @@ open class SwitchFeature(
     category: String,
     configKey: String,
     subcategory: String = "",
+    dependsOn: Feature? = null,
     defaultEnabled: Boolean = false
-) : Feature(name, description, category, configKey, subcategory) {
+) : Feature(name, description, category, configKey, subcategory, dependsOn) {
 
     var enabled: Boolean = defaultEnabled
+
+    override fun isDependencyActive(): Boolean = enabled
 
     fun toggle() {
         enabled = !enabled

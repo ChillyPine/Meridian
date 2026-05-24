@@ -21,8 +21,9 @@ open class ColorFeature(
     category: String,
     configKey: String,
     subcategory: String = "",
+    dependsOn: Feature? = null,
     defaultColor: Int = 0xFFBB86FC.toInt()
-) : Feature(name, description, category, configKey, subcategory) {
+) : Feature(name, description, category, configKey, subcategory, dependsOn) {
 
     var color: Int = defaultColor
 
