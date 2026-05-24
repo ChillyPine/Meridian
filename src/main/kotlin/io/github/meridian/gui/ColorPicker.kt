@@ -154,6 +154,16 @@ class ColorPicker(
         renderHexInput(g, px, hexX, hexY, hexW)
 
         val previewX = hexX + hexW + 4
+        val cell = 3
+        for (col in 0 until PREVIEW_SIZE step cell) {
+            for (row in 0 until HEX_HEIGHT step cell) {
+                val light = ((col / cell + row / cell) % 2 == 0)
+                g.fill(previewX + col, hexY + row,
+                    minOf(previewX + col + cell, previewX + PREVIEW_SIZE),
+                    minOf(hexY + row + cell, hexY + HEX_HEIGHT),
+                    if (light) 0xFFCCCCCC.toInt() else 0xFF999999.toInt())
+            }
+        }
         g.fill(previewX, hexY, previewX + PREVIEW_SIZE, hexY + HEX_HEIGHT, currentArgb())
 
         val buttonY = py + PANEL_HEIGHT - BUTTON_HEIGHT - BUTTON_BOTTOM_PADDING

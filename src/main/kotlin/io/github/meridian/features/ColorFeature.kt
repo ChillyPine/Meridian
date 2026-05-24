@@ -1,7 +1,6 @@
 package io.github.meridian.features
 
 import com.google.gson.JsonObject
-import io.github.meridian.gui.ACCENT_COLOR
 import io.github.meridian.gui.ColorPicker
 import io.github.meridian.gui.DESC_COLOR
 import io.github.meridian.gui.NAME_COLOR
@@ -58,8 +57,8 @@ open class ColorFeature(
 
         val swatchX = buttonX + BUTTON_INNER_PADDING_X
         val swatchY = buttonY + (BUTTON_HEIGHT - SWATCH_SIZE) / 2
-        // Outline so a fully-transparent color is still visible.
-        guiGraphics.fill(swatchX - 1, swatchY - 1, swatchX + SWATCH_SIZE + 1, swatchY + SWATCH_SIZE + 1, ACCENT_COLOR)
+        // Checkerboard backdrop so transparency is visible without distorting hue.
+        drawCheckerboard(guiGraphics, swatchX, swatchY, SWATCH_SIZE, SWATCH_SIZE, 2)
         guiGraphics.fill(swatchX, swatchY, swatchX + SWATCH_SIZE, swatchY + SWATCH_SIZE, color)
 
         val labelX = swatchX + SWATCH_SIZE + SWATCH_GAP
@@ -97,6 +96,18 @@ open class ColorFeature(
         }
     }
 
+    private fun drawCheckerboard(g: GuiGraphics, x: Int, y: Int, w: Int, h: Int, cell: Int) {
+        for (col in 0 until w step cell) {
+            for (row in 0 until h step cell) {
+                val light = ((col / cell + row / cell) % 2 == 0)
+                g.fill(x + col, y + row,
+                    minOf(x + col + cell, x + w),
+                    minOf(y + row + cell, y + h),
+                    if (light) CHECKER_LIGHT else CHECKER_DARK)
+            }
+        }
+    }
+
     companion object {
         private const val BUTTON_HEIGHT = 14
         private const val BUTTON_RIGHT_PADDING = 8
@@ -105,5 +116,7 @@ open class ColorFeature(
         private const val BUTTON_TEXT_COLOR = 0xFFFFFFFF.toInt()
         private const val SWATCH_SIZE = 8
         private const val SWATCH_GAP = 6
+        private const val CHECKER_LIGHT = 0xFFCCCCCC.toInt()
+        private const val CHECKER_DARK = 0xFF999999.toInt()
     }
 }
