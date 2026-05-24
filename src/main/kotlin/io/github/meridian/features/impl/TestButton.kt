@@ -1,17 +1,16 @@
 package io.github.meridian.features.impl
 
 import io.github.meridian.features.ButtonFeature
-import io.github.meridian.gui.ColorPicker
-import net.minecraft.client.Minecraft
+import io.github.meridian.utils.modMessage
 
 object TestButton : ButtonFeature(
     name = "Test Button",
     description = "Verify the feature system works.",
     category = "general",
-    configKey = "test_switch",
+    configKey = "test_button",
     subcategory = "Testing",
-    buttonLabel = "Open",
+    buttonLabel = "Click",
     onClick = {
-        Minecraft.getInstance().setScreen(ColorPicker())
+        modMessage("Test button clicked.")
     },
 )

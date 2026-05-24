@@ -3,6 +3,8 @@ package io.github.meridian.features
 import com.google.gson.JsonObject
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.input.CharacterEvent
+import net.minecraft.client.input.KeyEvent
 
 abstract class Feature(
     val name: String,
@@ -31,4 +33,9 @@ abstract class Feature(
 
     // Apply settings from the given json object (may be empty if not present).
     abstract fun loadFrom(json: JsonObject)
+
+    // Keyboard input forwarded from the parent screen. Default: ignore.
+    // Return true if consumed.
+    open fun keyPressed(event: KeyEvent): Boolean = false
+    open fun charTyped(event: CharacterEvent): Boolean = false
 }

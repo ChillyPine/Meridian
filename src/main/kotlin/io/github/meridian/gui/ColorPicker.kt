@@ -1,15 +1,23 @@
 package io.github.meridian.gui
 
+import com.mojang.blaze3d.platform.NativeImage
+import io.github.meridian.utils.playClickSound
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.Screen
-import net.minecraft.client.input.MouseButtonEvent
-import net.minecraft.network.chat.Component
-import io.github.meridian.utils.playClickSound
 import net.minecraft.client.input.CharacterEvent
 import net.minecraft.client.input.KeyEvent
+import net.minecraft.client.input.MouseButtonEvent
+import net.minecraft.client.renderer.RenderPipelines
+import net.minecraft.client.renderer.texture.DynamicTexture
+import net.minecraft.network.chat.Component
+import net.minecraft.resources.Identifier
 
-class ColorPicker : Screen(Component.literal("Meridian")) {
+class ColorPicker(
+    initialArgb: Int,
+    private val parent: Screen?,
+    private val onConfirm: (Int) -> Unit
+) : Screen(Component.literal("Meridian")) {
 
     companion object {
         private const val PANEL_WIDTH = 400
@@ -31,41 +39,43 @@ class ColorPicker : Screen(Component.literal("Meridian")) {
         private const val CONFIRM_COLOR = 0xFF4CAF50.toInt()
         private const val BACK_COLOR = 0xFF666666.toInt()
 
-        // SV picker
         private const val SV_TOP_PADDING = 22
         private const val SV_HEIGHT = 100
         private const val SV_SIDE_PADDING = 12
 
-        // Sliders
         private const val SLIDER_HEIGHT = 8
         private const val SLIDER_TOP_GAP = 8
         private const val THUMB_RADIUS = 5
 
-        // Hex input area
         private const val HEX_TOP_GAP = 8
         private const val HEX_HEIGHT = 14
         private const val PREVIEW_SIZE = 14
 
-        var lastConfirmedColor: Int = 0xFF_BB86FC.toInt() // default purple
+        private const val TEX_NAMESPACE = "meridian"
 
+        private var instanceCounter = 0
+
+        private fun argbToAbgr(argb: Int): Int {
+            val a = (argb ushr 24) and 0xFF
+            val r = (argb shr 16) and 0xFF
+            val g = (argb shr 8) and 0xFF
+            val b = argb and 0xFF
+            return (a shl 24) or (b shl 16) or (g shl 8) or r
+        }
     }
 
-    // HSV + alpha state (hue 0-360, sat/val 0-1, alpha 0-255)
     private var hue = 0f
     private var sat = 1f
     private var value = 1f
     private var alpha = 255
 
-    // Hex input
     private var hexInput = "FFFFFFFF"
     private var hexCursorPos = 8
     private var hexFocused = false
 
-    // Dragging state
     private enum class Drag { NONE, SV, HUE, ALPHA }
     private var dragging = Drag.NONE
 
-    // Cached layout rects (set in render, used for hit-testing)
     private var svX = 0; private var svY = 0; private var svW = 0
     private var hueX = 0; private var hueY = 0; private var hueW = 0
     private var alphaX = 0; private var alphaY = 0; private var alphaW = 0
@@ -73,9 +83,31 @@ class ColorPicker : Screen(Component.literal("Meridian")) {
     private var confirmX = 0; private var confirmY = 0; private var confirmW = 0
     private var backX = 0;   private var backY = 0;   private var backW = 0
 
-    // Callback invoked with ARGB int when user confirms
-    var onConfirm: ((Int) -> Unit)? = null
+    private val instanceId = instanceCounter++
+    private val svTexId = Identifier.fromNamespaceAndPath(TEX_NAMESPACE, "colorpicker/sv_$instanceId")
+    private val hueTexId = Identifier.fromNamespaceAndPath(TEX_NAMESPACE, "colorpicker/hue_$instanceId")
+    private val alphaTexId = Identifier.fromNamespaceAndPath(TEX_NAMESPACE, "colorpicker/alpha_$instanceId")
 
+    private var svTex: DynamicTexture? = null
+    private var hueTex: DynamicTexture? = null
+    private var alphaTex: DynamicTexture? = null
+
+    private var svTexHue = -1f
+    private var svTexW = 0; private var svTexH = 0
+    private var hueTexW = 0
+    private var alphaTexW = 0
+    private var alphaTexRgb = -1
+
+    init {
+        val a = (initialArgb ushr 24) and 0xFF
+        val r = (initialArgb shr 16) and 0xFF
+        val g = (initialArgb shr 8) and 0xFF
+        val b = initialArgb and 0xFF
+        val hsv = rgbToHsv(r, g, b)
+        hue = hsv[0]; sat = hsv[1]; value = hsv[2]
+        alpha = a
+        hexInput = "%02X%02X%02X%02X".format(a, r, g, b)
+    }
 
     override fun renderBackground(g: GuiGraphics, mx: Int, my: Int, pt: Float) {}
 
@@ -106,31 +138,24 @@ class ColorPicker : Screen(Component.literal("Meridian")) {
         renderHueSlider(g, hueX, hueY, hueW, SLIDER_HEIGHT)
         renderAlphaSlider(g, alphaX, alphaY, alphaW, SLIDER_HEIGHT)
 
-        // Slider labels
         g.drawString(font, "H", svX, hueY + (SLIDER_HEIGHT - font.lineHeight) / 2 + 1, 0xFFAAAAAA.toInt(), false)
         g.drawString(font, "A", svX, alphaY + (SLIDER_HEIGHT - font.lineHeight) / 2 + 1, 0xFFAAAAAA.toInt(), false)
 
-        // Slider values
         val hueVal = hue.toInt().toString()
         val alphaVal = "${(alpha * 100 / 255)}%"
         val valX = sliderXStart + sliderW + 4
         g.drawString(font, hueVal, valX, hueY + (SLIDER_HEIGHT - font.lineHeight) / 2 + 1, 0xFFCCCCCC.toInt(), false)
         g.drawString(font, alphaVal, valX, alphaY + (SLIDER_HEIGHT - font.lineHeight) / 2 + 1, 0xFFCCCCCC.toInt(), false)
 
-        // Hex input row
         hexY = sliderY2 + SLIDER_HEIGHT + HEX_TOP_GAP + 4
-        hexX = svX + font.width("Hex ") + 4
-        hexW = svW - font.width("Hex ") - PREVIEW_SIZE - 8 - 4
         hexX = svX + 28
         hexW = svW - 28 - PREVIEW_SIZE - 8
 
         renderHexInput(g, px, hexX, hexY, hexW)
 
-        // Color preview swatch
         val previewX = hexX + hexW + 4
         g.fill(previewX, hexY, previewX + PREVIEW_SIZE, hexY + HEX_HEIGHT, currentArgb())
 
-        // Buttons
         val buttonY = py + PANEL_HEIGHT - BUTTON_HEIGHT - BUTTON_BOTTOM_PADDING
         backW = font.width(BACK_LABEL) + 2 * BUTTON_INNER_PADDING_X
         backX = px + 10; backY = buttonY
@@ -143,27 +168,78 @@ class ColorPicker : Screen(Component.literal("Meridian")) {
         super.render(g, mouseX, mouseY, partialTick)
     }
 
-    private fun renderSVPicker(g: GuiGraphics, x: Int, y: Int, w: Int, h: Int) {
-        val hueColor = hsvToRgb(hue, 1f, 1f) or (0xFF shl 24)
-        val strip = 2
-        var col = 0
-        while (col < w) {
-            val s = col.toFloat() / w
-            val r0 = lerp(255, (hueColor shr 16) and 0xFF, s)
-            val g0 = lerp(255, (hueColor shr 8)  and 0xFF, s)
-            val b0 = lerp(255,  hueColor          and 0xFF, s)
-            var row = 0
-            while (row < h) {
-                val v = 1f - row.toFloat() / h
-                val r  = (r0 * v).toInt()
-                val gv = (g0 * v).toInt()
-                val b  = (b0 * v).toInt()
-                g.fill(x + col, y + row, x + col + strip, y + row + strip,
-                    (0xFF shl 24) or (r shl 16) or (gv shl 8) or b)
-                row += strip
-            }
-            col += strip
+    private fun ensureSvTexture(w: Int, h: Int) {
+        if (svTex == null || svTexW != w || svTexH != h) {
+            svTex?.close()
+            val img = NativeImage(w, h, false)
+            svTex = DynamicTexture({ "meridian sv picker" }, img)
+            Minecraft.getInstance().textureManager.register(svTexId, svTex!!)
+            svTexW = w; svTexH = h
+            svTexHue = -1f
         }
+        if (svTexHue != hue) {
+            val tex = svTex!!
+            val img = tex.pixels!!
+            val hueRgb = hsvToRgb(hue, 1f, 1f)
+            val hr = (hueRgb shr 16) and 0xFF
+            val hg = (hueRgb shr 8) and 0xFF
+            val hb = hueRgb and 0xFF
+            for (y in 0 until h) {
+                val v = 1f - y.toFloat() / (h - 1)
+                for (x in 0 until w) {
+                    val s = x.toFloat() / (w - 1)
+                    val r = ((255 + (hr - 255) * s) * v).toInt()
+                    val gr = ((255 + (hg - 255) * s) * v).toInt()
+                    val b = ((255 + (hb - 255) * s) * v).toInt()
+                    val abgr = (0xFF shl 24) or (b shl 16) or (gr shl 8) or r
+                    img.setPixelABGR(x, y, abgr)
+                }
+            }
+            tex.upload()
+            svTexHue = hue
+        }
+    }
+
+    private fun ensureHueTexture(w: Int, h: Int) {
+        if (hueTex != null && hueTexW == w) return
+        hueTex?.close()
+        val img = NativeImage(w, h, false)
+        for (x in 0 until w) {
+            val h360 = x.toFloat() / (w - 1) * 360f
+            val rgb = hsvToRgb(h360, 1f, 1f)
+            val abgr = argbToAbgr((0xFF shl 24) or rgb)
+            for (y in 0 until h) img.setPixelABGR(x, y, abgr)
+        }
+        hueTex = DynamicTexture({ "meridian hue strip" }, img)
+        Minecraft.getInstance().textureManager.register(hueTexId, hueTex!!)
+        hueTex!!.upload()
+        hueTexW = w
+    }
+
+    private fun ensureAlphaTexture(w: Int, h: Int) {
+        val rgb = hsvToRgb(hue, sat, value)
+        if (alphaTex != null && alphaTexW == w && alphaTexRgb == rgb) return
+        if (alphaTex == null || alphaTexW != w) {
+            alphaTex?.close()
+            val img = NativeImage(w, h, false)
+            alphaTex = DynamicTexture({ "meridian alpha strip" }, img)
+            Minecraft.getInstance().textureManager.register(alphaTexId, alphaTex!!)
+            alphaTexW = w
+        }
+        val tex = alphaTex!!
+        val img = tex.pixels!!
+        for (x in 0 until w) {
+            val a = (x.toFloat() / (w - 1) * 255).toInt()
+            val abgr = argbToAbgr((a shl 24) or rgb)
+            for (y in 0 until h) img.setPixelABGR(x, y, abgr)
+        }
+        tex.upload()
+        alphaTexRgb = rgb
+    }
+
+    private fun renderSVPicker(g: GuiGraphics, x: Int, y: Int, w: Int, h: Int) {
+        ensureSvTexture(w, h)
+        g.blit(RenderPipelines.GUI_TEXTURED, svTexId, x, y, 0f, 0f, w, h, w, h)
         val cx = x + (sat * w).toInt()
         val cy = y + ((1f - value) * h).toInt()
         g.fill(cx - 4, cy - 1, cx + 4, cy + 1, 0xFFFFFFFF.toInt())
@@ -171,42 +247,26 @@ class ColorPicker : Screen(Component.literal("Meridian")) {
     }
 
     private fun renderHueSlider(g: GuiGraphics, x: Int, y: Int, w: Int, h: Int) {
-        // Hue gradient (6 stops)
-        val stops = intArrayOf(0xFF0000, 0xFFFF00, 0x00FF00, 0x00FFFF, 0x0000FF, 0xFF00FF, 0xFF0000)
-        val segW = w / 6
-        for (i in 0 until 6) {
-            val c1 = stops[i] or (0xFF shl 24)
-            val c2 = stops[i + 1] or (0xFF shl 24)
-            for (col in 0 until segW) {
-                val t = col.toFloat() / segW
-                val color = lerpColor(c1, c2, t)
-                g.fill(x + i * segW + col, y, x + i * segW + col + 1, y + h, color)
-            }
-        }
-        // Thumb
+        ensureHueTexture(w, h)
+        g.blit(RenderPipelines.GUI_TEXTURED, hueTexId, x, y, 0f, 0f, w, h, w, h)
         val tx = x + (hue / 360f * w).toInt()
         g.fill(tx - THUMB_RADIUS, y - 2, tx + THUMB_RADIUS, y + h + 2, 0xFFFFFFFF.toInt())
         g.fill(tx - THUMB_RADIUS + 1, y - 1, tx + THUMB_RADIUS - 1, y + h + 1, 0xFF333333.toInt())
     }
 
     private fun renderAlphaSlider(g: GuiGraphics, x: Int, y: Int, w: Int, h: Int) {
-        // Checkerboard
         val cellSize = 4
         for (col in 0 until w step cellSize) {
             for (row in 0 until h step cellSize) {
                 val light = ((col / cellSize + row / cellSize) % 2 == 0)
-                g.fill(x + col, y + row, x + col + cellSize, y + row + cellSize,
+                g.fill(x + col, y + row,
+                    minOf(x + col + cellSize, x + w),
+                    minOf(y + row + cellSize, y + h),
                     if (light) 0xFFCCCCCC.toInt() else 0xFF999999.toInt())
             }
         }
-        // Gradient overlay: transparent→current color at full alpha
-        val rgb = hsvToRgb(hue, sat, value)
-        for (col in 0 until w) {
-            val a = (col.toFloat() / w * 255).toInt()
-            val color = (a shl 24) or rgb
-            g.fill(x + col, y, x + col + 1, y + h, color)
-        }
-        // Thumb
+        ensureAlphaTexture(w, h)
+        g.blit(RenderPipelines.GUI_TEXTURED, alphaTexId, x, y, 0f, 0f, w, h, w, h)
         val tx = x + (alpha.toFloat() / 255f * w).toInt()
         g.fill(tx - THUMB_RADIUS, y - 2, tx + THUMB_RADIUS, y + h + 2, 0xFFFFFFFF.toInt())
         g.fill(tx - THUMB_RADIUS + 1, y - 1, tx + THUMB_RADIUS - 1, y + h + 1, 0xFF333333.toInt())
@@ -236,7 +296,6 @@ class ColorPicker : Screen(Component.literal("Meridian")) {
         g.drawString(font, label, lx, ly, BUTTON_TEXT_COLOR, false)
     }
 
-
     override fun mouseClicked(event: MouseButtonEvent, bl: Boolean): Boolean {
         val mx = event.x.toInt(); val my = event.y.toInt()
 
@@ -252,13 +311,14 @@ class ColorPicker : Screen(Component.literal("Meridian")) {
             dragging = Drag.ALPHA; updateAlpha(mx); return true
         }
         if (mx in backX until (backX + backW) && my in backY until (backY + BUTTON_HEIGHT)) {
-            playClickSound(); Minecraft.getInstance().setScreen(MeridianScreen()); return true
+            playClickSound()
+            Minecraft.getInstance().setScreen(parent)
+            return true
         }
         if (mx in confirmX until (confirmX + confirmW) && my in confirmY until (confirmY + BUTTON_HEIGHT)) {
-            onConfirm?.invoke(currentArgb())
-            lastConfirmedColor = currentArgb() // always save it
+            onConfirm(currentArgb())
             playClickSound()
-            Minecraft.getInstance().setScreen(MeridianScreen())
+            Minecraft.getInstance().setScreen(parent)
             return true
         }
         return super.mouseClicked(event, bl)
@@ -283,14 +343,14 @@ class ColorPicker : Screen(Component.literal("Meridian")) {
     override fun keyPressed(event: KeyEvent): Boolean {
         if (!hexFocused) return super.keyPressed(event)
         when (event.key) {
-            259 -> { // Backspace
+            259 -> {
                 if (hexCursorPos > 0) {
                     hexInput = hexInput.removeRange(hexCursorPos - 1, hexCursorPos)
                     hexCursorPos--
                     applyHexInput()
                 }
             }
-            261 -> { // Delete
+            261 -> {
                 if (hexCursorPos < hexInput.length) {
                     hexInput = hexInput.removeRange(hexCursorPos, hexCursorPos + 1)
                     applyHexInput()
@@ -316,6 +376,15 @@ class ColorPicker : Screen(Component.literal("Meridian")) {
             return true
         }
         return false
+    }
+
+    override fun removed() {
+        super.removed()
+        val tm = Minecraft.getInstance().textureManager
+        tm.release(svTexId)
+        tm.release(hueTexId)
+        tm.release(alphaTexId)
+        svTex = null; hueTex = null; alphaTex = null
     }
 
     private fun updateSV(mx: Int, my: Int) {
@@ -388,15 +457,6 @@ class ColorPicker : Screen(Component.literal("Meridian")) {
         }.let { if (it < 0) it + 360f else it }
         val s = if (max == 0f) 0f else delta / max
         return floatArrayOf(h, s, max)
-    }
-
-    private fun lerp(a: Int, b: Int, t: Float) = (a + (b - a) * t).toInt()
-    private fun lerpColor(c1: Int, c2: Int, t: Float): Int {
-        val a = lerp((c1 shr 24) and 0xFF, (c2 shr 24) and 0xFF, t)
-        val r = lerp((c1 shr 16) and 0xFF, (c2 shr 16) and 0xFF, t)
-        val g = lerp((c1 shr 8)  and 0xFF, (c2 shr 8)  and 0xFF, t)
-        val b = lerp(c1 and 0xFF, c2 and 0xFF, t)
-        return (a shl 24) or (r shl 16) or (g shl 8) or b
     }
 
     override fun isPauseScreen(): Boolean = false

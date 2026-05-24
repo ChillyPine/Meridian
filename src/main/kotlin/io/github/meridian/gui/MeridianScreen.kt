@@ -3,6 +3,8 @@ package io.github.meridian.gui
 import io.github.meridian.features.FeatureManager
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.Screen
+import net.minecraft.client.input.CharacterEvent
+import net.minecraft.client.input.KeyEvent
 import net.minecraft.client.input.MouseButtonEvent
 import net.minecraft.network.chat.Component
 import net.fabricmc.loader.api.FabricLoader
@@ -113,6 +115,20 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
             if (feat.mouseClicked(mx, my)) return true
         }
         return super.mouseClicked(mouseButtonEvent, bl)
+    }
+
+    override fun keyPressed(event: KeyEvent): Boolean {
+        for (feat in FeatureManager.byCategory(categoryPanel.selected)) {
+            if (feat.keyPressed(event)) return true
+        }
+        return super.keyPressed(event)
+    }
+
+    override fun charTyped(event: CharacterEvent): Boolean {
+        for (feat in FeatureManager.byCategory(categoryPanel.selected)) {
+            if (feat.charTyped(event)) return true
+        }
+        return super.charTyped(event)
     }
 
     override fun isPauseScreen(): Boolean = false
