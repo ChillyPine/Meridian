@@ -5,7 +5,7 @@ import io.github.meridian.features.TextFeature
 object TestText : TextFeature(
     name = "Test Text",
     description = "Free-form string.",
-    category = "general",
+    category = "General",
     configKey = "test_text",
     subcategory = "Testing",
     placeholder = "Input here",

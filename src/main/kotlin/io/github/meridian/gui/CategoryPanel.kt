@@ -24,11 +24,11 @@ class CategoryPanel(
 
     // list of all categories shown in the left panel
     val categories = listOf(
-        Category("General", "general"),
-        Category("Dungeons", "dungeons"),
-        Category("Farming", "farming"),
-        Category("Mining", "mining"),
-        Category("Events", "events")
+        Category("General", "General"),
+        Category("Dungeons", "Dungeons"),
+        Category("Farming", "Farming"),
+        Category("Mining", "Mining"),
+        Category("Events", "Events")
     )
 
     // tracks which category is currently active; defaults to the first one

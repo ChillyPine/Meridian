@@ -292,6 +292,9 @@ open class TextFeature(
         // Only one TextFeature can be focused at a time across the whole GUI.
         private var currentFocus: TextFeature? = null
 
+        // Allows other focusable widgets (e.g. the search bar) to steal focus.
+        fun clearFocus() { currentFocus = null }
+
         // We can't reach Screen.hasShiftDown() from outside a Screen, but we don't
         // actually need GLFW directly — shift+arrow uses event.hasShiftDown(). For
         // shift+click we read the modifier off MouseButtonEvent if exposed; if not,

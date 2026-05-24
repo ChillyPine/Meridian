@@ -1,5 +1,6 @@
 package io.github.meridian.gui
 
+import io.github.meridian.features.Feature
 import io.github.meridian.features.FeatureManager
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.Screen
@@ -40,9 +41,17 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
         private const val SCROLLBAR_THUMB_HOVER = 0xFFD0A6FF.toInt()
         private const val MIN_THUMB_HEIGHT = 16
         private const val WHEEL_STEP_PX = 16
+
+        private const val SEARCH_TOP_GAP = 6
+        // Search bar takes 2/3 of the panel width, centered below it.
+        private const val SEARCH_WIDTH = (PANEL_WIDTH * 2) / 3
     }
 
     private lateinit var categoryPanel: CategoryPanel
+    private val searchBar = SearchBar()
+
+    private var searchX = 0
+    private var searchY = 0
 
     // Scroll state for the right-side content area.
     private var scrollOffset = 0
@@ -99,6 +108,10 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
         categoryPanel.render(guiGraphics, font, mouseX, mouseY)
 
         renderFeaturesForCategory(guiGraphics, x, y, categoryPanel.selected, mouseX, mouseY)
+
+        searchX = x + (PANEL_WIDTH - SEARCH_WIDTH) / 2
+        searchY = y + PANEL_HEIGHT + SEARCH_TOP_GAP
+        searchBar.render(guiGraphics, font, searchX, searchY, SEARCH_WIDTH, SearchBar.HEIGHT)
     }
 
     private fun renderFeaturesForCategory(
@@ -116,8 +129,13 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
         contentBottom = panelY + PANEL_HEIGHT - CONTENT_BOTTOM_PADDING
 
         val viewportH = contentBottom - contentTop
-        val features = FeatureManager.byCategory(category)
-        val grouped = features.groupBy { it.subcategory }
+        val searching = searchBar.query.isNotEmpty()
+        val features = if (searching) searchResults(searchBar.query)
+                       else FeatureManager.byCategory(category)
+        val grouped = if (searching) features.groupBy {
+                          if (it.subcategory.isEmpty()) it.category
+                          else "${it.category}→${it.subcategory}"
+                      } else features.groupBy { it.subcategory }
 
         var totalH = 0
         for ((subcat, feats) in grouped) {
@@ -177,12 +195,22 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
         g.fill(scrollbarTrackX, thumbY, scrollbarTrackX + SCROLLBAR_WIDTH, thumbY + thumbH, thumbColor)
     }
 
+    private fun searchResults(query: String): List<Feature> {
+        val needle = query.lowercase()
+        return FeatureManager.all().filter {
+            it.name.lowercase().contains(needle) ||
+            it.description.lowercase().contains(needle)
+        }
+    }
+
     private fun inContentArea(mx: Int, my: Int) =
         mx in contentLeft until contentRight && my in contentTop until contentBottom
 
     override fun mouseClicked(mouseButtonEvent: MouseButtonEvent, bl: Boolean): Boolean {
         val mx = mouseButtonEvent.x.toInt()
         val my = mouseButtonEvent.y.toInt()
+
+        if (searchBar.mouseClicked(mx, my, SearchBar.HEIGHT)) return true
 
         if (categoryPanel.mouseClicked(mx, my)) return true
 
@@ -242,6 +270,10 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
     }
 
     override fun keyPressed(event: KeyEvent): Boolean {
+        if (searchBar.keyPressed(event)) {
+            scrollOffset = 0
+            return true
+        }
         for (feat in FeatureManager.byCategory(categoryPanel.selected)) {
             if (feat.keyPressed(event)) return true
         }
@@ -249,6 +281,10 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
     }
 
     override fun charTyped(event: CharacterEvent): Boolean {
+        if (searchBar.charTyped(event)) {
+            scrollOffset = 0
+            return true
+        }
         for (feat in FeatureManager.byCategory(categoryPanel.selected)) {
             if (feat.charTyped(event)) return true
         }

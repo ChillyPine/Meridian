@@ -5,8 +5,8 @@ import io.github.meridian.features.ColorFeature
 object TestColor : ColorFeature(
     name = "Test Color",
     description = "Pick a color — saved per-feature.",
-    category = "general",
+    category = "Events",
     configKey = "test_color",
-    subcategory = "Testing",
+    subcategory = "Diana",
     defaultColor = 0xFFBB86FC.toInt(),
 )
