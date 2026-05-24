@@ -20,6 +20,9 @@ object ChatBlocker {
     fun register(enabled: () -> Boolean, substring: String) =
         register(enabled) { it.contains(substring) }
 
+    // registerDebug can be used during dev to ensure they are actually being blocked.
+    // use ` ChatBlocker.registerDebug("arbitraryLabel", { enabled }, Regex("^Profile ID: .+$"))
+    // Remove the Debug part and the label when done testing
     fun registerDebug(label: String, enabled: () -> Boolean, pattern: Regex) =
         register(enabled) { s ->
             pattern.containsMatchIn(s).also {

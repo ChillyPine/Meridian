@@ -61,7 +61,6 @@ object BlockHOTFM : SwitchFeature (
     init { ChatBlocker.register({ enabled }, Regex("^You can disable this messaging by toggling (Lottery|Sky Mall) in your (/hotf!|/hotm!)$")) }
 }
 
-
 object BlockDiscord : SwitchFeature (
     name = "Block Discord Warning Message",
     description = "",
