@@ -14,7 +14,7 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
 
     companion object {
         private const val PANEL_WIDTH = 510            // main panel
-        private const val PANEL_HEIGHT = 310
+        private const val PANEL_HEIGHT = 270
         private const val LEFT_PANEL_WIDTH = 100       // overlay panel for category buttons
         private const val BAR_WIDTH = 3
         private const val BAR_COLOR = 0xFFBB86FC.toInt()
