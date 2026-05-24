@@ -28,10 +28,23 @@ abstract class Feature(
     // children of it will always be visible.
     val dependsOn: Feature? = null
 ) {
+    // Optional custom condition for when this feature is visible. If set, replaces
+    // the default "parent.isDependencyActive()" check — useful when the parent has
+    // multi-state gating (e.g. a dropdown: showWhen { Parent.selectedOption == "X" }).
+    // The parent chain above is still walked: this only refines the leaf check.
+    private var visibilityCondition: (() -> Boolean)? = null
+
+    // For use inside subclass init blocks. Lets a child express richer visibility
+    // logic than "parent is on/off" — e.g. for dropdown parents.
+    protected fun showWhen(condition: () -> Boolean) {
+        visibilityCondition = condition
+    }
+
     // True if every ancestor's gate is currently satisfied.
     fun isVisible(): Boolean {
         val parent = dependsOn ?: return true
-        return parent.isDependencyActive() && parent.isVisible()
+        if (!parent.isVisible()) return false
+        return visibilityCondition?.invoke() ?: parent.isDependencyActive()
     }
 
     // True if this feature would do work right now: visible AND its own gate
@@ -79,6 +92,16 @@ abstract class Feature(
     // Return true if consumed.
     open fun keyPressed(event: KeyEvent): Boolean = false
     open fun charTyped(event: CharacterEvent): Boolean = false
+
+    // Overlay rendering pass. Drawn AFTER all rows and outside the row-scissor box,
+    // so features can draw popups (dropdown menus, tooltips, etc.) that escape
+    // their own row bounds. Default: no overlay.
+    open fun renderOverlay(guiGraphics: GuiGraphics, font: Font, mouseX: Int, mouseY: Int) {}
+
+    // True if this feature currently has an active overlay. The screen routes
+    // clicks to features with open overlays before normal row routing, so e.g.
+    // clicks on a dropdown menu item below the viewport still land correctly.
+    open fun hasOpenOverlay(): Boolean = false
 
     // Pixel width of the right-side control plus its own right padding. Used to
     // figure out how much horizontal room is left for the wrapped description.

@@ -1,6 +1,5 @@
 package io.github.meridian.gui
 
-import io.github.meridian.features.DropdownFeature
 import io.github.meridian.features.Feature
 import io.github.meridian.features.FeatureManager
 import net.minecraft.client.gui.GuiGraphics
@@ -193,8 +192,9 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
         }
         g.disableScissor()
 
-        features.filterIsInstance<DropdownFeature>()
-            .forEach { it.renderDropdown(g, font, mouseX, mouseY) }
+        // Overlays (dropdown menus, future popups). Drawn after the row scissor is
+        // released so they can extend past the row's natural bounds.
+        for (feat in features) feat.renderOverlay(g, font, mouseX, mouseY)
 
         if (showScrollbar) renderScrollbar(g, rightEdge - SCROLLBAR_WIDTH, mouseX, mouseY)
     }
@@ -238,6 +238,16 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
 
         if (searchBar.mouseClicked(mx, my, SearchBar.HEIGHT)) return true
 
+        // Any feature with an open overlay (e.g. an expanded dropdown menu) gets
+        // first dibs on the click — its overlay may extend past the row scissor,
+        // and we want a click on a menu item below contentBottom to land correctly.
+        // If the feature returns false, its overlay has already closed itself; we
+        // still skip the normal row-routing for this feature so we don't double-handle.
+        val visibleInCategory = FeatureManager.byCategory(categoryPanel.selected)
+            .filter { it.isVisible() }
+        val overlayFeat = visibleInCategory.firstOrNull { it.hasOpenOverlay() }
+        if (overlayFeat != null && overlayFeat.mouseClicked(mx, my)) return true
+
         if (categoryPanel.mouseClicked(mx, my)) return true
 
         // Scrollbar
@@ -257,16 +267,17 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
 
         // Feature rows — gate by viewport so clipped rows aren't clickable.
         // Hidden (parent-gated) features must not be clickable either; their last
-        // rendered hit-bounds are stale once the parent goes off.
-        val visibleInCategory = FeatureManager.byCategory(categoryPanel.selected)
-            .filter { it.isVisible() }
+        // rendered hit-bounds are stale once the parent goes off. Skip overlayFeat:
+        // it's already had its turn above.
         if (inContentArea(mx, my)) {
             for (feat in visibleInCategory) {
+                if (feat === overlayFeat) continue
                 if (feat.mouseClicked(mx, my)) return true
             }
         } else {
             // Click outside the input area still needs to unfocus any focused TextFeature.
             for (feat in visibleInCategory) {
+                if (feat === overlayFeat) continue
                 feat.mouseClicked(mx, my)
             }
         }

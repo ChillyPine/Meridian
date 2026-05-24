@@ -13,10 +13,12 @@ open class DropdownFeature(
     category: String,
     configKey: String,
     val options: List<String>,
-    val onChange: (String) -> Unit,
     subcategory: String = "",
     dependsOn: Feature? = null,
-    defaultIndex: Int = 0
+    defaultIndex: Int = 0,
+    // Optional. Called when the user clicks an option (not on programmatic loads —
+    // behavior code that needs to react every time should read selectedOption directly).
+    val onChange: (String) -> Unit = {}
 ) : Feature(name, description, category, configKey, subcategory, dependsOn) {
 
     var selectedIndex: Int = defaultIndex.coerceIn(0, options.lastIndex)
@@ -64,7 +66,9 @@ open class DropdownFeature(
         return rowHeight
     }
 
-    fun renderDropdown(guiGraphics: GuiGraphics, font: Font, mouseX: Int, mouseY: Int) {
+    override fun hasOpenOverlay(): Boolean = expanded
+
+    override fun renderOverlay(guiGraphics: GuiGraphics, font: Font, mouseX: Int, mouseY: Int) {
         if (!expanded) return
 
         dropdownW = buttonWidth
@@ -123,13 +127,17 @@ open class DropdownFeature(
         return false
     }
 
+    // Persist by option NAME, not by index, so reordering the options list later
+    // doesn't silently shift everyone's saved choice. Falls back to defaultIndex
+    // if the saved name is no longer in the options list (e.g. option renamed/removed).
     override fun saveTo(json: JsonObject) {
-        json.addProperty("selectedIndex", selectedIndex)
+        json.addProperty("selected", selectedOption)
     }
 
     override fun loadFrom(json: JsonObject) {
-        val idx = json.get("selectedIndex")?.asInt ?: return
-        selectedIndex = idx.coerceIn(0, options.lastIndex)
+        val saved = json.get("selected")?.asString ?: return
+        val idx = options.indexOf(saved)
+        if (idx >= 0) selectedIndex = idx
     }
 
     companion object {

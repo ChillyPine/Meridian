@@ -1,24 +1,26 @@
 package io.github.meridian.features
 // ALL NEW FEATURES NEED TO BE IMPORTED BELOW IN ADDITION TO BEING ADDED TO THE FeatureList!
-import io.github.meridian.features.impl.TestButton
-import io.github.meridian.features.impl.TestColor
-import io.github.meridian.features.impl.TestDropdown
-import io.github.meridian.features.impl.TestSwitch
-import io.github.meridian.features.impl.TestSwitch2
-import io.github.meridian.features.impl.TestText
-
+// Tab autocomplete adds imports automatically
+import io.github.meridian.features.impl.dungeons.BlockPFWarning
+import io.github.meridian.features.impl.general.BlockBlocksInWay
+import io.github.meridian.features.impl.general.BlockDiscord
+import io.github.meridian.features.impl.general.BlockGEXP
+import io.github.meridian.features.impl.general.BlockHOTF
+import io.github.meridian.features.impl.general.BlockProfileID
+import io.github.meridian.features.impl.general.BlockProfileProduce
 
 
 // Manifest of every feature in the mod — the only place that needs updating
 // when a new feature file is added. Similar in spirit to a ChatTriggers index.js.
 object FeatureList {
     private val all: List<Feature> = listOf(
-        TestSwitch,
-        TestSwitch2,
-        TestColor,
-        TestButton,
-        TestDropdown,
-        TestText,
+        BlockBlocksInWay,
+        BlockGEXP,
+        BlockProfileID,
+        BlockProfileProduce,
+        BlockHOTF,
+        BlockDiscord,
+        BlockPFWarning
         // add new features here
     )
 
