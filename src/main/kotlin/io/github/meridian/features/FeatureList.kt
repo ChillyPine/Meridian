@@ -8,6 +8,7 @@ import io.github.meridian.features.impl.general.BlockGEXP
 import io.github.meridian.features.impl.general.BlockHOTFM
 import io.github.meridian.features.impl.general.BlockProfileID
 import io.github.meridian.features.impl.general.BlockProfileProduce
+import io.github.meridian.features.impl.general.SoundListButton
 
 
 // Manifest of every feature in the mod — the only place that needs updating
@@ -20,6 +21,7 @@ object FeatureList {
         BlockProfileProduce,
         BlockHOTFM,
         BlockDiscord,
+        SoundListButton,
         BlockPFWarning
         // add new features here
     )
