@@ -24,10 +24,14 @@ fun sendClientMessage(message: String) {
     mc.execute { mc.gui.chat.addMessage(Component.literal(message)) }
 }
 
-// Simulates a game message as if the server sent it — fires the chat event pipeline
-// AND shows the message in chat. Use for testing chat parsers without a real server.
+// Simulates a game message as if the server sent it — runs the full receive
+// pipeline (ALLOW_GAME, then GAME) and shows the message in chat unless a
+// listener vetoes it. Lets chat blockers be tested without a real server.
 fun simulateGameMessage(message: Component) {
     mc.execute {
+        val allowed = ClientReceiveMessageEvents.ALLOW_GAME.invoker()
+            .allowReceiveGameMessage(message, false)
+        if (!allowed) return@execute
         ClientReceiveMessageEvents.GAME.invoker().onReceiveGameMessage(message, false)
         mc.gui.chat.addMessage(message)
     }

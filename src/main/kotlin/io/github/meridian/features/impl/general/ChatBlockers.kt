@@ -1,6 +1,7 @@
 package io.github.meridian.features.impl.general
 
 import io.github.meridian.features.SwitchFeature
+import io.github.meridian.utils.ChatBlocker
 
 object BlockBlocksInWay : SwitchFeature (
     name = "Block \"There are blocks in the way!\"",
@@ -8,7 +9,9 @@ object BlockBlocksInWay : SwitchFeature (
     category = "General",
     configKey = "block_blocks_in_way",
     subcategory = "Chat Blockers",
-)
+) {
+    init { ChatBlocker.register({ enabled }, "There are blocks in the way") }
+}
 
 object BlockGEXP : SwitchFeature (
     name = "Block \"You earned # GEXP + # Event EXP from playing Skyblock!\"",
@@ -16,7 +19,9 @@ object BlockGEXP : SwitchFeature (
     category = "General",
     configKey = "block_gexp",
     subcategory = "Chat Blockers",
-)
+) {
+    init { ChatBlocker.register({ enabled }, Regex("You earned .* GEXP")) }
+}
 
 object BlockProfileID : SwitchFeature (
     name = "Block Profile ID Message",
@@ -24,7 +29,9 @@ object BlockProfileID : SwitchFeature (
     category = "General",
     configKey = "block_profile_id",
     subcategory = "Chat Blockers",
-)
+) {
+    init { ChatBlocker.register({ enabled }, "Profile ID:") }
+}
 
 object BlockProfileProduce : SwitchFeature (
     name = "Block Profile Message",
@@ -32,7 +39,9 @@ object BlockProfileProduce : SwitchFeature (
     category = "General",
     configKey = "block_profile_produce",
     subcategory = "Chat Blockers",
-)
+) {
+    init { ChatBlocker.register({ enabled }, Regex("You are playing on \\S+ profile")) }
+}
 
 object BlockHOTF : SwitchFeature (
     name = "Block HOTF Lottery Message",
@@ -40,7 +49,9 @@ object BlockHOTF : SwitchFeature (
     category = "General",
     configKey = "block_hotf",
     subcategory = "Chat Blockers",
-)
+) {
+    init { ChatBlocker.register({ enabled }, "toggling Lottery in your /hotf") }
+}
 
 object BlockDiscord : SwitchFeature (
     name = "Block Discord Warning Message",
@@ -48,4 +59,6 @@ object BlockDiscord : SwitchFeature (
     category = "General",
     configKey = "block_discord",
     subcategory = "Chat Blockers",
-)
+) {
+    init { ChatBlocker.register({ enabled }, "discord.gg/hypixel") }
+}
