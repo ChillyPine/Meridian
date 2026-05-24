@@ -139,19 +139,33 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
                           else "${it.category}→${it.subcategory}"
                       } else features.groupBy { it.subcategory }
 
-        var totalH = 0
-        for ((subcat, feats) in grouped) {
-            if (subcat.isNotEmpty()) totalH += font.lineHeight + 4
-            for (@Suppress("UNUSED_VARIABLE") f in feats) totalH += ROW_HEIGHT + 4
+        // Row heights are dynamic because descriptions wrap. Measure twice: once
+        // assuming no scrollbar (wider rows → fewer wrapped lines), and if that
+        // already overflows the viewport, again at the narrower scrollbar width
+        // (which can re-wrap descriptions taller and grow totalH further).
+        fun measureTotalH(rowsWidth: Int): Int {
+            var t = 0
+            for ((subcat, feats) in grouped) {
+                if (subcat.isNotEmpty()) t += font.lineHeight + 4
+                for (f in feats) {
+                    val indent = f.depth() * CHILD_INDENT_PX
+                    t += f.measureRowHeight(font, rowsWidth - indent) + 4
+                }
+            }
+            if (t > 0) t -= 4 // last gap not visible
+            return t
         }
-        if (totalH > 0) totalH -= 4 // last gap not visible
 
-        val maxScroll = maxOf(0, totalH - viewportH)
-        val showScrollbar = maxScroll > 0
-        scrollOffset = scrollOffset.coerceIn(0, maxScroll)
+        val widthNoScrollbar = rightEdge - contentLeft
+        val totalHNoSb = measureTotalH(widthNoScrollbar)
+        val showScrollbar = totalHNoSb > viewportH
 
         contentRight = if (showScrollbar) rightEdge - SCROLLBAR_WIDTH - SCROLLBAR_PADDING else rightEdge
         val contentW = contentRight - contentLeft
+        val totalH = if (showScrollbar) measureTotalH(contentW) else totalHNoSb
+
+        val maxScroll = maxOf(0, totalH - viewportH)
+        scrollOffset = scrollOffset.coerceIn(0, maxScroll)
 
         lastTotalContentH = totalH
         lastViewportH = viewportH

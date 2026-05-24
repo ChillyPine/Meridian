@@ -8,3 +8,6 @@ internal const val NAME_COLOR = 0xFFFFFFFF.toInt()
 internal const val DESC_COLOR = 0xFFAAAAAA.toInt()
 internal const val ACCENT_COLOR = 0xFFBB86FC.toInt()
 internal const val CHILD_INDENT_PX = 12
+// Horizontal gap between the right edge of a wrapped description and the left edge
+// of the right-side control. Prevents text from butting up against switches/inputs.
+internal const val DESC_RIGHT_GAP = 6

@@ -7,7 +7,7 @@ import io.github.meridian.features.SwitchFeature
 // the declaration when needed.
 object TestSwitch : SwitchFeature(
     name = "Test Switch",
-    description = "Verify the feature system works.",
+    description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam",
     category = "General",
     configKey = "test_switch",
     subcategory = "Testing"

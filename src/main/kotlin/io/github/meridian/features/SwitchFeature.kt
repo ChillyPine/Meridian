@@ -1,12 +1,6 @@
 package io.github.meridian.features
 
 import com.google.gson.JsonObject
-import io.github.meridian.gui.DESC_COLOR
-import io.github.meridian.gui.NAME_COLOR
-import io.github.meridian.gui.ROW_BG_COLOR
-import io.github.meridian.gui.ROW_HEIGHT
-import io.github.meridian.gui.ROW_PADDING_X
-import io.github.meridian.gui.ROW_PADDING_Y
 import io.github.meridian.gui.ACCENT_COLOR
 import io.github.meridian.utils.playClickSound
 import net.minecraft.client.gui.Font
@@ -45,20 +39,16 @@ open class SwitchFeature(
         mouseX: Int,
         mouseY: Int
     ): Int {
-        guiGraphics.fill(x, y, x + width, y + ROW_HEIGHT, ROW_BG_COLOR)
-        guiGraphics.drawString(font, name, x + ROW_PADDING_X, y + ROW_PADDING_Y, NAME_COLOR, false)
-        guiGraphics.drawString(
-            font, description,
-            x + ROW_PADDING_X, y + ROW_PADDING_Y + font.lineHeight + 2,
-            DESC_COLOR, false
-        )
+        val rowHeight = drawHeader(guiGraphics, font, x, y, width)
 
         switchX = x + width - SWITCH_WIDTH - SWITCH_RIGHT_PADDING
-        switchY = y + (ROW_HEIGHT - SWITCH_HEIGHT) / 2
+        switchY = y + (rowHeight - SWITCH_HEIGHT) / 2
         renderSwitch(guiGraphics)
 
-        return ROW_HEIGHT
+        return rowHeight
     }
+
+    override fun controlBoxWidth(font: Font): Int = SWITCH_WIDTH + SWITCH_RIGHT_PADDING
 
     private fun renderSwitch(g: GuiGraphics) {
         val bgColor = if (enabled) ACCENT_COLOR else SWITCH_OFF_BG

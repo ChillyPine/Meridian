@@ -1,12 +1,6 @@
 package io.github.meridian.features
 
 import com.google.gson.JsonObject
-import io.github.meridian.gui.DESC_COLOR
-import io.github.meridian.gui.NAME_COLOR
-import io.github.meridian.gui.ROW_BG_COLOR
-import io.github.meridian.gui.ROW_HEIGHT
-import io.github.meridian.gui.ROW_PADDING_X
-import io.github.meridian.gui.ROW_PADDING_Y
 import io.github.meridian.gui.ACCENT_COLOR
 import io.github.meridian.utils.playClickSound
 import net.minecraft.client.gui.Font
@@ -40,19 +34,13 @@ open class ButtonFeature(
         mouseX: Int,
         mouseY: Int
     ): Int {
-        guiGraphics.fill(x, y, x + width, y + ROW_HEIGHT, ROW_BG_COLOR)
-        guiGraphics.drawString(font, name, x + ROW_PADDING_X, y + ROW_PADDING_Y, NAME_COLOR, false)
-        guiGraphics.drawString(
-            font, description,
-            x + ROW_PADDING_X, y + ROW_PADDING_Y + font.lineHeight + 2,
-            DESC_COLOR, false
-        )
+        val rowHeight = drawHeader(guiGraphics, font, x, y, width)
 
         // Button sized to its label so any string fits cleanly.
         val labelWidth = font.width(buttonLabel)
         buttonWidth = labelWidth + 2 * BUTTON_INNER_PADDING_X
         buttonX = x + width - buttonWidth - BUTTON_RIGHT_PADDING
-        buttonY = y + (ROW_HEIGHT - BUTTON_HEIGHT) / 2
+        buttonY = y + (rowHeight - BUTTON_HEIGHT) / 2
 
         guiGraphics.fill(buttonX, buttonY, buttonX + buttonWidth, buttonY + BUTTON_HEIGHT, ACCENT_COLOR)
 
@@ -60,8 +48,11 @@ open class ButtonFeature(
         val labelY = buttonY + (BUTTON_HEIGHT - font.lineHeight) / 2 + 1
         guiGraphics.drawString(font, buttonLabel, labelX, labelY, BUTTON_TEXT_COLOR, false)
 
-        return ROW_HEIGHT
+        return rowHeight
     }
+
+    override fun controlBoxWidth(font: Font): Int =
+        font.width(buttonLabel) + 2 * BUTTON_INNER_PADDING_X + BUTTON_RIGHT_PADDING
 
     override fun mouseClicked(mouseX: Int, mouseY: Int): Boolean {
         if (mouseX in buttonX until (buttonX + buttonWidth) &&

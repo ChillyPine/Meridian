@@ -2,12 +2,6 @@ package io.github.meridian.features
 
 import com.google.gson.JsonObject
 import io.github.meridian.gui.ACCENT_COLOR
-import io.github.meridian.gui.DESC_COLOR
-import io.github.meridian.gui.NAME_COLOR
-import io.github.meridian.gui.ROW_BG_COLOR
-import io.github.meridian.gui.ROW_HEIGHT
-import io.github.meridian.gui.ROW_PADDING_X
-import io.github.meridian.gui.ROW_PADDING_Y
 import io.github.meridian.utils.playClickSound
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Font
@@ -67,22 +61,18 @@ open class TextFeature(
         mouseX: Int,
         mouseY: Int
     ): Int {
-        guiGraphics.fill(x, y, x + width, y + ROW_HEIGHT, ROW_BG_COLOR)
-        guiGraphics.drawString(font, name, x + ROW_PADDING_X, y + ROW_PADDING_Y, NAME_COLOR, false)
-        guiGraphics.drawString(
-            font, description,
-            x + ROW_PADDING_X, y + ROW_PADDING_Y + font.lineHeight + 2,
-            DESC_COLOR, false
-        )
+        val rowHeight = drawHeader(guiGraphics, font, x, y, width)
 
         inputW = INPUT_WIDTH
         inputX = x + width - inputW - INPUT_RIGHT_PADDING
-        inputY = y + (ROW_HEIGHT - INPUT_HEIGHT) / 2
+        inputY = y + (rowHeight - INPUT_HEIGHT) / 2
 
         renderInput(guiGraphics, font)
 
-        return ROW_HEIGHT
+        return rowHeight
     }
+
+    override fun controlBoxWidth(font: Font): Int = INPUT_WIDTH + INPUT_RIGHT_PADDING
 
     private fun renderInput(g: GuiGraphics, font: Font) {
         val bg = if (focused) 0xFF2A2A38.toInt() else 0xFF222228.toInt()

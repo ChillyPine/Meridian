@@ -2,12 +2,6 @@ package io.github.meridian.features
 
 import com.google.gson.JsonObject
 import io.github.meridian.gui.ColorPicker
-import io.github.meridian.gui.DESC_COLOR
-import io.github.meridian.gui.NAME_COLOR
-import io.github.meridian.gui.ROW_BG_COLOR
-import io.github.meridian.gui.ROW_HEIGHT
-import io.github.meridian.gui.ROW_PADDING_X
-import io.github.meridian.gui.ROW_PADDING_Y
 import io.github.meridian.utils.playClickSound
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Font
@@ -40,19 +34,13 @@ open class ColorFeature(
         mouseX: Int,
         mouseY: Int
     ): Int {
-        guiGraphics.fill(x, y, x + width, y + ROW_HEIGHT, ROW_BG_COLOR)
-        guiGraphics.drawString(font, name, x + ROW_PADDING_X, y + ROW_PADDING_Y, NAME_COLOR, false)
-        guiGraphics.drawString(
-            font, description,
-            x + ROW_PADDING_X, y + ROW_PADDING_Y + font.lineHeight + 2,
-            DESC_COLOR, false
-        )
+        val rowHeight = drawHeader(guiGraphics, font, x, y, width)
 
         val label = "#%08X".format(color)
         val labelWidth = font.width(label)
         buttonWidth = labelWidth + 2 * BUTTON_INNER_PADDING_X + SWATCH_SIZE + SWATCH_GAP
         buttonX = x + width - buttonWidth - BUTTON_RIGHT_PADDING
-        buttonY = y + (ROW_HEIGHT - BUTTON_HEIGHT) / 2
+        buttonY = y + (rowHeight - BUTTON_HEIGHT) / 2
 
         guiGraphics.fill(buttonX, buttonY, buttonX + buttonWidth, buttonY + BUTTON_HEIGHT, BUTTON_BG)
 
@@ -66,7 +54,13 @@ open class ColorFeature(
         val labelY = buttonY + (BUTTON_HEIGHT - font.lineHeight) / 2 + 1
         guiGraphics.drawString(font, label, labelX, labelY, BUTTON_TEXT_COLOR, false)
 
-        return ROW_HEIGHT
+        return rowHeight
+    }
+
+    override fun controlBoxWidth(font: Font): Int {
+        // Label is always "#" + 8 hex chars; widest possible glyphs ~ "#FFFFFFFF".
+        val labelWidth = font.width("#FFFFFFFF")
+        return labelWidth + 2 * BUTTON_INNER_PADDING_X + SWATCH_SIZE + SWATCH_GAP + BUTTON_RIGHT_PADDING
     }
 
     override fun mouseClicked(mouseX: Int, mouseY: Int): Boolean {
