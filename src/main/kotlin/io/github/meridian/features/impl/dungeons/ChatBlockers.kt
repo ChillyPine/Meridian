@@ -17,7 +17,7 @@ object BlockPFWarning : SwitchFeature (
     init {
         ChatBlocker.register({ enabled }, "  Clicking sketchy links can result in your account")
         ChatBlocker.register( { enabled }, "  being stolen!")
-        ChatBlocker.register( { enabled }, "   ")
+        ChatBlocker.register( { enabled }, Regex("^   $"))
         ChatBlocker.register( { enabled }, "  Link looks suspicious? - Don't click it!")
     }
 }

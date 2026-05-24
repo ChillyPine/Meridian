@@ -5,7 +5,7 @@ import io.github.meridian.features.impl.dungeons.BlockPFWarning
 import io.github.meridian.features.impl.general.BlockBlocksInWay
 import io.github.meridian.features.impl.general.BlockDiscord
 import io.github.meridian.features.impl.general.BlockGEXP
-import io.github.meridian.features.impl.general.BlockHOTF
+import io.github.meridian.features.impl.general.BlockHOTFM
 import io.github.meridian.features.impl.general.BlockProfileID
 import io.github.meridian.features.impl.general.BlockProfileProduce
 
@@ -18,7 +18,7 @@ object FeatureList {
         BlockGEXP,
         BlockProfileID,
         BlockProfileProduce,
-        BlockHOTF,
+        BlockHOTFM,
         BlockDiscord,
         BlockPFWarning
         // add new features here

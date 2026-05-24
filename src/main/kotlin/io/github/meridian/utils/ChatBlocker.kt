@@ -20,6 +20,13 @@ object ChatBlocker {
     fun register(enabled: () -> Boolean, substring: String) =
         register(enabled) { it.contains(substring) }
 
+    fun registerDebug(label: String, enabled: () -> Boolean, pattern: Regex) =
+        register(enabled) { s ->
+            pattern.containsMatchIn(s).also {
+                if (it) io.github.meridian.utils.modMessage("Blocked: $label")
+            }
+        }
+
     fun init() {
         ClientReceiveMessageEvents.ALLOW_GAME.register { message, _ ->
             val plain = message.string
