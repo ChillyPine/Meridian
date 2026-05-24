@@ -1,5 +1,6 @@
 package io.github.meridian.gui
 
+import io.github.meridian.features.DropdownFeature
 import io.github.meridian.features.Feature
 import io.github.meridian.features.FeatureManager
 import net.minecraft.client.gui.GuiGraphics
@@ -36,7 +37,7 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
         private const val CONTENT_BOTTOM_PADDING = 10
         private const val SCROLLBAR_WIDTH = 4
         private const val SCROLLBAR_PADDING = 4
-        private const val SCROLLBAR_TRACK_COLOR = 0x55000000.toInt()
+        private const val SCROLLBAR_TRACK_COLOR = 0x55000000
         private const val SCROLLBAR_THUMB_COLOR = 0xFFBB86FC.toInt()
         private const val SCROLLBAR_THUMB_HOVER = 0xFFD0A6FF.toInt()
         private const val MIN_THUMB_HEIGHT = 16
@@ -191,6 +192,9 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
             }
         }
         g.disableScissor()
+
+        features.filterIsInstance<DropdownFeature>()
+            .forEach { it.renderDropdown(g, font, mouseX, mouseY) }
 
         if (showScrollbar) renderScrollbar(g, rightEdge - SCROLLBAR_WIDTH, mouseX, mouseY)
     }

@@ -16,7 +16,6 @@ class CategoryPanel(
         private const val ITEM_HEIGHT = 18         // height of each category row
         private const val ITEM_PADDING_X = 8       // left padding for category label text
         private const val ITEM_TOP = 30            // below the divider bar
-        private const val HOVER_COLOR = 0x33FFFFFF
         private const val SELECTED_COLOR = 0x55BB86FC
         private const val TEXT_COLOR = 0xFFFFFFFF.toInt()
         private const val TEXT_COLOR_SELECTED = 0xFFBB86FC.toInt()
