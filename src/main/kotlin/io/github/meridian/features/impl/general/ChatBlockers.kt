@@ -25,7 +25,7 @@ object BlockGEXP : SwitchFeature (
     subcategory = "Chat Blockers",
 ) {
     init {
-        ChatBlocker.register({ enabled }, Regex("^You earned*+from playing SkyBlock!$"))
+        ChatBlocker.register({ enabled }, Regex("^You earned .+ from playing SkyBlock!$"))
     }
 }
 
