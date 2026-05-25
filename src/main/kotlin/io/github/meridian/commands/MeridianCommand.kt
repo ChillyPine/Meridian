@@ -3,6 +3,8 @@ package io.github.meridian.commands
 import com.mojang.brigadier.arguments.StringArgumentType
 import io.github.meridian.Meridian
 import io.github.meridian.gui.MeridianScreen
+import io.github.meridian.features.FeatureManager
+import io.github.meridian.utils.ESP
 import io.github.meridian.utils.modMessage
 import io.github.meridian.utils.sendClientMessage
 import io.github.meridian.utils.simulateGameMessage
@@ -27,6 +29,16 @@ object MeridianCommand {
                     .then(
                         literal("help").executes { ctx ->
                             sendHelp(ctx.source)
+                            1
+                        }
+                    )
+                    // /md depth — toggle ESP see-through-walls globally
+                    .then(
+                        literal("depth").executes { _ ->
+                            ESP.depth = !ESP.depth
+                            FeatureManager.save()
+                            val state = if (ESP.depth) "§aON" else "§cOFF"
+                            modMessage("ESP see-through-walls: $state§r")
                             1
                         }
                     )

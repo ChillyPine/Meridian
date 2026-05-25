@@ -8,6 +8,8 @@ import io.github.meridian.features.impl.general.BlockGEXP
 import io.github.meridian.features.impl.general.BlockHOTFM
 import io.github.meridian.features.impl.general.BlockProfileID
 import io.github.meridian.features.impl.general.BlockProfileProduce
+import io.github.meridian.features.impl.general.OldWolfESP
+import io.github.meridian.features.impl.general.OldWolfESPColor
 import io.github.meridian.features.impl.general.SoundListButton
 
 
@@ -22,7 +24,9 @@ object FeatureList {
         BlockHOTFM,
         BlockDiscord,
         SoundListButton,
-        BlockPFWarning
+        BlockPFWarning,
+        OldWolfESP,
+        OldWolfESPColor
         // add new features here
     )
 

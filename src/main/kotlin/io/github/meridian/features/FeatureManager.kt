@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import io.github.meridian.Meridian
+import io.github.meridian.utils.ESP
 import net.fabricmc.loader.api.FabricLoader
 import java.nio.file.Files
 import java.nio.file.Path
@@ -44,6 +45,9 @@ object FeatureManager {
                 if (featJson.size() > 0) featuresJson.add(feat.configKey, featJson)
             }
             root.add("features", featuresJson)
+            val espJson = JsonObject()
+            ESP.saveTo(espJson)
+            root.add("esp", espJson)
             configFile.writeText(gson.toJson(root))
         } catch (e: Exception) {
             Meridian.logger.error("Failed to save Meridian config", e)
@@ -54,11 +58,14 @@ object FeatureManager {
         try {
             if (!configFile.exists()) return
             val root = JsonParser.parseString(configFile.readText()).asJsonObject
-            val featuresJson = root.getAsJsonObject("features") ?: return
-            for (feat in features) {
-                val featJson = featuresJson.getAsJsonObject(feat.configKey) ?: continue
-                feat.loadFrom(featJson)
+            val featuresJson = root.getAsJsonObject("features")
+            if (featuresJson != null) {
+                for (feat in features) {
+                    val featJson = featuresJson.getAsJsonObject(feat.configKey) ?: continue
+                    feat.loadFrom(featJson)
+                }
             }
+            root.getAsJsonObject("esp")?.let { ESP.loadFrom(it) }
         } catch (e: Exception) {
             Meridian.logger.error("Failed to load Meridian config — falling back to defaults", e)
         }
