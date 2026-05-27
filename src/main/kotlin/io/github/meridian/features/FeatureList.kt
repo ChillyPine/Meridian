@@ -2,6 +2,12 @@ package io.github.meridian.features
 // ALL NEW FEATURES NEED TO BE IMPORTED BELOW IN ADDITION TO BEING ADDED TO THE FeatureList!
 // Tab autocomplete adds imports automatically
 import io.github.meridian.features.impl.dungeons.BlockPFWarning
+import io.github.meridian.features.impl.dungeons.FelColor
+import io.github.meridian.features.impl.dungeons.FelESP
+import io.github.meridian.features.impl.dungeons.ShadowAssassinColor
+import io.github.meridian.features.impl.dungeons.ShadowAssassinESP
+import io.github.meridian.features.impl.dungeons.StarMobColor
+import io.github.meridian.features.impl.dungeons.StarMobESP
 import io.github.meridian.features.impl.general.BlockBlocksInWay
 import io.github.meridian.features.impl.general.BlockDiscord
 import io.github.meridian.features.impl.general.BlockGEXP
@@ -38,8 +44,14 @@ object FeatureList {
         BlockHOTFM,
         BlockDiscord,
         SoundListButton,
-        BlockPFWarning,
         // Dungeons
+        StarMobESP,
+        StarMobColor,
+        FelESP,
+        FelColor,
+        ShadowAssassinESP,
+        ShadowAssassinColor,
+        BlockPFWarning,
         // Farming
         // Mining
         // Events
