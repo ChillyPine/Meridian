@@ -58,6 +58,7 @@ object RunicMobTracer : SwitchFeature(
     category = "General",
     configKey = "runic_mob_tracer",
     subcategory = "ESPs",
+    dependsOn = RunicMobESP
 ) {
     init {
         WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
@@ -73,16 +74,12 @@ object RunicMobTracer : SwitchFeature(
 
 object RunicMobColor : ColorFeature(
     name = "Runic Mob Color",
-    description = "Color for Runic Mob ESP and Tracer",
+    description = "Color for Runic Mob ESP & Tracer",
     category = "General",
     configKey = "runic_mob_color",
     subcategory = "ESPs",
     dependsOn = RunicMobESP,
-) {
-    init {
-        showWhen { RunicMobESP.enabled || RunicMobTracer.enabled }
-    }
-}
+)
 
 // Rat ESP
 
