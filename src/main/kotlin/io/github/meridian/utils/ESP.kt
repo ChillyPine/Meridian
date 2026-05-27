@@ -6,6 +6,9 @@ import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext
 import net.minecraft.client.renderer.MultiBufferSource
 import net.minecraft.client.renderer.rendertype.RenderTypes
 import net.minecraft.world.entity.Entity
+import net.minecraft.world.level.ClipContext
+import net.minecraft.world.phys.HitResult
+import net.minecraft.world.phys.Vec3
 
 /**
  * Central ESP utility. Per-feature ESP code calls into here from a
@@ -20,10 +23,10 @@ import net.minecraft.world.entity.Entity
  * world renders at framerate).
  *
  * Depth:
- *   ESP.depth, toggled by `/md depth`. Wiring is in place but both
- *   variants currently render depth-on; the no-depth path needs custom
- *   RenderPipeline + RenderType wrappers (Odin-style CustomRenderType).
- *   Adding that is a follow-up.
+ *   ESP.depth, toggled by `/md depth`. When true (default) vanilla LINES /
+ *   debugFilledBox render types are used (LEQUAL depth → LOS-gated). When
+ *   false, the custom no-depth pipelines in [CustomRenderPipelines] are used,
+ *   so boxes and tracers render through walls.
  */
 object ESP {
 
@@ -94,13 +97,22 @@ object ESP {
         drawBoxAt(ctx, p.x - hx, cy, p.z - hz, p.x + hx, cy + h, p.z + hz, argb, depth)
     }
 
-    /** Eye-to-target tracer. */
+    /**
+     * Eye-to-target tracer.
+     *
+     * GPU depth-testing doesn't work reliably for MC's line geometry (lines are
+     * expanded to screen-space quads, fragments near the camera always pass the
+     * depth test). So we always render lines through the no-depth pipeline and
+     * gate visibility ourselves with a CPU raycast: when depth=true and the
+     * target is occluded by a block, the tracer is skipped.
+     */
     fun drawTracer(
         ctx: WorldRenderContext,
         x: Double, y: Double, z: Double,
         argb: Int,
-        @Suppress("UNUSED_PARAMETER") depth: Boolean = ESP.depth,
+        depth: Boolean = ESP.depth,
     ) {
+        if (depth && !hasLineOfSight(x, y, z)) return
         val pose = ctx.matrices()
         val consumers = ctx.consumers() as? MultiBufferSource.BufferSource ?: return
         val cam = Meridian.mc.gameRenderer.mainCamera
@@ -111,7 +123,7 @@ object ESP {
         val sz = camPos.z + look.z() * 0.2
         pose.pushPose()
         pose.translate(-camPos.x, -camPos.y, -camPos.z)
-        val rt = RenderTypes.lines()
+        val rt = CustomRenderPipelines.LINES_NO_DEPTH_TYPE
         val buf = consumers.getBuffer(rt)
         val last = pose.last()
         val m = last.pose()
@@ -133,19 +145,40 @@ object ESP {
 
     // ---- Low-level primitives --------------------------------------------
 
+    private fun linesType(depth: Boolean) =
+        if (depth) RenderTypes.lines() else CustomRenderPipelines.LINES_NO_DEPTH_TYPE
+
+    private fun filledBoxType(depth: Boolean) =
+        if (depth) RenderTypes.debugFilledBox() else CustomRenderPipelines.DEBUG_FILLED_BOX_NO_DEPTH_TYPE
+
+    private fun hasLineOfSight(x: Double, y: Double, z: Double): Boolean {
+        val mc = Meridian.mc
+        val level = mc.level ?: return true
+        val player = mc.player ?: return true
+        val camPos = mc.gameRenderer.mainCamera.position()
+        val ctx = ClipContext(
+            Vec3(camPos.x, camPos.y, camPos.z),
+            Vec3(x, y, z),
+            ClipContext.Block.VISUAL,
+            ClipContext.Fluid.NONE,
+            player,
+        )
+        return level.clip(ctx).type == HitResult.Type.MISS
+    }
+
     private fun drawBoxAt(
         ctx: WorldRenderContext,
         x0: Double, y0: Double, z0: Double,
         x1: Double, y1: Double, z1: Double,
         argb: Int,
-        @Suppress("UNUSED_PARAMETER") depth: Boolean,
+        depth: Boolean,
     ) {
         val pose = ctx.matrices()
         val consumers = ctx.consumers() as? MultiBufferSource.BufferSource ?: return
         val cam = Meridian.mc.gameRenderer.mainCamera.position()
         pose.pushPose()
         pose.translate(-cam.x, -cam.y, -cam.z)
-        val rt = RenderTypes.lines()
+        val rt = linesType(depth)
         val buf = consumers.getBuffer(rt)
         drawWireBox(buf, pose.last(), x0.toFloat(), y0.toFloat(), z0.toFloat(), x1.toFloat(), y1.toFloat(), z1.toFloat(), argb)
         pose.popPose()
@@ -157,14 +190,14 @@ object ESP {
         x0: Double, y0: Double, z0: Double,
         x1: Double, y1: Double, z1: Double,
         argb: Int,
-        @Suppress("UNUSED_PARAMETER") depth: Boolean,
+        depth: Boolean,
     ) {
         val pose = ctx.matrices()
         val consumers = ctx.consumers() as? MultiBufferSource.BufferSource ?: return
         val cam = Meridian.mc.gameRenderer.mainCamera.position()
         pose.pushPose()
         pose.translate(-cam.x, -cam.y, -cam.z)
-        val rt = RenderTypes.debugFilledBox()
+        val rt = filledBoxType(depth)
         val buf = consumers.getBuffer(rt)
         val m = pose.last().pose()
         val fx0 = x0.toFloat(); val fy0 = y0.toFloat(); val fz0 = z0.toFloat()

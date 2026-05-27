@@ -37,7 +37,7 @@ object MeridianCommand {
                         literal("depth").executes { _ ->
                             ESP.depth = !ESP.depth
                             FeatureManager.save()
-                            val state = if (ESP.depth) "§aON" else "§cOFF"
+                            val state = if (ESP.depth) "§cOFF" else "§aON"
                             modMessage("ESP see-through-walls: $state§r")
                             1
                         }

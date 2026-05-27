@@ -6,7 +6,9 @@
 		"ExampleMixin"
 	],
 	"client": [
-		"MixinGui"
+		"MixinGui",
+		"accessor.RenderPipelinesAccessor",
+		"accessor.RenderTypeInvoker"
 	],
 	"injectors": {
 		"defaultRequire": 1

@@ -76,7 +76,7 @@ object RunicMobESP : SwitchFeature(
         WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
             if (!enabled) return@register
             forEachRunicMob { ent ->
-                ESP.drawBox(ctx, ent, w = 1.0, h = 1.0, wz = 1.0, yOffset = -1.0, argb = 0xFFFFFFFF.toInt())
+                ESP.drawBox(ctx, ent, w = 1.0, h = 1.0, wz = 1.0, yOffset = -1.0, argb = RunicMobColor.color)
             }
         }
     }
@@ -95,7 +95,7 @@ object RunicMobTracer : SwitchFeature(
             val pt = Meridian.mc.deltaTracker.getGameTimeDeltaPartialTick(true)
             forEachRunicMob { ent ->
                 val p = ent.getPosition(pt)
-                ESP.drawTracer(ctx, p.x, p.y - 1.0, p.z, 0xFFFFFFFF.toInt())
+                ESP.drawTracer(ctx, p.x, p.y - 1.0, p.z, RunicMobColor.color)
             }
         }
     }
