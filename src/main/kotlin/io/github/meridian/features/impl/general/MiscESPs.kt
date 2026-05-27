@@ -5,16 +5,15 @@ import io.github.meridian.features.ColorFeature
 import io.github.meridian.features.SwitchFeature
 import io.github.meridian.utils.ESP
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents
+import net.minecraft.ChatFormatting
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.Style
 import net.minecraft.world.entity.decoration.ArmorStand
+import java.util.Optional
 
-/**
- * Box ESP for Old Wolf in The Park. Matches the armor stand whose
- * name contains "Old Wolf" and draws a 1.3 x 1 x 1 box at the wolf's
- * actual position (one block below the nametag).
- */
 object OldWolfESP : SwitchFeature(
     name = "Old Wolf ESP",
-    description = "Boxes the Old Wolf in The Park.",
+    description = "",
     category = "General",
     configKey = "old_wolf_esp",
     subcategory = "ESPs",
@@ -41,3 +40,76 @@ object OldWolfESPColor : ColorFeature(
     subcategory = "ESPs",
     dependsOn = OldWolfESP,
 )
+
+// Runic ESP function
+private fun Component.hasPurpleBracket(): Boolean {
+    var found = false
+    this.visit({ style, text ->
+        if (style.color?.value == ChatFormatting.DARK_PURPLE.color && text.contains("[")) {
+            found = true
+        }
+        Optional.empty<Any>()
+    }, Style.EMPTY)
+    return found
+}
+
+// Runic ESP function #2
+private inline fun forEachRunicMob(block: (ArmorStand) -> Unit) {
+    val level = Meridian.mc.level ?: return
+    for (ent in level.entitiesForRendering()) {
+        if (ent !is ArmorStand) continue
+        val name = ent.customName ?: continue
+        if (name.string.contains("Dragon")) continue
+        if (!name.hasPurpleBracket()) continue
+        block(ent)
+    }
+}
+
+object RunicMobESP : SwitchFeature(
+    name = "Runic Mob ESP",
+    description = "",
+    category = "General",
+    configKey = "runic_mob_esp",
+    subcategory = "ESPs",
+) {
+    init {
+        WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
+            if (!enabled) return@register
+            forEachRunicMob { ent ->
+                ESP.drawBox(ctx, ent, w = 1.0, h = 1.0, wz = 1.0, yOffset = -1.0, argb = 0xFFFFFFFF.toInt())
+            }
+        }
+    }
+}
+
+object RunicMobTracer : SwitchFeature(
+    name = "Runic Mob Tracer",
+    description = "",
+    category = "General",
+    configKey = "runic_mob_tracer",
+    subcategory = "ESPs",
+) {
+    init {
+        WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
+            if (!enabled) return@register
+            val pt = Meridian.mc.deltaTracker.getGameTimeDeltaPartialTick(true)
+            forEachRunicMob { ent ->
+                val p = ent.getPosition(pt)
+                ESP.drawTracer(ctx, p.x, p.y - 1.0, p.z, 0xFFFFFFFF.toInt())
+            }
+        }
+    }
+}
+
+object RunicMobColor : ColorFeature(
+    name = "Runic Mob Color",
+    description = "Color for Runic Mob ESP and Tracer",
+    category = "General",
+    configKey = "runic_mob_color",
+    subcategory = "ESPs",
+    dependsOn = RunicMobESP,
+) {
+    init {
+        showWhen { RunicMobESP.enabled || RunicMobTracer.enabled }
+    }
+}

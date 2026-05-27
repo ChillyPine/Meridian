@@ -10,13 +10,23 @@ import io.github.meridian.features.impl.general.BlockProfileID
 import io.github.meridian.features.impl.general.BlockProfileProduce
 import io.github.meridian.features.impl.general.OldWolfESP
 import io.github.meridian.features.impl.general.OldWolfESPColor
+import io.github.meridian.features.impl.general.RunicMobColor
+import io.github.meridian.features.impl.general.RunicMobESP
+import io.github.meridian.features.impl.general.RunicMobTracer
 import io.github.meridian.features.impl.general.SoundListButton
 
 
 // Manifest of every feature in the mod — the only place that needs updating
 // when a new feature file is added. Similar in spirit to a ChatTriggers index.js.
+// ORDER MATTERS - KEEP THINGS IN THE CORRECT ORDER!
 object FeatureList {
     private val all: List<Feature> = listOf(
+        // General
+        RunicMobESP,
+        RunicMobTracer,
+        RunicMobColor,
+        OldWolfESP,
+        OldWolfESPColor,
         BlockBlocksInWay,
         BlockGEXP,
         BlockProfileID,
@@ -25,9 +35,10 @@ object FeatureList {
         BlockDiscord,
         SoundListButton,
         BlockPFWarning,
-        OldWolfESP,
-        OldWolfESPColor
-        // add new features here
+        // Dungeons
+        // Farming
+        // Mining
+        // Events
     )
 
     fun registerAll() {

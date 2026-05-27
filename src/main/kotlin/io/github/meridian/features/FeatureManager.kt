@@ -31,7 +31,6 @@ object FeatureManager {
 
     fun byCategory(category: String): List<Feature> =
         features.filter { it.category == category }
-            .sortedBy { it.subcategory }
 
     fun save() {
         try {
