@@ -8,6 +8,8 @@ import io.github.meridian.features.impl.general.BlockGEXP
 import io.github.meridian.features.impl.general.BlockHOTFM
 import io.github.meridian.features.impl.general.BlockProfileID
 import io.github.meridian.features.impl.general.BlockProfileProduce
+import io.github.meridian.features.impl.general.MatchoESP
+import io.github.meridian.features.impl.general.MatchoESPColor
 import io.github.meridian.features.impl.general.OldWolfESP
 import io.github.meridian.features.impl.general.OldWolfESPColor
 import io.github.meridian.features.impl.general.RunicMobColor
@@ -25,6 +27,8 @@ object FeatureList {
         RunicMobESP,
         RunicMobTracer,
         RunicMobColor,
+        MatchoESP,
+        MatchoESPColor,
         OldWolfESP,
         OldWolfESPColor,
         BlockBlocksInWay,

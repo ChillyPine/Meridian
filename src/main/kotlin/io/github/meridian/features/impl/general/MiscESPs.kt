@@ -11,36 +11,6 @@ import net.minecraft.network.chat.Style
 import net.minecraft.world.entity.decoration.ArmorStand
 import java.util.Optional
 
-object OldWolfESP : SwitchFeature(
-    name = "Old Wolf ESP",
-    description = "",
-    category = "General",
-    configKey = "old_wolf_esp",
-    subcategory = "ESPs",
-) {
-    init {
-        WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
-            if (!enabled) return@register
-            val level = Meridian.mc.level ?: return@register
-            for (ent in level.entitiesForRendering()) {
-                if (ent !is ArmorStand) continue
-                val name = ent.customName?.string ?: continue
-                if (!name.contains("Old Wolf")) continue
-                ESP.drawBox(ctx, ent, w = 1.3, h = 1.0, wz = 1.0, yOffset = -1.0, argb = OldWolfESPColor.color)
-            }
-        }
-    }
-}
-
-object OldWolfESPColor : ColorFeature(
-    name = "Old Wolf ESP Color",
-    description = "Color",
-    category = "General",
-    configKey = "old_wolf_esp_color",
-    subcategory = "ESPs",
-    dependsOn = OldWolfESP,
-)
-
 // Runic ESP function
 private fun Component.hasPurpleBracket(): Boolean {
     var found = false
@@ -113,3 +83,68 @@ object RunicMobColor : ColorFeature(
         showWhen { RunicMobESP.enabled || RunicMobTracer.enabled }
     }
 }
+
+// Rat ESP
+
+// Matcho ESP
+object MatchoESP : SwitchFeature(
+    name = "Matcho ESP",
+    description = "",
+    category = "General",
+    configKey = "matcho_esp",
+    subcategory = "ESPs",
+) {
+    init {
+        WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
+            if (!enabled) return@register
+            val level = Meridian.mc.level ?: return@register
+            for (ent in level.entitiesForRendering()) {
+                if (ent !is ArmorStand) continue
+                val name = ent.customName?.string ?: continue
+                if (!name.contains("Matcho")) continue
+                ESP.drawBox(ctx, ent, w = 0.6, h = 2.0, wz = 0.6, yOffset = -2.2, argb = MatchoESPColor.color)
+            }
+        }
+    }
+}
+
+object MatchoESPColor : ColorFeature(
+    name = "Matcho ESP Color",
+    description = "Color",
+    category = "General",
+    configKey = "matcho_esp_color",
+    subcategory = "ESPs",
+    dependsOn = MatchoESP,
+)
+// Player ESP
+
+
+object OldWolfESP : SwitchFeature(
+    name = "Old Wolf ESP",
+    description = "",
+    category = "General",
+    configKey = "old_wolf_esp",
+    subcategory = "ESPs",
+) {
+    init {
+        WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
+            if (!enabled) return@register
+            val level = Meridian.mc.level ?: return@register
+            for (ent in level.entitiesForRendering()) {
+                if (ent !is ArmorStand) continue
+                val name = ent.customName?.string ?: continue
+                if (!name.contains("Old Wolf")) continue
+                ESP.drawBox(ctx, ent, w = 1.3, h = 1.0, wz = 1.0, yOffset = -1.0, argb = OldWolfESPColor.color)
+            }
+        }
+    }
+}
+
+object OldWolfESPColor : ColorFeature(
+    name = "Old Wolf ESP Color",
+    description = "Color",
+    category = "General",
+    configKey = "old_wolf_esp_color",
+    subcategory = "ESPs",
+    dependsOn = OldWolfESP,
+)
