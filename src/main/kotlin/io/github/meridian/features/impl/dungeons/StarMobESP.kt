@@ -22,8 +22,9 @@ object StarMobESP : SwitchFeature(
             for (ent in level.entitiesForRendering()) {
                 if (ent !is ArmorStand) continue
                 val name = ent.customName?.string ?: continue
-                if (!name.contains("✯") && name.endsWith("✯")) continue
-                ESP.drawBox(ctx, ent, w = 0.6, h = 2.0, wz = 0.6, yOffset = -2.2, argb = StarMobColor.color)
+                if (name.contains("✯") && !name.endsWith("✯") && !name.contains("Fel")) {
+                    ESP.drawBox(ctx, ent, w = 0.6, h = 2.0, wz = 0.6, yOffset = -2.2, argb = StarMobColor.color)
+                }
             }
         }
     }
@@ -52,8 +53,9 @@ object FelESP : SwitchFeature(
             for (ent in level.entitiesForRendering()) {
                 if (ent !is ArmorStand) continue
                 val name = ent.customName?.string ?: continue
-                if (!name.contains("Fel") && !name.contains("✯")) continue
-                ESP.drawBox(ctx, ent, w = 0.6, h = 2.0, wz = 0.6, yOffset = -2.2, argb = FelColor.color)
+                if (name.contains("Fel") && name.contains("✯")) {
+                    ESP.drawBox(ctx, ent, w = 0.6, h = 2.9, wz = 0.6, yOffset = -3.0, argb = FelColor.color)
+                }
             }
         }
     }

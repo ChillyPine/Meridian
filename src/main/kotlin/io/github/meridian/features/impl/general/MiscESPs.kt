@@ -107,7 +107,7 @@ object MatchoESP : SwitchFeature(
 
 object MatchoESPColor : ColorFeature(
     name = "Matcho Color",
-    description = "Color",
+    description = "",
     category = "General",
     configKey = "matcho_color",
     subcategory = "ESPs",
@@ -139,7 +139,7 @@ object OldWolfESP : SwitchFeature(
 
 object OldWolfESPColor : ColorFeature(
     name = "Old Wolf Color",
-    description = "Color",
+    description = "",
     category = "General",
     configKey = "old_wolf_color",
     subcategory = "ESPs",

@@ -79,7 +79,9 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
         super.init()
         val x = (width - PANEL_WIDTH) / 2
         val y = (height - PANEL_HEIGHT) / 2
+        val previousSelected = if (::categoryPanel.isInitialized) categoryPanel.selected else null
         categoryPanel = CategoryPanel(x, y, LEFT_PANEL_WIDTH - BAR_WIDTH, PANEL_HEIGHT)
+        if (previousSelected != null) categoryPanel.selected = previousSelected
     }
 
     override fun renderBackground(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
@@ -248,7 +250,11 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
         val overlayFeat = visibleInCategory.firstOrNull { it.hasOpenOverlay() }
         if (overlayFeat != null && overlayFeat.mouseClicked(mx, my)) return true
 
-        if (categoryPanel.mouseClicked(mx, my)) return true
+        val prevCategory = categoryPanel.selected
+        if (categoryPanel.mouseClicked(mx, my)) {
+            if (categoryPanel.selected != prevCategory) scrollOffset = 0
+            return true
+        }
 
         // Scrollbar
         if (lastScrollbarShown &&
