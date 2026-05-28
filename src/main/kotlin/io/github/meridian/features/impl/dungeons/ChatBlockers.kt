@@ -1,11 +1,7 @@
 package io.github.meridian.features.impl.dungeons
 
-import io.github.meridian.Meridian
 import io.github.meridian.features.SwitchFeature
 import io.github.meridian.utils.ChatBlocker
-import io.github.meridian.utils.modMessage
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 
 object BlockPFWarning : SwitchFeature (
     name = "Block Party Finder Warning Message",
