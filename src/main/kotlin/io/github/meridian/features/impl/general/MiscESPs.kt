@@ -3,6 +3,7 @@ package io.github.meridian.features.impl.general
 import io.github.meridian.Meridian
 import io.github.meridian.features.ColorFeature
 import io.github.meridian.features.SwitchFeature
+import io.github.meridian.features.impl.dungeons.ShadowAssassinColor
 import io.github.meridian.utils.ESP
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents
 import net.minecraft.ChatFormatting
@@ -10,6 +11,8 @@ import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.Style
 import net.minecraft.world.entity.decoration.ArmorStand
 import java.util.Optional
+import net.minecraft.client.player.RemotePlayer
+import java.util.UUID
 
 // Runic ESP function
 private fun Component.hasPurpleBracket(): Boolean {
@@ -145,3 +148,25 @@ object OldWolfESPColor : ColorFeature(
     subcategory = "ESPs",
     dependsOn = OldWolfESP,
 )
+
+// Replayz
+const val targetUUID = "49180e88-3636-4303-85d4-5a7bcad13bc1"
+object FemboyESP : SwitchFeature(
+    name = "Femboy ESP",
+    description = "For the gayest femboy of them all :3",
+    category = "General",
+    configKey = "femboy_esp",
+    subcategory = "ESPs",
+) {
+    init {
+        WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
+            if (!enabled) return@register
+            val level = Meridian.mc.level ?: return@register
+            for (ent in level.entitiesForRendering()) {
+                if (ent !is RemotePlayer) continue
+                if (ent.uuid != UUID.fromString(targetUUID)) continue
+                ESP.drawBox(ctx, ent, w = 1.0, h = 2.0, wz = 0.6, argb = 0xFF990000.toInt())
+            }
+        }
+    }
+}
