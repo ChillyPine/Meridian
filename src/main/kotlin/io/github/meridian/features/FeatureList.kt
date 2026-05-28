@@ -2,6 +2,7 @@ package io.github.meridian.features
 // ALL NEW FEATURES NEED TO BE IMPORTED BELOW IN ADDITION TO BEING ADDED TO THE FeatureList!
 // Tab autocomplete adds imports automatically
 import io.github.meridian.features.impl.dungeons.BlockPFWarning
+import io.github.meridian.features.impl.dungeons.FFTimer
 import io.github.meridian.features.impl.dungeons.FelColor
 import io.github.meridian.features.impl.dungeons.FelESP
 import io.github.meridian.features.impl.dungeons.ShadowAssassinColor
@@ -53,6 +54,7 @@ object FeatureList {
         FelColor,
         ShadowAssassinESP,
         ShadowAssassinColor,
+        FFTimer,
         BlockPFWarning,
         // Farming
         // Mining

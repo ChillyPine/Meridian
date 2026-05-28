@@ -60,6 +60,20 @@ fun modMessage(message: Component, prefix: String = "§6Meridian §5»§r ", cha
 //    modMessage(message, "§3Odin§bDev §8»§r ")
 //}
 
+// Registers a listener for incoming game chat messages. The callback receives
+// the plain text (color codes stripped), the original Component, and whether
+// the message was an action-bar overlay. Return value is ignored — use
+// ClientReceiveMessageEvents.ALLOW_GAME directly if you need to veto.
+fun onChatMessage(
+    includeOverlay: Boolean = false,
+    callback: (text: String, component: Component, overlay: Boolean) -> Unit,
+) {
+    ClientReceiveMessageEvents.GAME.register { message, overlay ->
+        if (overlay && !includeOverlay) return@register
+        callback(message.string.replace(Regex("§."), ""), message, overlay)
+    }
+}
+
 fun getChatBreak(): String {
     return ChatComponent.getWidth(mc.options.chatWidth().get()).let {
         "§9§m" + "-".repeat(it / mc.font.width("-"))

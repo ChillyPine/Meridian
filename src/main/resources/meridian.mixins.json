@@ -3,7 +3,7 @@
 	"package": "io.github.meridian.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
-		"ExampleMixin"
+		"ConnectionMixin"
 	],
 	"client": [
 		"MixinGui",
