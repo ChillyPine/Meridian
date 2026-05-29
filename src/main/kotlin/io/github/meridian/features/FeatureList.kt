@@ -24,6 +24,12 @@ import io.github.meridian.features.impl.general.RunicMobColor
 import io.github.meridian.features.impl.general.RunicMobESP
 import io.github.meridian.features.impl.general.RunicMobTracer
 import io.github.meridian.features.impl.general.SoundListButton
+import io.github.meridian.features.impl.mining.ButterflyESP
+import io.github.meridian.features.impl.mining.ButterflyTracer
+import io.github.meridian.features.impl.mining.CorleoneESP
+import io.github.meridian.features.impl.mining.DiamondGoblinESP
+import io.github.meridian.features.impl.mining.GoldenGoblinESP
+import io.github.meridian.features.impl.mining.KeyGuardianESP
 
 
 // Manifest of every feature in the mod — the only place that needs updating
@@ -58,6 +64,12 @@ object FeatureList {
         BlockPFWarning,
         // Farming
         // Mining
+        ButterflyESP,
+        ButterflyTracer,
+        CorleoneESP,
+        GoldenGoblinESP,
+        DiamondGoblinESP,
+        KeyGuardianESP,
         // Events
     )
 

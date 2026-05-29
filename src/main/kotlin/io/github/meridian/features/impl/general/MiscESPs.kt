@@ -3,7 +3,6 @@ package io.github.meridian.features.impl.general
 import io.github.meridian.Meridian
 import io.github.meridian.features.ColorFeature
 import io.github.meridian.features.SwitchFeature
-import io.github.meridian.features.impl.dungeons.ShadowAssassinColor
 import io.github.meridian.utils.ESP
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents
 import net.minecraft.ChatFormatting
