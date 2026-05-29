@@ -6,7 +6,7 @@ import io.github.meridian.utils.ESP
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents
 import net.minecraft.world.entity.decoration.ArmorStand
 
-// Corleone, Key Guardian, Butterfly, Golden Goblin, Diamond Goblin
+// Butterfly, Corleone, Golden Goblin, Diamond Goblin, Key Guardian
 object ButterflyESP : SwitchFeature(
     name = "Butterfly ESP",
     description = "",
