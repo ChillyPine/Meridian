@@ -6,6 +6,7 @@ import io.github.meridian.features.impl.dungeons.FFTimer
 import io.github.meridian.features.impl.dungeons.LividHealthHUD
 import io.github.meridian.features.impl.dungeons.FelColor
 import io.github.meridian.features.impl.dungeons.FelESP
+import io.github.meridian.features.impl.dungeons.LockedChestNotif
 import io.github.meridian.features.impl.dungeons.ShadowAssassinColor
 import io.github.meridian.features.impl.dungeons.ShadowAssassinESP
 import io.github.meridian.features.impl.dungeons.StarMobColor
@@ -80,6 +81,7 @@ object FeatureList {
         FelColor,
         ShadowAssassinESP,
         ShadowAssassinColor,
+        LockedChestNotif,
         FFTimer,
         LividHealthHUD,
         BlockPFWarning,
