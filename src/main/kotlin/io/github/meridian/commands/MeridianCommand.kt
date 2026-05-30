@@ -2,6 +2,7 @@ package io.github.meridian.commands
 // §
 import com.mojang.brigadier.arguments.StringArgumentType
 import io.github.meridian.Meridian
+import io.github.meridian.gui.HudEditScreen
 import io.github.meridian.gui.MeridianScreen
 import io.github.meridian.features.FeatureManager
 import io.github.meridian.utils.ESP
@@ -29,6 +30,15 @@ object MeridianCommand {
                     .then(
                         literal("help").executes { ctx ->
                             sendHelp(ctx.source)
+                            1
+                        }
+                    )
+                    // /md hud — open the HUD position/scale editor
+                    .then(
+                        literal("hud").executes { _ ->
+                            // Defer: the chat screen is still closing as this lambda
+                            // runs and would wipe a synchronously-set screen.
+                            Meridian.mc.execute { Meridian.mc.setScreen(HudEditScreen()) }
                             1
                         }
                     )
@@ -86,6 +96,7 @@ object MeridianCommand {
         sendClientMessage("§r§5§m                                                                              §r")
         sendClientMessage("§6/meridian§f: Opens the GUI")
         sendClientMessage("§6/meridian help§f: Sends this dialogue")
+        sendClientMessage("§6/meridian hud§f: Opens the HUD editor.")
         sendClientMessage("§6/md§f: Alias")
 //        sendClientMessage("§r§5§m                                                                              §r")
 //        sendClientMessage("§r§6§lShitter List Commands")

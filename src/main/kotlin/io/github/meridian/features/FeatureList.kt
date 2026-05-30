@@ -3,6 +3,7 @@ package io.github.meridian.features
 // Tab autocomplete adds imports automatically
 import io.github.meridian.features.impl.dungeons.BlockPFWarning
 import io.github.meridian.features.impl.dungeons.FFTimer
+import io.github.meridian.features.impl.dungeons.LividHealthHUD
 import io.github.meridian.features.impl.dungeons.FelColor
 import io.github.meridian.features.impl.dungeons.FelESP
 import io.github.meridian.features.impl.dungeons.ShadowAssassinColor
@@ -18,6 +19,7 @@ import io.github.meridian.features.impl.general.BlockHOTFM
 import io.github.meridian.features.impl.general.BlockProfileID
 import io.github.meridian.features.impl.general.BlockProfileProduce
 import io.github.meridian.features.impl.general.CoordsCommand
+import io.github.meridian.features.impl.general.IRLTime
 import io.github.meridian.features.impl.general.DTCommand
 import io.github.meridian.features.impl.general.FemboyESP
 import io.github.meridian.features.impl.general.MatchoESP
@@ -65,6 +67,7 @@ object FeatureList {
         PLActions,
         PLMoreActions,
         RemoveNausea,
+        IRLTime,
         SoundListButton,
         // Dungeons
         StarMobESP,
@@ -74,6 +77,7 @@ object FeatureList {
         ShadowAssassinESP,
         ShadowAssassinColor,
         FFTimer,
+        LividHealthHUD,
         BlockPFWarning,
         // Farming
         // Mining

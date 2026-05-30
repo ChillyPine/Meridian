@@ -3,6 +3,7 @@ package io.github.meridian
 import io.github.meridian.commands.MeridianCommand
 import io.github.meridian.features.FeatureList
 import io.github.meridian.features.FeatureManager
+import io.github.meridian.hud.HudManager
 import io.github.meridian.utils.ChatBlocker
 import io.github.meridian.utils.TickScheduler
 import net.fabricmc.api.ClientModInitializer
@@ -22,6 +23,7 @@ object Meridian : ClientModInitializer {
         TickScheduler.init()
         FeatureList.registerAll()
         FeatureManager.load()
+        HudManager.init()
         logger.info("Meridian loaded")
     }
 }
