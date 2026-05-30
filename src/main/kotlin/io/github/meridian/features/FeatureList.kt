@@ -29,6 +29,7 @@ import io.github.meridian.features.impl.general.OldWolfESP
 import io.github.meridian.features.impl.general.OldWolfESPColor
 import io.github.meridian.features.impl.general.PLActions
 import io.github.meridian.features.impl.general.PLMoreActions
+import io.github.meridian.features.impl.general.RatESP
 import io.github.meridian.features.impl.general.RemoveNausea
 import io.github.meridian.features.impl.general.RunicMobColor
 import io.github.meridian.features.impl.general.RunicMobESP
@@ -55,6 +56,7 @@ object FeatureList {
         MatchoESPColor,
         OldWolfESP,
         OldWolfESPColor,
+        RatESP,
         FemboyESP,
         DTCommand,
         CoordsCommand,
