@@ -14,6 +14,7 @@ import io.github.meridian.features.impl.dungeons.LockedChestNotif
 import io.github.meridian.features.impl.dungeons.SendBloodToParty
 import io.github.meridian.features.impl.dungeons.ShadowAssassinColor
 import io.github.meridian.features.impl.dungeons.ShadowAssassinESP
+import io.github.meridian.features.impl.dungeons.ShortPFMessage
 import io.github.meridian.features.impl.dungeons.StarMobColor
 import io.github.meridian.features.impl.dungeons.StarMobESP
 import io.github.meridian.features.impl.events.PrimalFearESP
@@ -94,6 +95,7 @@ object FeatureList {
         SendBloodToParty,
         FFTimer,
         //LividHealthHUD,
+        ShortPFMessage,
         BlockPFWarning,
         // Farming
         // Mining
