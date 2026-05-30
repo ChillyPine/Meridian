@@ -41,6 +41,14 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
         private const val SCROLLBAR_THUMB_HOVER = 0xFFD0A6FF.toInt()
         private const val MIN_THUMB_HEIGHT = 16
         private const val WHEEL_STEP_PX = 16
+        // Hold Ctrl while scrolling to move through the list faster.
+        private const val CTRL_SCROLL_MULTIPLIER = 4
+
+        private fun hasControlDown(): Boolean {
+            val window = net.minecraft.client.Minecraft.getInstance().window.handle()
+            return org.lwjgl.glfw.GLFW.glfwGetKey(window, org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT_CONTROL) == org.lwjgl.glfw.GLFW.GLFW_PRESS ||
+                   org.lwjgl.glfw.GLFW.glfwGetKey(window, org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT_CONTROL) == org.lwjgl.glfw.GLFW.GLFW_PRESS
+        }
 
         private const val SEARCH_TOP_GAP = 6
         // Fixed width so the search bar size doesn't grow with the main panel.
@@ -309,7 +317,8 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
         if (lastMaxScroll > 0 && inContentArea(mouseX.toInt(), mouseY.toInt())) {
-            scrollOffset = (scrollOffset - (scrollY * WHEEL_STEP_PX).toInt())
+            val step = if (hasControlDown()) WHEEL_STEP_PX * CTRL_SCROLL_MULTIPLIER else WHEEL_STEP_PX
+            scrollOffset = (scrollOffset - (scrollY * step).toInt())
                 .coerceIn(0, lastMaxScroll)
             return true
         }

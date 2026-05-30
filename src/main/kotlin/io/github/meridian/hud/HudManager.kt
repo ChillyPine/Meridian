@@ -87,7 +87,7 @@ object HudManager {
         pose.scale(el.scale, el.scale)
         var ly = 0
         for (line in lines) {
-            g.drawString(font, line, 0, ly, TEXT_COLOR, true)
+            g.drawString(font, line, 0, ly, el.color(), el.shadow)
             ly += font.lineHeight + HudElement.LINE_GAP
         }
         pose.popMatrix()
@@ -122,6 +122,4 @@ object HudManager {
             }
         }
     }
-
-    private const val TEXT_COLOR = 0xFFFFFFFF.toInt()
 }

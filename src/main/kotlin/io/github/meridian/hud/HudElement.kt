@@ -32,6 +32,14 @@ abstract class HudElement(
     var lastW: Int = 0
     var lastH: Int = 0
 
+    // Whether the element's text is drawn with a drop shadow. Override to false
+    // for elements that are harder to read with one.
+    open val shadow: Boolean = true
+
+    // Base ARGB color for the element's text. Per-segment §-codes within a line
+    // still override this. Override to drive the color from a ColorFeature.
+    open fun color(): Int = 0xFFFFFFFF.toInt()
+
     // Live content (real data). Empty list => not drawn in-game.
     abstract fun content(): List<String>
 
@@ -48,7 +56,7 @@ abstract class HudElement(
 
     companion object {
         const val MIN_SCALE = 0.5f
-        const val MAX_SCALE = 4f
+        const val MAX_SCALE = 10f
         const val LINE_GAP = 1 // unscaled px between stacked lines
     }
 }

@@ -19,6 +19,7 @@ import io.github.meridian.features.impl.general.BlockHOTFM
 import io.github.meridian.features.impl.general.BlockProfileID
 import io.github.meridian.features.impl.general.BlockProfileProduce
 import io.github.meridian.features.impl.general.CoordsCommand
+import io.github.meridian.features.impl.general.IRLClockColor
 import io.github.meridian.features.impl.general.IRLTime
 import io.github.meridian.features.impl.general.DTCommand
 import io.github.meridian.features.impl.general.FemboyESP
@@ -68,6 +69,7 @@ object FeatureList {
         PLMoreActions,
         RemoveNausea,
         IRLTime,
+        IRLClockColor,
         SoundListButton,
         // Dungeons
         StarMobESP,
