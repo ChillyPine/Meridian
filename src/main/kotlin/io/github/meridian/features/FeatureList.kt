@@ -52,6 +52,7 @@ object FeatureList {
         FemboyESP,
         DTCommand,
         CoordsCommand,
+        //PTCommand,
         BlockBlocksInWay,
         BlockGEXP,
         BlockProfileID,

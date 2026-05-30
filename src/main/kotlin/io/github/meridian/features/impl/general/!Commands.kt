@@ -3,14 +3,17 @@ package io.github.meridian.features.impl.general
 import io.github.meridian.Meridian
 import io.github.meridian.features.SwitchFeature
 import io.github.meridian.utils.onChatMessage
+import io.github.meridian.utils.sendChatMessage
 import io.github.meridian.utils.sendCommand
 import kotlin.math.floor
-import net.minecraft.util.StringUtil
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.TimeUnit
 
 private const val DT_ART =
     "゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜ ゛゜゛███゛゜█████゛゜█゛゜█゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜ ゜゛゜█゜゛█゛゜゛█゜゛゜゛█゜゛█゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛ ゛゜゛█゛゜█゜゛゜█゛゜゛゜█゛゜█゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜ ゜゛゜█゜゛█゛゜゛█゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛ ゛゜゛███゛゜゛゜█゛゜゛゜█゛゜█゜゛゜゛゜"
 
 private val dtRegex = Regex("^Party > .+: !dt$")
+// private val ptRegex = Regex("^Party > (?:\\S+ )*(\\S+): !(?:ptme|pt me|pt)$")
 private val coordsRegex = Regex("^Party > .+: !coords$")
 
 // !dt, !coords, !ptme, !allinv, !warp
@@ -25,7 +28,11 @@ object DTCommand : SwitchFeature(
         onChatMessage { text, _, _ ->
             if (!enabled) return@onChatMessage
             if (!dtRegex.matches(text)) return@onChatMessage
-            sendCommand("pc " + StringUtil.filterText(DT_ART))
+            CompletableFuture.delayedExecutor(30, TimeUnit.MILLISECONDS).execute {
+                Meridian.mc.execute {
+                    sendChatMessage("/pc $DT_ART")
+                }
+            }
         }
     }
 }
@@ -49,3 +56,24 @@ object CoordsCommand : SwitchFeature(
         }
     }
 }
+
+//object PTCommand : SwitchFeature(
+//    name = "!ptme",
+//    description = "",
+//    category = "General",
+//    configKey = "pt_command",
+//    subcategory = "! Commands",
+//) {
+//    init {
+//        onChatMessage { text, _, _ ->
+//            if (!enabled) return@onChatMessage
+//            val match = ptRegex.matchEntire(text) ?: return@onChatMessage
+//            val requester = match.groupValues[1]
+//            CompletableFuture.delayedExecutor(30, TimeUnit.MILLISECONDS).execute {
+//                Meridian.mc.execute {
+//                    sendCommand("party transfer $requester")
+//                }
+//            }
+//        }
+//    }
+//}
