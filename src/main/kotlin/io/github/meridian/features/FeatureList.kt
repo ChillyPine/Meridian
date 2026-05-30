@@ -24,6 +24,8 @@ import io.github.meridian.features.impl.general.MatchoESP
 import io.github.meridian.features.impl.general.MatchoESPColor
 import io.github.meridian.features.impl.general.OldWolfESP
 import io.github.meridian.features.impl.general.OldWolfESPColor
+import io.github.meridian.features.impl.general.PLActions
+import io.github.meridian.features.impl.general.PLMoreActions
 import io.github.meridian.features.impl.general.RunicMobColor
 import io.github.meridian.features.impl.general.RunicMobESP
 import io.github.meridian.features.impl.general.RunicMobTracer
@@ -59,6 +61,8 @@ object FeatureList {
         BlockProfileProduce,
         BlockHOTFM,
         BlockDiscord,
+        PLActions,
+        PLMoreActions,
         SoundListButton,
         // Dungeons
         StarMobESP,
