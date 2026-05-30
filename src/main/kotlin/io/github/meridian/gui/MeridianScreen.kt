@@ -141,9 +141,7 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
 
         val viewportH = contentBottom - contentTop
         val searching = searchBar.query.isNotEmpty()
-        val features = (if (searching) searchResults(searchBar.query)
-                        else FeatureManager.byCategory(category))
-            .filter { it.isVisible() }
+        val features = activeFeatures()
         val grouped = if (searching) features.groupBy {
                           if (it.subcategory.isEmpty()) it.category
                           else "${it.category}→${it.subcategory}"
@@ -239,6 +237,16 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
         }
     }
 
+    // The features currently shown on the right: search results when a query is
+    // active, otherwise the selected category. Filtered to visible. Render and
+    // click/key routing MUST use this same list so input lands on the rows that
+    // were actually drawn — otherwise clicks during a search route to the
+    // selected category and silently miss (or hit a stale off-screen row).
+    private fun activeFeatures(): List<Feature> =
+        (if (searchBar.query.isNotEmpty()) searchResults(searchBar.query)
+         else FeatureManager.byCategory(categoryPanel.selected))
+            .filter { it.isVisible() }
+
     private fun inContentArea(mx: Int, my: Int) =
         mx in contentLeft until contentRight && my in contentTop until contentBottom
 
@@ -253,9 +261,8 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
         // and we want a click on a menu item below contentBottom to land correctly.
         // If the feature returns false, its overlay has already closed itself; we
         // still skip the normal row-routing for this feature so we don't double-handle.
-        val visibleInCategory = FeatureManager.byCategory(categoryPanel.selected)
-            .filter { it.isVisible() }
-        val overlayFeat = visibleInCategory.firstOrNull { it.hasOpenOverlay() }
+        val active = activeFeatures()
+        val overlayFeat = active.firstOrNull { it.hasOpenOverlay() }
         if (overlayFeat != null && overlayFeat.mouseClicked(mx, my)) return true
 
         val prevCategory = categoryPanel.selected
@@ -284,13 +291,13 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
         // rendered hit-bounds are stale once the parent goes off. Skip overlayFeat:
         // it's already had its turn above.
         if (inContentArea(mx, my)) {
-            for (feat in visibleInCategory) {
+            for (feat in active) {
                 if (feat === overlayFeat) continue
                 if (feat.mouseClicked(mx, my)) return true
             }
         } else {
             // Click outside the input area still needs to unfocus any focused TextFeature.
-            for (feat in visibleInCategory) {
+            for (feat in active) {
                 if (feat === overlayFeat) continue
                 feat.mouseClicked(mx, my)
             }
@@ -330,8 +337,8 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
             scrollOffset = 0
             return true
         }
-        for (feat in FeatureManager.byCategory(categoryPanel.selected)) {
-            if (feat.isVisible() && feat.keyPressed(event)) return true
+        for (feat in activeFeatures()) {
+            if (feat.keyPressed(event)) return true
         }
         return super.keyPressed(event)
     }
@@ -341,8 +348,8 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
             scrollOffset = 0
             return true
         }
-        for (feat in FeatureManager.byCategory(categoryPanel.selected)) {
-            if (feat.isVisible() && feat.charTyped(event)) return true
+        for (feat in activeFeatures()) {
+            if (feat.charTyped(event)) return true
         }
         return super.charTyped(event)
     }
