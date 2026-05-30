@@ -32,7 +32,7 @@ object BloodOpen : SwitchFeature(
             if (!enabled) return@onChatMessage
             if (!text.startsWith("The BLOOD DOOR has been opened!")) return@onChatMessage
             // mc.gui.setTimes(fadeIn, stay, fadeOut)
-            mc.gui.setTimes(0, 30, 0)
+            mc.gui.setTimes(0, 60, 0)
             mc.gui.setTitle(Component.literal("§cBlood Opened!"))
             mc.gui.setSubtitle(Component.empty())
             modMessage("§fBlood Opened!")
@@ -56,7 +56,7 @@ object BloodFull : SwitchFeature(
             if (!enabled) return@onChatMessage
             if (!text.startsWith("[BOSS] The Watcher: That will be enough for now.")) return@onChatMessage
             // mc.gui.setTimes(fadeIn, stay, fadeOut)
-            mc.gui.setTimes(0, 30, 0)
+            mc.gui.setTimes(0, 60, 0)
             mc.gui.setTitle(Component.literal("§cBlood Full!"))
             mc.gui.setSubtitle(Component.empty())
             modMessage("§fBlood Full!")
@@ -80,7 +80,7 @@ object BloodCleared : SwitchFeature(
             if (!enabled) return@onChatMessage
             if (!text.startsWith("[BOSS] The Watcher: You have proven yourself. You may pass.")) return@onChatMessage
             // mc.gui.setTimes(fadeIn, stay, fadeOut)
-            mc.gui.setTimes(0, 30, 0)
+            mc.gui.setTimes(0, 60, 0)
             mc.gui.setTitle(Component.literal("§cBlood Cleared!"))
             mc.gui.setSubtitle(Component.empty())
             modMessage("§fBlood Cleared!")
