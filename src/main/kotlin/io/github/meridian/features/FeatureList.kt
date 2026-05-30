@@ -11,6 +11,9 @@ import io.github.meridian.features.impl.dungeons.LividHealthHUD
 import io.github.meridian.features.impl.dungeons.FelColor
 import io.github.meridian.features.impl.dungeons.FelESP
 import io.github.meridian.features.impl.dungeons.LockedChestNotif
+import io.github.meridian.features.impl.dungeons.M5WishNotif
+import io.github.meridian.features.impl.dungeons.P1WishNotif
+import io.github.meridian.features.impl.dungeons.P3WishNotif
 import io.github.meridian.features.impl.dungeons.SendBloodToParty
 import io.github.meridian.features.impl.dungeons.ShadowAssassinColor
 import io.github.meridian.features.impl.dungeons.ShadowAssassinESP
@@ -93,8 +96,11 @@ object FeatureList {
         BloodFull,
         BloodCleared,
         SendBloodToParty,
+        P1WishNotif,
+        P3WishNotif,
         FFTimer,
         //LividHealthHUD,
+        M5WishNotif,
         ShortPFMessage,
         BlockPFWarning,
         // Farming
