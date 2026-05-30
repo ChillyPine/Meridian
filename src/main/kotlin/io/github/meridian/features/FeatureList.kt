@@ -6,6 +6,7 @@ import io.github.meridian.features.impl.dungeons.BloodCleared
 import io.github.meridian.features.impl.dungeons.BloodFull
 import io.github.meridian.features.impl.dungeons.BloodNotifs
 import io.github.meridian.features.impl.dungeons.BloodOpen
+import io.github.meridian.features.impl.dungeons.DungeonEndMusic
 import io.github.meridian.features.impl.dungeons.FFTimer
 import io.github.meridian.features.impl.dungeons.LividHealthHUD
 import io.github.meridian.features.impl.dungeons.FelColor
@@ -101,6 +102,7 @@ object FeatureList {
         FFTimer,
         //LividHealthHUD,
         M5WishNotif,
+        DungeonEndMusic,
         ShortPFMessage,
         BlockPFWarning,
         // Farming
