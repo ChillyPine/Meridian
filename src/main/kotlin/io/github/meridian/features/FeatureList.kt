@@ -9,6 +9,8 @@ import io.github.meridian.features.impl.dungeons.ShadowAssassinColor
 import io.github.meridian.features.impl.dungeons.ShadowAssassinESP
 import io.github.meridian.features.impl.dungeons.StarMobColor
 import io.github.meridian.features.impl.dungeons.StarMobESP
+import io.github.meridian.features.impl.events.PrimalFearESP
+import io.github.meridian.features.impl.events.QuickMathsSolver
 import io.github.meridian.features.impl.general.BlockBlocksInWay
 import io.github.meridian.features.impl.general.BlockDiscord
 import io.github.meridian.features.impl.general.BlockGEXP
@@ -71,6 +73,8 @@ object FeatureList {
         DiamondGoblinESP,
         KeyGuardianESP,
         // Events
+        PrimalFearESP,
+        QuickMathsSolver
     )
 
     fun registerAll() {

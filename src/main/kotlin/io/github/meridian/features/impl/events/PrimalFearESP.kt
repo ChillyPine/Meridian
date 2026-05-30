@@ -1,4 +1,47 @@
 package io.github.meridian.features.impl.events
 
-//object PrimalFearESP {
-//}
+import io.github.meridian.Meridian
+import io.github.meridian.features.SwitchFeature
+import io.github.meridian.utils.ESP
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents
+import net.minecraft.world.entity.decoration.ArmorStand
+
+private val primalFearNames = listOf(
+    "Primal Fear",
+    "Commitment Phobia",
+    "Darkness Shade",
+    "Deadline",
+    "Math Teacher",
+    "Public Speaking Demon",
+    "Vegan Crawler"
+)
+
+object PrimalFearESP : SwitchFeature(
+    name = "Primal Fear ESP",
+    description = "",
+    category = "Events",
+    configKey = "primal_fear_esp",
+    subcategory = "The Great Spook",
+) {
+    init {
+        WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
+            if (!enabled) return@register
+            val level = Meridian.mc.level ?: return@register
+            val playerIGN = Meridian.mc.player?.gameProfile?.name ?: return@register
+            val tag = "Spawned by: $playerIGN"
+            val ents = level.entitiesForRendering().toList()
+            for (ent in ents) {
+                if (ent !is ArmorStand) continue
+                val name = ent.customName?.string ?: continue
+                if (!name.contains(tag)) continue
+                val owned = ents.any { other ->
+                    if (other === ent) return@any false
+                    val n = other.customName?.string ?: return@any false
+                    primalFearNames.any { n.contains(it) } && other.distanceTo(ent) < 1.0
+                }
+                if (!owned) continue
+                ESP.drawBox(ctx, ent, w = 1.0, h = 2.0, wz = 1.0, yOffset = -1.7, argb = 0xFF9980E6.toInt())
+            }
+        }
+    }
+}
