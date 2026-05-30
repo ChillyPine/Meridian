@@ -2,11 +2,16 @@ package io.github.meridian.features
 // ALL NEW FEATURES NEED TO BE IMPORTED BELOW IN ADDITION TO BEING ADDED TO THE FeatureList!
 // Tab autocomplete adds imports automatically
 import io.github.meridian.features.impl.dungeons.BlockPFWarning
+import io.github.meridian.features.impl.dungeons.BloodCleared
+import io.github.meridian.features.impl.dungeons.BloodFull
+import io.github.meridian.features.impl.dungeons.BloodNotifs
+import io.github.meridian.features.impl.dungeons.BloodOpen
 import io.github.meridian.features.impl.dungeons.FFTimer
 import io.github.meridian.features.impl.dungeons.LividHealthHUD
 import io.github.meridian.features.impl.dungeons.FelColor
 import io.github.meridian.features.impl.dungeons.FelESP
 import io.github.meridian.features.impl.dungeons.LockedChestNotif
+import io.github.meridian.features.impl.dungeons.SendBloodToParty
 import io.github.meridian.features.impl.dungeons.ShadowAssassinColor
 import io.github.meridian.features.impl.dungeons.ShadowAssassinESP
 import io.github.meridian.features.impl.dungeons.StarMobColor
@@ -70,9 +75,9 @@ object FeatureList {
         BlockDiscord,
         PLActions,
         PLMoreActions,
-        RemoveNausea,
         IRLTime,
         IRLClockColor,
+        RemoveNausea,
         SoundListButton,
         // Dungeons
         StarMobESP,
@@ -82,8 +87,13 @@ object FeatureList {
         ShadowAssassinESP,
         ShadowAssassinColor,
         LockedChestNotif,
+        BloodNotifs,
+        BloodOpen,
+        BloodFull,
+        BloodCleared,
+        SendBloodToParty,
         FFTimer,
-        LividHealthHUD,
+        //LividHealthHUD,
         BlockPFWarning,
         // Farming
         // Mining
