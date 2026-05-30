@@ -17,6 +17,8 @@ import io.github.meridian.features.impl.general.BlockGEXP
 import io.github.meridian.features.impl.general.BlockHOTFM
 import io.github.meridian.features.impl.general.BlockProfileID
 import io.github.meridian.features.impl.general.BlockProfileProduce
+import io.github.meridian.features.impl.general.CoordsCommand
+import io.github.meridian.features.impl.general.DTCommand
 import io.github.meridian.features.impl.general.FemboyESP
 import io.github.meridian.features.impl.general.MatchoESP
 import io.github.meridian.features.impl.general.MatchoESPColor
@@ -48,6 +50,8 @@ object FeatureList {
         OldWolfESP,
         OldWolfESPColor,
         FemboyESP,
+        DTCommand,
+        CoordsCommand,
         BlockBlocksInWay,
         BlockGEXP,
         BlockProfileID,
