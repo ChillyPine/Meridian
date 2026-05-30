@@ -64,7 +64,7 @@ object RunicMobTracer : SwitchFeature(
 ) {
     init {
         WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
-            if (!enabled) return@register
+            if (!isActive()) return@register
             val pt = Meridian.mc.deltaTracker.getGameTimeDeltaPartialTick(true)
             forEachRunicMob { ent ->
                 val p = ent.getPosition(pt)

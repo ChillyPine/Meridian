@@ -6,7 +6,7 @@ import java.net.URI
 
 object SoundListButton : ButtonFeature (
     name = "Sound List",
-    description = "Takes you a website that lists all sounds you can use for all of our sound replacement mods. \n§eOpens a new tab in your browser.",
+    description = "Takes you a website that lists all sounds you can use for all of our sound replacement mods.\n§eOpens a new tab in your browser.",
     category = "General",
     configKey = "sound_list",
     subcategory = "Miscellaneous",

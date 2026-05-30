@@ -38,7 +38,7 @@ object ButterflyTracer : SwitchFeature(
 ) {
     init {
         WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
-            if (!enabled) return@register
+            if (!isActive()) return@register
             val level = Meridian.mc.level ?: return@register
             val pt = Meridian.mc.deltaTracker.getGameTimeDeltaPartialTick(true)
             for (ent in level.entitiesForRendering()) {
