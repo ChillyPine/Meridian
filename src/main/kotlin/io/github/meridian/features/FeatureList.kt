@@ -45,6 +45,7 @@ import io.github.meridian.features.impl.general.DTCommand
 import io.github.meridian.features.impl.general.FemboyESP
 import io.github.meridian.features.impl.general.MatchoESP
 import io.github.meridian.features.impl.general.MatchoESPColor
+import io.github.meridian.features.impl.general.NonRemover
 import io.github.meridian.features.impl.general.OldWolfESP
 import io.github.meridian.features.impl.general.OldWolfESPColor
 import io.github.meridian.features.impl.general.PLActions
@@ -98,6 +99,7 @@ object FeatureList {
         IRLTime,
         IRLClockColor,
         RemoveNausea,
+        NonRemover,
         SoundListButton,
         // Dungeons
         StarMobESP,
