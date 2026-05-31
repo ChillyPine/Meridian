@@ -17,21 +17,19 @@ object StormESP : SwitchFeature(
     configKey = "storm_esp",
     subcategory = "P2"
 ) {
-    // Storm's phase begins when he taunts Maxor and ends when Goldor starts his
-    // phase. We only box during that window so the ESP doesn't latch onto the
-    // other (visible) withers in later phases.
+
     @Volatile private var stormPhase = false
     private var lastLevel: ClientLevel? = null
 
     init {
         onChatMessage { text, _, _ ->
             when (text) {
-                "[BOSS] Storm: Pathetic Maxor, just like expected." -> stormPhase = true
+                "[BOSS] Thorn: Welcome Adventurers! I am Thorn, the Spirit! And host of the Vegan Trials!" -> stormPhase = true
                 "[BOSS] Goldor: Who dares trespass into my domain?" -> stormPhase = false
             }
         }
 
-        // Reset on world change (CT "worldUnload"), independent of toggle state.
+        // see world change
         ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick {
             val level = Meridian.mc.level
             if (level !== lastLevel) {
@@ -44,13 +42,10 @@ object StormESP : SwitchFeature(
             if (!enabled || !stormPhase) return@register
             val level = Meridian.mc.level ?: return@register
 
-            // Storm is the only visible wither during his phase; the rest stay
-            // invisible until their turn.
+            // render that invisible dumbfucker
             val storm = level.entitiesForRendering()
                 .firstOrNull { it is WitherBoss && !it.isInvisible } as? WitherBoss ?: return@register
 
-            // Filled translucent box + wireframe edge around the wither's real
-            // hitbox. depth defaults to ESP.depth, honoring /md depth.
             ESP.drawFilled(ctx, storm, argb = StormColor.color)
         }
     }
