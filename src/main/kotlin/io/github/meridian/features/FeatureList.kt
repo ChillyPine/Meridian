@@ -1,6 +1,9 @@
 package io.github.meridian.features
 // ALL NEW FEATURES NEED TO BE IMPORTED BELOW IN ADDITION TO BEING ADDED TO THE FeatureList!
 // Tab autocomplete adds imports automatically
+import io.github.meridian.features.impl.dungeons.BatESP
+import io.github.meridian.features.impl.dungeons.BatESPColor
+import io.github.meridian.features.impl.dungeons.BatTracer
 import io.github.meridian.features.impl.dungeons.BlockPFWarning
 import io.github.meridian.features.impl.dungeons.BloodCleared
 import io.github.meridian.features.impl.dungeons.BloodFull
@@ -98,6 +101,9 @@ object FeatureList {
         FelColor,
         ShadowAssassinESP,
         ShadowAssassinColor,
+        BatESP,
+        BatTracer,
+        BatESPColor,
         LockedChestNotif,
         BloodNotifs,
         BloodOpen,
