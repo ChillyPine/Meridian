@@ -19,11 +19,13 @@ object StarMobESP : SwitchFeature(
         WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
             if (!enabled) return@register
             val level = Meridian.mc.level ?: return@register
+            val player = Meridian.mc.player ?: return@register
             for (ent in level.entitiesForRendering()) {
                 if (ent !is ArmorStand) continue
+                if (ent.distanceToSqr(player.x, player.y, player.z) > 100 * 100) continue
                 val name = ent.customName?.string ?: continue
                 if (name.contains("✯") && !name.endsWith("✯") && !name.contains("Fel")) {
-                    ESP.drawBox(ctx, ent, w = 0.6, h = 2.0, wz = 0.6, yOffset = -2.2, argb = StarMobColor.color)
+                    ESP.drawBox(ctx, ent, w = 1.0, h = 2.0, wz = 0.6, yOffset = -2.2, argb = StarMobColor.color)
                 }
             }
         }
@@ -50,8 +52,10 @@ object FelESP : SwitchFeature(
         WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
             if (!enabled) return@register
             val level = Meridian.mc.level ?: return@register
+            val player = Meridian.mc.player ?: return@register
             for (ent in level.entitiesForRendering()) {
                 if (ent !is ArmorStand) continue
+                if (ent.distanceToSqr(player.x, player.y, player.z) > 100 * 100) continue
                 val name = ent.customName?.string ?: continue
                 if (name.contains("Fel") && name.contains("✯")) {
                     ESP.drawBox(ctx, ent, w = 0.6, h = 2.9, wz = 0.6, yOffset = -3.0, argb = FelColor.color)
