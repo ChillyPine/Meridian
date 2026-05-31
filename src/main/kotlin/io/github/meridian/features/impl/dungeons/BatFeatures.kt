@@ -69,7 +69,7 @@ object BatESPColor : ColorFeature(
     name = "Bat Color",
     description = "",
     category = "Dungeons",
-    configKey = "bat_mob_color",
+    configKey = "bat_color",
     subcategory = "Clear",
     dependsOn = BatESP,
 )
