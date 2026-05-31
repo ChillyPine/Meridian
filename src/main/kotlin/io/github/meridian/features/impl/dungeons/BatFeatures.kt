@@ -22,8 +22,8 @@ object BatESP : SwitchFeature (
 
     init {
         onChatMessage { text, _, _ ->
-            when (text) {
-                "[BOSS] Thorn: Welcome Adventurers! I am Thorn, the Spirit! And host of the Vegan Trials!" -> inF4Boss = true
+            if (text.startsWith("[BOSS] Thorn: Welcome Adventurers! I am Thorn, the Spirit! And host of the Vegan Trials!")) {
+                inF4Boss = true
             }
         }
 
