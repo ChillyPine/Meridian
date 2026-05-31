@@ -25,18 +25,10 @@ object NonRemover : ButtonFeature(
     subcategory = "Miscellaneous",
     buttonLabel = "Click",
     onClick = {
-        // Close the settings screen immediately so the sequence plays out in-world.
         Meridian.mc.execute { Meridian.mc.setScreen(null) }
-
-        // Stagger to look organic: hop to limbo, then a couple seconds later
-        // "get banned". The disconnect is purely local — Connection.disconnect
-        // just closes our own channel (same as alt-F4) and lets vanilla's
-        // DisconnectedScreen render the reason. Nothing is sent to the server,
-        // so there's nothing to detect and nothing bannable.
         CompletableFuture.delayedExecutor(2500, TimeUnit.MILLISECONDS).execute {
             Meridian.mc.execute { sendCommand("limbo") }
         }
-
         CompletableFuture.delayedExecutor(4500, TimeUnit.MILLISECONDS).execute {
             Meridian.mc.execute {
                 Meridian.mc.connection?.connection?.disconnect(FAKE_BAN_REASON)
