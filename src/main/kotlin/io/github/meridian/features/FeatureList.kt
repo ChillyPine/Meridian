@@ -24,6 +24,7 @@ import io.github.meridian.features.impl.dungeons.ShadowAssassinESP
 import io.github.meridian.features.impl.dungeons.ShortPFMessage
 import io.github.meridian.features.impl.dungeons.StarMobColor
 import io.github.meridian.features.impl.dungeons.StarMobESP
+import io.github.meridian.features.impl.dungeons.WatcherYapHider
 import io.github.meridian.features.impl.events.PrimalFearESP
 import io.github.meridian.features.impl.events.QuickMathsSolver
 import io.github.meridian.features.impl.farming.TrapperESP
@@ -110,6 +111,7 @@ object FeatureList {
         BloodFull,
         BloodCleared,
         SendBloodToParty,
+        WatcherYapHider,
         P1WishNotif,
         P3WishNotif,
         FFTimer,

@@ -5,7 +5,7 @@ import io.github.meridian.utils.ChatBlocker
 
 object WatcherYapHider : SwitchFeature(
     name = "Watcher Yap Hider",
-    description = "Hides some of the watchers yapping. \\nDoes NOT conflict with any other Meridian features.",
+    description = "Hides some of the watchers yapping. \nDoes NOT conflict with any other Meridian features.",
     category = "Dungeons",
     configKey = "watcher_yap_hider",
     subcategory = "Clear"
