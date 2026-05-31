@@ -25,7 +25,7 @@ object StarMobESP : SwitchFeature(
                 if (ent.distanceToSqr(player.x, player.y, player.z) > 100 * 100) continue
                 val name = ent.customName?.string ?: continue
                 if (name.contains("✯") && !name.endsWith("✯") && !name.contains("Fel")) {
-                    ESP.drawBox(ctx, ent, w = 1.0, h = 2.0, wz = 0.6, yOffset = -2.2, argb = StarMobColor.color)
+                    ESP.drawBox(ctx, ent, w = 1.0, h = 2.0, wz = 1.0, yOffset = -2.2, argb = StarMobColor.color)
                 }
             }
         }

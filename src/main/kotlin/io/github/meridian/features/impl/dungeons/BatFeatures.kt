@@ -51,7 +51,15 @@ object BatTracer : SwitchFeature (
             for (ent in level.entitiesForRendering()) {
                 if (ent !is Bat) continue
                 val p = ent.getPosition(Meridian.mc.deltaTracker.getGameTimeDeltaPartialTick(true))
-                ESP.drawTracer(ctx, p.x, p.y, p.z, BatESPColor.color)
+                val bats = level.entitiesForRendering().filterIsInstance<Bat>()
+                for (bat in bats) {
+                    // Fuck hypixel wither/blood doors
+                    val nearbyBat = bats.any { other ->
+                        other.id != bat.id && other.distanceToSqr(bat.x, bat.y, bat.z) <= 3.0 * 3.0
+                    }
+                    if (nearbyBat) continue
+                    ESP.drawTracer(ctx, p.x, p.y, p.z, BatESPColor.color)
+                }
             }
         }
     }
