@@ -1,4 +1,66 @@
 package io.github.meridian.features.impl.dungeons
 
-//object StormESP {
-//}
+import io.github.meridian.Meridian
+import io.github.meridian.features.ColorFeature
+import io.github.meridian.features.SwitchFeature
+import io.github.meridian.utils.ESP
+import io.github.meridian.utils.onChatMessage
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents
+import net.minecraft.client.multiplayer.ClientLevel
+import net.minecraft.world.entity.boss.wither.WitherBoss
+
+object StormESP : SwitchFeature(
+    name = "Storm ESP",
+    description = "Boxes Storm's §ohitbox during P2.",
+    category = "Dungeons",
+    configKey = "storm_esp",
+    subcategory = "P2"
+) {
+    // Storm's phase begins when he taunts Maxor and ends when Goldor starts his
+    // phase. We only box during that window so the ESP doesn't latch onto the
+    // other (visible) withers in later phases.
+    @Volatile private var stormPhase = false
+    private var lastLevel: ClientLevel? = null
+
+    init {
+        onChatMessage { text, _, _ ->
+            when (text) {
+                "[BOSS] Storm: Pathetic Maxor, just like expected." -> stormPhase = true
+                "[BOSS] Goldor: Who dares trespass into my domain?" -> stormPhase = false
+            }
+        }
+
+        // Reset on world change (CT "worldUnload"), independent of toggle state.
+        ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick {
+            val level = Meridian.mc.level
+            if (level !== lastLevel) {
+                lastLevel = level
+                stormPhase = false
+            }
+        })
+
+        WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
+            if (!enabled || !stormPhase) return@register
+            val level = Meridian.mc.level ?: return@register
+
+            // Storm is the only visible wither during his phase; the rest stay
+            // invisible until their turn.
+            val storm = level.entitiesForRendering()
+                .firstOrNull { it is WitherBoss && !it.isInvisible } as? WitherBoss ?: return@register
+
+            // Filled translucent box + wireframe edge around the wither's real
+            // hitbox. depth defaults to ESP.depth, honoring /md depth.
+            ESP.drawFilled(ctx, storm, argb = StormColor.color)
+        }
+    }
+}
+
+object StormColor : ColorFeature(
+    name = "Storm Color",
+    description = "",
+    category = "Dungeons",
+    configKey = "storm_color",
+    subcategory = "P2",
+    dependsOn = StormESP,
+)

@@ -14,6 +14,8 @@ import io.github.meridian.features.impl.dungeons.FFTimer
 import io.github.meridian.features.impl.dungeons.LividHealthHUD
 import io.github.meridian.features.impl.dungeons.FelColor
 import io.github.meridian.features.impl.dungeons.FelESP
+import io.github.meridian.features.impl.dungeons.GoldorColor
+import io.github.meridian.features.impl.dungeons.GoldorESP
 import io.github.meridian.features.impl.dungeons.LockedChestNotif
 import io.github.meridian.features.impl.dungeons.M5WishNotif
 import io.github.meridian.features.impl.dungeons.P1WishNotif
@@ -24,6 +26,8 @@ import io.github.meridian.features.impl.dungeons.ShadowAssassinESP
 import io.github.meridian.features.impl.dungeons.ShortPFMessage
 import io.github.meridian.features.impl.dungeons.StarMobColor
 import io.github.meridian.features.impl.dungeons.StarMobESP
+import io.github.meridian.features.impl.dungeons.StormColor
+import io.github.meridian.features.impl.dungeons.StormESP
 import io.github.meridian.features.impl.dungeons.WatcherYapHider
 import io.github.meridian.features.impl.events.PrimalFearESP
 import io.github.meridian.features.impl.events.QuickMathsSolver
@@ -113,7 +117,11 @@ object FeatureList {
         SendBloodToParty,
         WatcherYapHider,
         P1WishNotif,
+        StormESP,
+        StormColor,
         P3WishNotif,
+        GoldorESP,
+        GoldorColor,
         FFTimer,
         //LividHealthHUD,
         M5WishNotif,
