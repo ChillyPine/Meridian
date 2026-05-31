@@ -24,7 +24,7 @@ object StormESP : SwitchFeature(
     init {
         onChatMessage { text, _, _ ->
             when (text) {
-                "[BOSS] Thorn: Welcome Adventurers! I am Thorn, the Spirit! And host of the Vegan Trials!" -> stormPhase = true
+                "[BOSS] Storm: Pathetic Maxor, just like expected." -> stormPhase = true
                 "[BOSS] Goldor: Who dares trespass into my domain?" -> stormPhase = false
             }
         }

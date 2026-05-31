@@ -10,8 +10,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents
 import net.minecraft.client.multiplayer.ClientLevel
 import net.minecraft.world.entity.ambient.Bat
 
-// Bat esp
-
 object BatESP : SwitchFeature (
     name = "Bat ESP",
     description = "",
@@ -25,7 +23,7 @@ object BatESP : SwitchFeature (
     init {
         onChatMessage { text, _, _ ->
             when (text) {
-                "[BOSS] Storm: Pathetic Maxor, just like expected." -> inF4Boss = true
+                "[BOSS] Thorn: Welcome Adventurers! I am Thorn, the Spirit! And host of the Vegan Trials!" -> inF4Boss = true
             }
         }
 
