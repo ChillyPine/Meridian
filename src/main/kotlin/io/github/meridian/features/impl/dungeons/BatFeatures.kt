@@ -46,7 +46,7 @@ object BatTracer : SwitchFeature (
             for (ent in level.entitiesForRendering()) {
                 if (ent !is Bat) continue
                 val p = ent.getPosition(Meridian.mc.deltaTracker.getGameTimeDeltaPartialTick(true))
-                ESP.drawTracer(ctx, p.x, p.y - 1.0, p.z, BatESPColor.color)
+                ESP.drawTracer(ctx, p.x, p.y, p.z, BatESPColor.color)
             }
         }
     }
