@@ -4,8 +4,10 @@ import io.github.meridian.Meridian
 import io.github.meridian.features.ColorFeature
 import io.github.meridian.features.SwitchFeature
 import io.github.meridian.utils.ESP
+import io.github.meridian.utils.onChatMessage
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents
-import net.minecraft.world.entity.EntityType
+import net.minecraft.client.multiplayer.ClientLevel
 import net.minecraft.world.entity.ambient.Bat
 
 // Bat esp
@@ -17,9 +19,26 @@ object BatESP : SwitchFeature (
     configKey = "bat_esp",
     subcategory = "Clear"
 ) {
+    @Volatile var inF4Boss = false
+    private var lastLevel: ClientLevel? = null
+
     init {
+        onChatMessage { text, _, _ ->
+            when (text) {
+                "[BOSS] Storm: Pathetic Maxor, just like expected." -> inF4Boss = true
+            }
+        }
+
+        ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick {
+            val level = Meridian.mc.level
+            if (level !== lastLevel) {
+                lastLevel = level
+                inF4Boss = false
+            }
+        })
+
         WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
-            if (!enabled) return@register
+            if (!enabled || inF4Boss) return@register
             val level = Meridian.mc.level ?: return@register
             val player = Meridian.mc.player ?: return@register
             val bats = level.entitiesForRendering().filterIsInstance<Bat>()
@@ -46,7 +65,7 @@ object BatTracer : SwitchFeature (
 ) {
     init {
         WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
-            if (!enabled) return@register
+            if (!enabled || BatESP.inF4Boss) return@register
             val level = Meridian.mc.level ?: return@register
             for (ent in level.entitiesForRendering()) {
                 if (ent !is Bat) continue
