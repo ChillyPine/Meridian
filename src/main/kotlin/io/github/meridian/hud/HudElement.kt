@@ -18,7 +18,7 @@ abstract class HudElement(
     // Shown in the editor's hover tooltip — conventionally the owning feature's name.
     val name: String,
     private val defaultAnchorX: Float = 0.5f,
-    private val defaultAnchorY: Float = 0.1f,
+    private val defaultAnchorY: Float = 0.5f,
 ) {
     // Top-left anchor as a fraction [0,1] of the gui-scaled screen.
     var anchorX: Float = defaultAnchorX
@@ -55,7 +55,7 @@ abstract class HudElement(
     }
 
     companion object {
-        const val MIN_SCALE = 0.5f
+        const val MIN_SCALE = 1.0f
         const val MAX_SCALE = 10f
         const val LINE_GAP = 1 // unscaled px between stacked lines
     }

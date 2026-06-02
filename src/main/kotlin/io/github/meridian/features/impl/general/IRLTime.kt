@@ -24,7 +24,7 @@ object IRLTime : SwitchFeature(
         id = "irl_time",
         name = name,
         defaultAnchorX = 0.5f,
-        defaultAnchorY = 0.03f,
+        defaultAnchorY = 0.5f,
     ) {
         override val shadow = false
         override fun color(): Int = IRLClockColor.color
