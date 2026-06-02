@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import io.github.meridian.Meridian
+import io.github.meridian.features.impl.dungeons.ShitterList
 import io.github.meridian.hud.HudManager
 import io.github.meridian.utils.ESP
 import net.fabricmc.loader.api.FabricLoader
@@ -51,6 +52,9 @@ object FeatureManager {
             val hudJson = JsonObject()
             HudManager.saveTo(hudJson)
             root.add("hud", hudJson)
+            val shitterJson = JsonObject()
+            ShitterList.saveTo(shitterJson)
+            root.add("shitter", shitterJson)
             configFile.writeText(gson.toJson(root))
         } catch (e: Exception) {
             Meridian.logger.error("Failed to save Meridian config", e)
@@ -70,6 +74,7 @@ object FeatureManager {
             }
             root.getAsJsonObject("esp")?.let { ESP.loadFrom(it) }
             root.getAsJsonObject("hud")?.let { HudManager.loadFrom(it) }
+            root.getAsJsonObject("shitter")?.let { ShitterList.loadFrom(it) }
         } catch (e: Exception) {
             Meridian.logger.error("Failed to load Meridian config — falling back to defaults", e)
         }

@@ -11,7 +11,7 @@ import net.minecraft.client.input.KeyEvent
 // Standalone search input rendered below the main panel. Mirrors TextFeature's
 // editing semantics (selection, shift+arrow, double-click select-all,
 // Ctrl+A/C/V/X) but renders centered text and isn't persisted to config.
-class SearchBar {
+class SearchBar(private val placeholderText: String = "Search") {
 
     var query: String = ""
         private set
@@ -58,7 +58,7 @@ class SearchBar {
         val textY = y + (h - font.lineHeight) / 2 + 1
         val maxTextW = w - 8
 
-        val displayText = if (query.isEmpty() && !focused) PLACEHOLDER else query
+        val displayText = if (query.isEmpty() && !focused) placeholderText else query
         val displayColor = if (query.isEmpty() && !focused) 0xFF777777.toInt() else 0xFFFFFFFF.toInt()
 
         val textW = font.width(displayText).coerceAtMost(maxTextW)
@@ -207,7 +207,6 @@ class SearchBar {
     companion object {
         const val HEIGHT = 16
         private const val MAX_LENGTH = 64
-        private const val PLACEHOLDER = "Search"
         private const val DOUBLE_CLICK_MS = 400L
 
         private fun hasShift(): Boolean {

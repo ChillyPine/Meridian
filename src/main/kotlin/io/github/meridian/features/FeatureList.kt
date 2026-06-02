@@ -23,6 +23,7 @@ import io.github.meridian.features.impl.dungeons.P3WishNotif
 import io.github.meridian.features.impl.dungeons.SendBloodToParty
 import io.github.meridian.features.impl.dungeons.ShadowAssassinColor
 import io.github.meridian.features.impl.dungeons.ShadowAssassinESP
+import io.github.meridian.features.impl.dungeons.ShitterListButton
 import io.github.meridian.features.impl.dungeons.ShortPFMessage
 import io.github.meridian.features.impl.dungeons.StarMobColor
 import io.github.meridian.features.impl.dungeons.StarMobESP
@@ -130,6 +131,7 @@ object FeatureList {
         DungeonEndMusic,
         ShortPFMessage,
         BlockPFWarning,
+        ShitterListButton,
         // Farming
         TrapperESP,
         // Mining
