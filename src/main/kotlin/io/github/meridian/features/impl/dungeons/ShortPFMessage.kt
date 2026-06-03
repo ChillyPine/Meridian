@@ -2,6 +2,7 @@ package io.github.meridian.features.impl.dungeons
 
 import io.github.meridian.features.SwitchFeature
 import io.github.meridian.utils.sendClientMessage
+import io.github.meridian.utils.simulateGameMessage
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 
 object ShortPFMessage : SwitchFeature(
@@ -28,7 +29,7 @@ object ShortPFMessage : SwitchFeature(
 
             joinRegex.find(plain)?.let { m ->
                 val (ign, cls, lvl) = m.destructured
-                sendClientMessage("§dPF §f> §b$ign §ajoined §7(§e$cls $lvl§7)")
+                simulateGameMessage("§dPF §f> §b$ign §ajoined §7(§e$cls $lvl§7)")
                 return@register false
             }
 

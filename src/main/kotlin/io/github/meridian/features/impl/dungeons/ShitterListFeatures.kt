@@ -20,11 +20,15 @@ object AutoKickShitter : SwitchFeature(
 
     private val joinRegex =
         Regex("^Party Finder > (\\w+) joined the dungeon group! \\(.+\\)$")
+    private val shortJoinRegex =
+        Regex("^PF > (\\S+) joined \\(.+\\)$")
 
     init {
         onChatMessage { text, _, _ ->
             if (!isActive()) return@onChatMessage
-            val player = joinRegex.find(text)?.groupValues?.get(1) ?: return@onChatMessage
+            val player = joinRegex.find(text)?.groupValues?.get(1)
+                ?: shortJoinRegex.find(text)?.groupValues?.get(1)
+                ?: return@onChatMessage
             if (!ShitterList.contains(player)) return@onChatMessage
 
             CompletableFuture.delayedExecutor(350, TimeUnit.MILLISECONDS)
@@ -42,6 +46,8 @@ object AnnounceShitter : SwitchFeature(
 ) {
     private val pfJoinRegex =
         Regex("^Party Finder > (\\w+) joined the dungeon group! \\(.+\\)$")
+    private val shortPfJoinRegex =
+        Regex("^PF > (\\S+) joined \\(.+\\)$")
     private val partyJoinRegex =
         Regex("^(?:\\[.+?] )?(\\w+) joined the party\\.$")
 
@@ -49,6 +55,7 @@ object AnnounceShitter : SwitchFeature(
         onChatMessage { text, _, _ ->
             if (!isActive()) return@onChatMessage
             val player = pfJoinRegex.find(text)?.groupValues?.get(1)
+                ?: shortPfJoinRegex.find(text)?.groupValues?.get(1)
                 ?: partyJoinRegex.find(text)?.groupValues?.get(1)
                 ?: return@onChatMessage
             if (!ShitterList.contains(player)) return@onChatMessage
