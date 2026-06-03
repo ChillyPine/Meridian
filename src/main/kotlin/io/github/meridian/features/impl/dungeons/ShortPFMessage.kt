@@ -11,20 +11,33 @@ object ShortPFMessage : SwitchFeature(
     configKey = "short_pf_message",
     subcategory = "Miscellaneous",
 ) {
+    private val joinRegex =
+        Regex("""Party Finder > (\S+) joined the dungeon group! \((Tank|Archer|Mage|Healer|Berserker) Level (\d+)\)""")
+
     private val replacements = listOf(
-        "Party Finder > Your party has been queued in the dungeon finder!"  to "§dPF §f> §aQueued",
-        "Party Finder > Your group has been de-listed!"                     to "§dPF §f> §cDe-listed",
+        "Party Finder > Your party has been queued in the dungeon finder!" to "§dPF §f> §aQueued",
+        "Party Finder > Your group has been de-listed!" to "§dPF §f> §cDe-listed",
         "Party Finder > Your group has been removed from the party finder!" to "§dPF §f> §cGroup Removed",
-        "Party Finder > This group has been de-listed."                     to "§dPF §f> §cGroup Not Found",
+        "Party Finder > This group has been de-listed." to "§dPF §f> §cGroup Not Found",
     )
+
     init {
         ClientReceiveMessageEvents.ALLOW_GAME.register { message, overlay ->
             if (overlay || !enabled) return@register true
             val plain = message.string
-            val match = replacements.firstOrNull { plain.contains(it.first) }
-                ?: return@register true
-            sendClientMessage(match.second)
-            false
+
+            joinRegex.find(plain)?.let { m ->
+                val (ign, cls, lvl) = m.destructured
+                sendClientMessage("§dPF §f> §b$ign §ajoined §7(§e$cls $lvl§7)")
+                return@register false
+            }
+
+            replacements.firstOrNull { plain.contains(it.first) }
+                ?.let { sendClientMessage(it.second); return@register false }
+
+            true
         }
     }
 }
+
+
