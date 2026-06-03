@@ -23,6 +23,7 @@ import io.github.meridian.features.impl.dungeons.LockedChestNotif
 import io.github.meridian.features.impl.dungeons.M5WishNotif
 import io.github.meridian.features.impl.dungeons.P1WishNotif
 import io.github.meridian.features.impl.dungeons.P3WishNotif
+import io.github.meridian.features.impl.dungeons.PartyActions
 import io.github.meridian.features.impl.dungeons.SendBloodToParty
 import io.github.meridian.features.impl.dungeons.ShadowAssassinColor
 import io.github.meridian.features.impl.dungeons.ShadowAssassinESP
@@ -133,6 +134,7 @@ object FeatureList {
         M5WishNotif,
         DungeonEndMusic,
         ShortPFMessage,
+        PartyActions,
         BlockPFWarning,
         ShitterListButton,
         AutoKickShitter,
