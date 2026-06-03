@@ -103,19 +103,7 @@ object MeridianCommand {
                             )
                             .then(
                                 literal("reset").executes { _ ->
-                                    ShitterList.promptReset()
-                                    1
-                                }
-                            )
-                            .then(
-                                literal("resetconfirm").executes { _ ->
-                                    ShitterList.confirmReset()
-                                    1
-                                }
-                            )
-                            .then(
-                                literal("resetcancel").executes { _ ->
-                                    ShitterList.cancelReset()
+                                    ShitterList.resetCommand()
                                     1
                                 }
                             )

@@ -11,11 +11,6 @@ import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
 
 // Party list quick actions, extra party list quick actions
-//
-// When the server prints the party list (via /p list, /p, etc.) this scans the
-// Leader / Moderators / Members lines and, for each player, drops a clickable
-// row of action buttons into the client chat (PV / Kick / Block / Shitterlist,
-// plus Promote / Transfer if the extra-actions child is on).
 object PLActions : SwitchFeature (
     name = "Party List Quick Actions",
     description = "Lets you quickly Kick, Ignore, Shitterlist, or PV any party member.",
@@ -23,8 +18,6 @@ object PLActions : SwitchFeature (
     configKey = "pl_actions",
     subcategory = "Party"
 ) {
-    // Leader line carries an optional rank bracket before the name; members and
-    // mods are parsed positionally (last token of each "● "-delimited entry).
     private val leaderRegex = Regex("^Party Leader: (?:\\[.*?] )?(\\w+) ●$")
 
     init {
@@ -45,16 +38,12 @@ object PLActions : SwitchFeature (
         }
     }
 
-    // Each entry looks like "[RANK] Name" (rank optional); the username is always
-    // the final whitespace-delimited token. Entries are separated by " ●".
     private fun namesFrom(rest: String): List<String> =
         rest.trim().split(" ●")
             .map { it.trim() }
             .filter { it.isNotEmpty() }
             .map { it.split(" ").last() }
 
-    // Build the clickable button row and drop it into chat a tick later, so it
-    // renders just beneath the party-list line that triggered it.
     private fun emitActions(player: String) {
         val line = buildButtons(player)
         CompletableFuture.delayedExecutor(100, TimeUnit.MILLISECONDS)
@@ -71,12 +60,8 @@ object PLActions : SwitchFeature (
         line.append(button("§4[Block] ", "/ignore add $player", "§4Block §b$player"))
         line.append(Component.literal("§7❘ "))
 
-        // Shitterlist isn't implemented in Meridian yet, so this button is inert:
-        // it shows and hovers, but the click action is intentionally left off.
-        // When the list lands, wire it up with:
-        //     button(slLabel, "/shitter add $player", "§dAdd §b$player §dto Shitter List")
         val slLabel = if (PLMoreActions.isActive()) "§d[SL]" else "§d[Shitterlist]"
-        line.append(button(slLabel, null, "§dAdd §b$player §dto Shitter List"))
+        line.append(button(slLabel, "/md shitter add $player", "§dAdd §b$player §dto Shitter List"))
 
         if (PLMoreActions.isActive()) {
             line.append(Component.literal("§7 ❘ "))
@@ -88,8 +73,6 @@ object PLActions : SwitchFeature (
         return line
     }
 
-    // A label that runs `command` on click (when non-null) and shows `hover` text
-    // on mouse-over.
     private fun button(label: String, command: String?, hover: String): MutableComponent =
         Component.literal(label).withStyle { style ->
             var s = style.withHoverEvent(HoverEvent.ShowText(Component.literal(hover)))

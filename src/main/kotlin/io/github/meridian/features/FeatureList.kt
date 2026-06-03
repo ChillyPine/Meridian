@@ -1,6 +1,8 @@
 package io.github.meridian.features
 // ALL NEW FEATURES NEED TO BE IMPORTED BELOW IN ADDITION TO BEING ADDED TO THE FeatureList!
 // Tab autocomplete adds imports automatically
+import io.github.meridian.features.impl.dungeons.AnnounceShitter
+import io.github.meridian.features.impl.dungeons.AutoKickShitter
 import io.github.meridian.features.impl.dungeons.BatESP
 import io.github.meridian.features.impl.dungeons.BatESPColor
 import io.github.meridian.features.impl.dungeons.BatTracer
@@ -9,6 +11,7 @@ import io.github.meridian.features.impl.dungeons.BloodCleared
 import io.github.meridian.features.impl.dungeons.BloodFull
 import io.github.meridian.features.impl.dungeons.BloodNotifs
 import io.github.meridian.features.impl.dungeons.BloodOpen
+import io.github.meridian.features.impl.dungeons.CustomShitterMessage
 import io.github.meridian.features.impl.dungeons.DungeonEndMusic
 import io.github.meridian.features.impl.dungeons.FFTimer
 import io.github.meridian.features.impl.dungeons.LividHealthHUD
@@ -132,6 +135,9 @@ object FeatureList {
         ShortPFMessage,
         BlockPFWarning,
         ShitterListButton,
+        AutoKickShitter,
+        AnnounceShitter,
+        CustomShitterMessage,
         // Farming
         TrapperESP,
         // Mining

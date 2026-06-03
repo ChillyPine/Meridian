@@ -26,7 +26,10 @@ object ShitterListButton : ButtonFeature(
 
 object ShitterList {
     private const val PAGE_SIZE = 8
-    private const val PREFIX = "§6Shitter §5»§r "
+    private const val PREFIX = "§6Meridian §5»§r "
+
+    private const val CONFIRM_WINDOW_MS = 10_000L
+    private var armedUntil = 0L
 
     private val players = mutableListOf<String>()
 
@@ -121,25 +124,23 @@ object ShitterList {
         sendClientMessage("§r§5§m                                                            §r")
     }
 
-    fun promptReset() {
+    fun resetCommand() {
         if (players.isEmpty()) {
+            armedUntil = 0L
             modMessage("§fThe shitter list is already empty.", PREFIX)
             return
         }
+        if (System.currentTimeMillis() <= armedUntil) {
+            armedUntil = 0L
+            reset()
+            modMessage("§fThe shitter list has been reset.", PREFIX)
+            return
+        }
+        armedUntil = System.currentTimeMillis() + CONFIRM_WINDOW_MS
         val msg = Component.literal("${PREFIX}§cReset the entire shitter list (${players.size} player${plural(players.size)})? ")
-            .append(link("§a§l[YES]", "/md shitter resetconfirm", "§aConfirm — wipe the list"))
-            .append(Component.literal(" "))
-            .append(link("§c§l[NO]", "/md shitter resetcancel", "§cCancel"))
+            .append(link("§a§l[CONFIRM]", "/md shitter reset", "§aClick to confirm — wipe the list"))
+            .append(Component.literal(" §7or run §f/md shitter reset §7again within 10s. Ignore to cancel."))
         sendClientMessage(msg)
-    }
-
-    fun confirmReset() {
-        reset()
-        modMessage("§fThe shitter list has been reset.", PREFIX)
-    }
-
-    fun cancelReset() {
-        modMessage("§fReset cancelled.", PREFIX)
     }
 
     fun saveTo(json: JsonObject) {
