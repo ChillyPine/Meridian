@@ -44,6 +44,12 @@ class SearchBar(private val placeholderText: String = "Search") {
         selectionAnchor = 0
     }
 
+    fun setText(text: String) {
+        query = text.take(MAX_LENGTH)
+        cursorPos = query.length
+        selectionAnchor = cursorPos
+    }
+
     fun render(g: GuiGraphics, font: Font, x: Int, y: Int, w: Int, h: Int) {
         inputX = x; inputY = y; inputW = w
 

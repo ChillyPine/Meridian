@@ -32,17 +32,36 @@ object ShitterList {
     private var armedUntil = 0L
 
     private val players = mutableListOf<String>()
+    // Reasons keyed by lowercased IGN, kept separate from [players] so the
+    // ordering/casing of the visible name list stays untouched. Never surfaced
+    // in `/md shitter list` — only the GUI reads these (on hover / edit).
+    private val reasons = mutableMapOf<String, String>()
 
     fun all(): List<String> = players.toList()
     fun size(): Int = players.size
     fun contains(name: String): Boolean =
         players.any { it.equals(name.trim(), ignoreCase = true) }
 
-    fun add(name: String): Boolean {
+    /** The reason for [name], or null if none is set (blanks treated as none). */
+    fun reasonFor(name: String): String? =
+        reasons[name.trim().lowercase()]?.takeIf { it.isNotBlank() }
+
+    /** Sets/updates/clears the reason for an already-listed player. */
+    fun setReason(name: String, reason: String) {
+        val trimmed = name.trim()
+        if (!contains(trimmed)) return
+        val key = trimmed.lowercase()
+        val r = reason.trim()
+        if (r.isEmpty()) reasons.remove(key) else reasons[key] = r
+        FeatureManager.save()
+    }
+
+    fun add(name: String, reason: String? = null): Boolean {
         val trimmed = name.trim()
         if (trimmed.isEmpty() || contains(trimmed)) return false
         players += trimmed
         players.sortBy { it.lowercase() }
+        if (!reason.isNullOrBlank()) reasons[trimmed.lowercase()] = reason.trim()
         FeatureManager.save()
         return true
     }
@@ -50,25 +69,34 @@ object ShitterList {
     fun remove(name: String): Boolean {
         val idx = players.indexOfFirst { it.equals(name.trim(), ignoreCase = true) }
         if (idx == -1) return false
-        players.removeAt(idx)
+        val removed = players.removeAt(idx)
+        reasons.remove(removed.lowercase())
         FeatureManager.save()
         return true
     }
 
     fun reset() {
         players.clear()
+        reasons.clear()
         FeatureManager.save()
     }
 
     fun addCommand(raw: String) {
-        val names = splitNames(raw)
-        if (names.isEmpty()) {
-            modMessage("§cUsage: /md shitter add <player> [player...]", PREFIX)
+        val entries = parseAddArgs(raw)
+        if (entries.isEmpty()) {
+            modMessage("§cUsage: /md shitter add <player> [\"reason\"] [player...]", PREFIX)
             return
         }
-        for (name in names) {
-            if (add(name)) modMessage("§fAdded §b$name §fto the shitter list.", PREFIX)
-            else modMessage("§b$name §fis already on the shitter list.", PREFIX)
+        for ((name, reason) in entries) {
+            if (add(name, reason)) {
+                if (reason != null) modMessage("§fAdded §b$name §fto the shitter list. §7($reason)", PREFIX)
+                else modMessage("§fAdded §b$name §fto the shitter list.", PREFIX)
+            } else if (reason != null) {
+                setReason(name, reason)
+                modMessage("§b$name §fis already listed — updated reason. §7($reason)", PREFIX)
+            } else {
+                modMessage("§b$name §fis already on the shitter list.", PREFIX)
+            }
         }
     }
 
@@ -147,16 +175,62 @@ object ShitterList {
         val arr = JsonArray()
         players.forEach(arr::add)
         json.add("players", arr)
+        val reasonObj = JsonObject()
+        reasons.forEach { (k, v) -> reasonObj.addProperty(k, v) }
+        json.add("reasons", reasonObj)
     }
 
     fun loadFrom(json: JsonObject) {
         players.clear()
+        reasons.clear()
         json.getAsJsonArray("players")?.forEach { players += it.asString }
         players.sortBy { it.lowercase() }
+        // "reasons" is absent in configs written before this feature existed.
+        json.getAsJsonObject("reasons")?.entrySet()?.forEach { (k, v) -> reasons[k] = v.asString }
     }
 
     private fun splitNames(raw: String): List<String> =
         raw.trim().split(Regex("\\s+")).filter { it.isNotEmpty() }
+
+    /**
+     * Parses an `add` argument string into (name, reason?) entries. Bare tokens
+     * are names; a quoted segment (straight or curly quotes) is a reason that
+     * attaches to the most recently seen name, e.g.
+     *   `Notch "He cheated" Dinnerbone`  -> [(Notch, "He cheated"), (Dinnerbone, null)]
+     */
+    private fun parseAddArgs(raw: String): List<Pair<String, String?>> {
+        val entries = mutableListOf<Pair<String, String?>>()
+        val s = raw.trim()
+        var i = 0
+        while (i < s.length) {
+            val c = s[i]
+            when {
+                c.isWhitespace() -> i++
+                c == '"' || c == '“' || c == '”' -> {
+                    val sb = StringBuilder()
+                    i++
+                    while (i < s.length && s[i] != '"' && s[i] != '“' && s[i] != '”') {
+                        sb.append(s[i]); i++
+                    }
+                    if (i < s.length) i++ // consume closing quote
+                    val reason = sb.toString().trim()
+                    // Attach to the previous name; a leading/orphan quote is ignored.
+                    if (reason.isNotEmpty() && entries.isNotEmpty()) {
+                        entries[entries.lastIndex] = entries.last().first to reason
+                    }
+                }
+                else -> {
+                    val sb = StringBuilder()
+                    while (i < s.length && !s[i].isWhitespace() &&
+                           s[i] != '"' && s[i] != '“' && s[i] != '”') {
+                        sb.append(s[i]); i++
+                    }
+                    if (sb.isNotEmpty()) entries += sb.toString() to null
+                }
+            }
+        }
+        return entries
+    }
 
     private fun plural(n: Int): String = if (n == 1) "" else "s"
 
