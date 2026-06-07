@@ -12,6 +12,8 @@ import io.github.meridian.features.impl.dungeons.BloodFull
 import io.github.meridian.features.impl.dungeons.BloodNotifs
 import io.github.meridian.features.impl.dungeons.BloodOpen
 import io.github.meridian.features.impl.dungeons.CustomShitterMessage
+import io.github.meridian.features.impl.dungeons.DoorKeyESP
+import io.github.meridian.features.impl.dungeons.DoorKeyESPColor
 import io.github.meridian.features.impl.dungeons.DungeonEndMusic
 import io.github.meridian.features.impl.dungeons.FFTimer
 import io.github.meridian.features.impl.dungeons.LividHealthHUD
@@ -26,6 +28,7 @@ import io.github.meridian.features.impl.dungeons.P1WishNotif
 import io.github.meridian.features.impl.dungeons.P3WishNotif
 import io.github.meridian.features.impl.dungeons.PartyActions
 import io.github.meridian.features.impl.dungeons.PlayProcSound
+import io.github.meridian.features.impl.dungeons.PlaySoundOnKeyDrop
 import io.github.meridian.features.impl.dungeons.SendBloodToParty
 import io.github.meridian.features.impl.dungeons.SendMaskInPartyChat
 import io.github.meridian.features.impl.dungeons.ShadowAssassinColor
@@ -80,7 +83,12 @@ import io.github.meridian.features.impl.mining.KeyGuardianESP
 // ORDER MATTERS - KEEP THINGS IN THE CORRECT ORDER!
 object FeatureList {
     private val all: List<Feature> = listOf(
-        // General
+
+        // ================================================== //
+        //                      GENERAL                       //
+        // ================================================== //
+
+        // --- ESPs ---
         RunicMobESP,
         RunicMobTracer,
         RunicMobColor,
@@ -93,23 +101,35 @@ object FeatureList {
         PlayerESPMode,
         SpecificPlayerESP,
         FemboyESP,
+
+        // --- ! Commands ---
         DTCommand,
         CoordsCommand,
-        //PTCommand,
+        // PTCommand, <- NOT IMPLEMENTED
+
+        // --- Chat Blockers ---
         BlockBlocksInWay,
         BlockGEXP,
         BlockProfileID,
         BlockProfileProduce,
         BlockHOTFM,
         BlockDiscord,
+
+        // --- Party ---
         PLActions,
         PLMoreActions,
+
+        // --- Miscellaneous ---
         IRLTime,
         IRLClockColor,
         RemoveNausea,
         NonRemover,
         SoundListButton,
-        // Dungeons
+        // ================================================== //
+        //                     DUNGEONS                       //
+        // ================================================== //
+
+        // --- Clear ---
         StarMobESP,
         StarMobColor,
         FelESP,
@@ -120,20 +140,31 @@ object FeatureList {
         BatTracer,
         BatESPColor,
         LockedChestNotif,
+        DoorKeyESP,
+        DoorKeyESPColor,
+        PlaySoundOnKeyDrop,
         BloodNotifs,
         BloodOpen,
         BloodFull,
         BloodCleared,
         SendBloodToParty,
         WatcherYapHider,
+
+        // --- P1 ---
         P1WishNotif,
+
+        // --- P2 ---
         StormESP,
         StormColor,
+
+        // --- P3 ---
         P3WishNotif,
         GoldorESP,
         GoldorColor,
+
+        // --- Miscellaneous ---
         FFTimer,
-        //LividHealthHUD,
+        //LividHealthHUD, <- NOT IMPLEMTNTED
         M5WishNotif,
         MaskUsed,
         PlayProcSound,
@@ -146,16 +177,28 @@ object FeatureList {
         AutoKickShitter,
         AnnounceShitter,
         CustomShitterMessage,
-        // Farming
+
+        // ================================================== //
+        //                      FARMING                       //
+        // ================================================== //
+
         TrapperESP,
-        // Mining
+
+        // ================================================== //
+        //                      MINING                        //
+        // ================================================== //
+
         ButterflyESP,
         ButterflyTracer,
         CorleoneESP,
         GoldenGoblinESP,
         DiamondGoblinESP,
         KeyGuardianESP,
-        // Events
+
+        // ================================================== //
+        //                      EVENTS                        //
+        // ================================================== //
+
         PrimalFearESP,
         QuickMathsSolver
     )
