@@ -21,10 +21,13 @@ import io.github.meridian.features.impl.dungeons.GoldorColor
 import io.github.meridian.features.impl.dungeons.GoldorESP
 import io.github.meridian.features.impl.dungeons.LockedChestNotif
 import io.github.meridian.features.impl.dungeons.M5WishNotif
+import io.github.meridian.features.impl.dungeons.MaskUsed
 import io.github.meridian.features.impl.dungeons.P1WishNotif
 import io.github.meridian.features.impl.dungeons.P3WishNotif
 import io.github.meridian.features.impl.dungeons.PartyActions
+import io.github.meridian.features.impl.dungeons.PlayProcSound
 import io.github.meridian.features.impl.dungeons.SendBloodToParty
+import io.github.meridian.features.impl.dungeons.SendMaskInPartyChat
 import io.github.meridian.features.impl.dungeons.ShadowAssassinColor
 import io.github.meridian.features.impl.dungeons.ShadowAssassinESP
 import io.github.meridian.features.impl.dungeons.ShitterListButton
@@ -132,6 +135,9 @@ object FeatureList {
         FFTimer,
         //LividHealthHUD,
         M5WishNotif,
+        MaskUsed,
+        PlayProcSound,
+        SendMaskInPartyChat,
         DungeonEndMusic,
         ShortPFMessage,
         PartyActions,
