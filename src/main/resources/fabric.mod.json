@@ -10,7 +10,8 @@
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/ChillyPine/Meridian"
+		"sources": "https://github.com/ChillyPine/Meridian",
+		"issues" : "https://github.com/ChillyPine/Meridian/issues"
 	},
 	"license": "MIT",
 	"icon": "assets/meridian/icon.png",
