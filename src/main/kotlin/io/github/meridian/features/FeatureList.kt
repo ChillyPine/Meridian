@@ -164,7 +164,7 @@ object FeatureList {
 
         // --- Miscellaneous ---
         FFTimer,
-        //LividHealthHUD, <- NOT IMPLEMTNTED
+        //LividHealthHUD, <- NOT IMPLEMENTED
         M5WishNotif,
         MaskUsed,
         PlayProcSound,
