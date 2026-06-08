@@ -13,7 +13,7 @@ object ShortPFMessage : SwitchFeature(
     subcategory = "Miscellaneous",
 ) {
     private val joinRegex =
-        Regex("""Party Finder > (\S+) joined the dungeon group! \((Tank|Archer|Mage|Healer|Berserker) Level (\d+)\)""")
+        Regex("""Party Finder > (\S+) joined the dungeon group! \((Tank|Archer|Mage|Healer|Berserk) Level (\d+)\)""")
 
     private val replacements = listOf(
         "Party Finder > Your party has been queued in the dungeon finder!" to "§dPF §f> §aQueued",
