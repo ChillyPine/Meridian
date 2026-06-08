@@ -12,11 +12,13 @@ import io.github.meridian.utils.ESP
 import io.github.meridian.utils.modMessage
 import io.github.meridian.utils.sendClientMessage
 import io.github.meridian.utils.simulateGameMessage
+import io.github.meridian.gui.CalculatorScreen
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.network.chat.Component
+
 
 object MeridianCommand {
     fun register() {
@@ -123,6 +125,12 @@ object MeridianCommand {
                                         0
                                     }
                             )
+                    )
+                    .then(
+                        literal("calc").executes { _ ->
+                            Meridian.mc.execute { Meridian.mc.setScreen(CalculatorScreen()) }
+                            1
+                        }
                     )
                     .then(
                         argument("subcommand", StringArgumentType.greedyString())
