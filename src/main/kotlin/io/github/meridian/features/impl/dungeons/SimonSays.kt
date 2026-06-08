@@ -5,9 +5,11 @@ import io.github.meridian.utils.modMessage
 import io.github.meridian.utils.onChatMessage
 import net.minecraft.client.Minecraft
 
+// Big thanks to Soon2BeATaco_ for some of the logic and regex here! :D <3
+// TODO: Add party notifcation for SS time
 object SimonSaysTime : SwitchFeature(
     name = "Simon Says Time",
-    description = "Tells you how long it took to complete simon says",
+    description = "Sends a local chat message with the Simon Says completion time.",
     category = "Dungeons",
     configKey = "simon_says_time",
     subcategory = "P3",
