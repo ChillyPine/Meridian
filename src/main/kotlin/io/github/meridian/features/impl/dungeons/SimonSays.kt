@@ -3,9 +3,7 @@ package io.github.meridian.features.impl.dungeons
 import io.github.meridian.features.SwitchFeature
 import io.github.meridian.utils.modMessage
 import io.github.meridian.utils.onChatMessage
-import io.github.meridian.utils.sendCommand
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
-import net.minecraft.world.entity.decoration.ArmorStand
+import net.minecraft.client.Minecraft
 
 object SimonSaysTime : SwitchFeature(
     name = "Simon Says Time",
@@ -16,10 +14,7 @@ object SimonSaysTime : SwitchFeature(
 ) {
     private var ssStartTime: Long? = null
     private var announced = false
-
-    private fun inSSBounds(x: Double, y: Double, z: Double): Boolean {
-        return y > 110 && x >= 100 && x <= 120 && z >= 85 && z <= 100
-    }
+    private val deviceRegex = Regex("""^([\w_]+) completed a device! \(\d/7\)""")
 
     private fun timeColor(seconds: Double): String = when {
         seconds < 12.0  -> "§a"
@@ -30,40 +25,28 @@ object SimonSaysTime : SwitchFeature(
     init {
         onChatMessage { text, _, _ ->
             if (!enabled) return@onChatMessage
-            if (!text.startsWith("[BOSS] Goldor: Who dares trespass into my domain?")) return@onChatMessage
-            ssStartTime = System.currentTimeMillis()
-            announced = false
-        }
 
-        ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick { client ->
-            if (!enabled) return@EndTick
-            val startTime = ssStartTime ?: return@EndTick
-            if (announced) return@EndTick
-            val level = client.level ?: return@EndTick
-
-            for (ent in level.entitiesForRendering()) {
-                if (ent !is ArmorStand) continue
-                val name = ent.customName?.string ?: continue
-                val pos = ent.position()
-                val elapsed = (System.currentTimeMillis() - startTime) / 1000.0
-                if (name.contains("Active") && inSSBounds(pos.x, pos.y, pos.z)) {
-                    modMessage("§fSimon Says Took: ${timeColor(elapsed)}${String.format("%.2f", elapsed)}s")
-                    announced = true
-                    ssStartTime = null
-                    break
-                }
+            if (text.startsWith("[BOSS] Goldor: Who dares trespass into my domain?")) {
+                ssStartTime = System.currentTimeMillis()
+                announced = false
+                return@onChatMessage
             }
-        })
+
+            if (announced) return@onChatMessage
+            val start = ssStartTime ?: return@onChatMessage
+
+            val playerName = deviceRegex.find(text)?.groupValues?.getOrNull(1) ?: return@onChatMessage
+
+            val mc = Minecraft.getInstance()
+            val entity = mc.level?.entitiesForRendering()
+                ?.find { it.name.string == playerName } ?: return@onChatMessage
+
+            if (entity.distanceToSqr(109.0, 120.0, 94.0) > 5) return@onChatMessage
+
+            val elapsed = (System.currentTimeMillis() - start) / 1000.0
+            modMessage("§fSimon Says Took: ${timeColor(elapsed)}${String.format("%.2f", elapsed)}s")
+            announced = true
+            ssStartTime = null
+        }
     }
 }
-//TODO: Send that shit in party chat
-/*
-object SendSSTime : SwitchFeature(
-    name = "Send Simon Says Time",
-    description = "Sends how long it took to complete simon says in party chat",
-    category = "Dungeons",
-    configKey = "send_sstime_in_party",
-    subcategory = "P3",
-    dependsOn = SimonSaysTime
-)
-*/
