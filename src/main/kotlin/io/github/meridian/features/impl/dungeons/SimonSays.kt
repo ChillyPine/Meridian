@@ -18,7 +18,7 @@ object SimonSaysTime : SwitchFeature(
     private var announced = false
 
     private fun inSSBounds(x: Double, y: Double, z: Double): Boolean {
-        return y > 110 && x >= 100 && x <= 110 && z >= 90 && z <= 100
+        return y > 110 && x >= 100 && x <= 120 && z >= 85 && z <= 100
     }
 
     private fun timeColor(seconds: Double): String = when {
