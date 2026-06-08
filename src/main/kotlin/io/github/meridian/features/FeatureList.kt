@@ -31,10 +31,12 @@ import io.github.meridian.features.impl.dungeons.PlayProcSound
 import io.github.meridian.features.impl.dungeons.PlaySoundOnKeyDrop
 import io.github.meridian.features.impl.dungeons.SendBloodToParty
 import io.github.meridian.features.impl.dungeons.SendMaskInPartyChat
+import io.github.meridian.features.impl.dungeons.SendSSTime
 import io.github.meridian.features.impl.dungeons.ShadowAssassinColor
 import io.github.meridian.features.impl.dungeons.ShadowAssassinESP
 import io.github.meridian.features.impl.dungeons.ShitterListButton
 import io.github.meridian.features.impl.dungeons.ShortPFMessage
+import io.github.meridian.features.impl.dungeons.SimonSaysTime
 import io.github.meridian.features.impl.dungeons.StarMobColor
 import io.github.meridian.features.impl.dungeons.StarMobESP
 import io.github.meridian.features.impl.dungeons.StormColor
@@ -163,6 +165,8 @@ object FeatureList {
         P3WishNotif,
         GoldorESP,
         GoldorColor,
+        SimonSaysTime,
+        //SendSSTime,
 
         // --- Miscellaneous ---
         FFTimer,
