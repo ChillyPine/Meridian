@@ -49,6 +49,7 @@ import io.github.meridian.features.impl.general.BlockGEXP
 import io.github.meridian.features.impl.general.BlockHOTFM
 import io.github.meridian.features.impl.general.BlockProfileID
 import io.github.meridian.features.impl.general.BlockProfileProduce
+import io.github.meridian.features.impl.general.BlockWatchdog
 import io.github.meridian.features.impl.general.CoordsCommand
 import io.github.meridian.features.impl.general.IRLClockColor
 import io.github.meridian.features.impl.general.IRLTime
@@ -114,6 +115,7 @@ object FeatureList {
         BlockProfileProduce,
         BlockHOTFM,
         BlockDiscord,
+        BlockWatchdog,
 
         // --- Party ---
         PLActions,

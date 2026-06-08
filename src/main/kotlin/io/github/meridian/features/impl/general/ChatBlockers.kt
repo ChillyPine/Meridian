@@ -3,6 +3,7 @@ package io.github.meridian.features.impl.general
 import io.github.meridian.Meridian
 import io.github.meridian.features.SwitchFeature
 import io.github.meridian.utils.ChatBlocker
+import io.github.meridian.utils.modMessage
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
@@ -71,10 +72,6 @@ object BlockDiscord : SwitchFeature (
     private const val WARNING = "Please be mindful of Discord links in chat as they may pose a security risk"
 
     init {
-        // Hypixel appends the warning to the original chat message instead of
-        // sending it separately, so a plain ALLOW_GAME veto would also drop the
-        // user's "discord" line. Rebuild the component without the warning and
-        // re-emit it.
         ClientReceiveMessageEvents.ALLOW_GAME.register { message, _ ->
             if (!enabled || WARNING !in message.string) return@register true
             val cleaned = stripWarning(message)
@@ -88,18 +85,29 @@ object BlockDiscord : SwitchFeature (
     private fun stripWarning(src: Component): Component? {
         val rebuilt: MutableComponent =
             MutableComponent.create(src.contents).setStyle(src.style)
-        // If the warning lives in the root contents itself we can't cleanly
-        // peel it off — bail and let the whole message be dropped.
         if (WARNING in rebuilt.string) return null
         val kept = mutableListOf<Component>()
         for (sib in src.siblings) {
             if (WARNING in sib.string) break
             kept += sib
         }
-        // Drop trailing blank siblings (newlines/spaces left over from the
-        // separator between the original message and the warning).
         while (kept.isNotEmpty() && kept.last().string.isBlank()) kept.removeAt(kept.size - 1)
         kept.forEach { rebuilt.append(it) }
         return rebuilt
+    }
+}
+
+object BlockWatchdog : SwitchFeature (
+    name = "Block Watchdog Intimidation Message",
+    description = "Blocks \"Watchdog has banned 9,999 players in the past 7 days!\"",
+    category = "General",
+    configKey = "block_watchdog",
+    subcategory = "Chat Blockers",
+) {
+    init {
+        ChatBlocker.register( { enabled }, Regex("^\\[WATCHDOG ANNOUNCEMENT\\]$"))
+        ChatBlocker.register( { enabled }, Regex("^Watchdog has banned .* players in the last 7 days\\.$"))
+        ChatBlocker.register( { enabled }, Regex("^Staff have banned an additional .* in the last 7 days\\.$"))
+        ChatBlocker.register( { enabled }, Regex("^Blacklisted modifications are a bannable offense!$"))
     }
 }
