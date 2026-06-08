@@ -32,7 +32,7 @@ object DoorKeyESP : SwitchFeature(
                 if (name.contains("Wither Key") || name.contains("Blood Key")) {
                     currentKeys.add(ent.id)
                     ESP.drawBox(ctx, ent, w = 0.75, h = 1.0, wz = 0.75, yOffset = +1.0, argb = DoorKeyESPColor.color)
-                    ESP.drawTracer(ctx, p.x, p.y - 1.0, p.z, DoorKeyESPColor.color)
+                    ESP.drawTracer(ctx, p.x, p.y, p.z, DoorKeyESPColor.color)
 
                     if (PlaySoundOnKeyDrop.enabled && ent.id !in seenKeys) {
                         Meridian.mc.soundManager.play(
