@@ -111,8 +111,6 @@ object MeridianCommand {
                             )
                             .then(
                                 literal("gui").executes { _ ->
-                                    // Defer like the other screen-opening commands: the
-                                    // chat screen is still closing as this lambda runs.
                                     Meridian.mc.execute { Meridian.mc.setScreen(ShitterListScreen()) }
                                     1
                                 }
@@ -163,22 +161,8 @@ object MeridianCommand {
         sendClientMessage("§6/meridian§f: Opens the GUI")
         sendClientMessage("§6/meridian help§f: Sends this dialogue")
         sendClientMessage("§6/meridian hud§f: Opens the HUD editor.")
+        sendClientMessage("§6/meridian calc§f: Opens an in-game calculator.")
         sendClientMessage("§6/md§f: Alias")
-//        sendClientMessage("§r§5§m                                                                              §r")
-//        sendClientMessage("§r§6§lShitter List Commands")
-//        sendClientMessage("§r§5§m                                                                              §r")
-//        sendClientMessage("§6/shitter add {IGN}§f: Adds a player to the shitter list. You can add multiple at once by separating the IGNs with spaces.")
-//        sendClientMessage("§6/shitter remove {IGN}§f: Removes a player from the shitter list. You can remove multiple at once by separating the IGNs with spaces.")
-//        sendClientMessage("§6/shitter list§f: Displays the shitter list. Use /shitter list [#] to display a certain page.")
-//        sendClientMessage("§6/shitter reset§f: Removes every player on the shitter list. Requires confirmation before resetting.")
-//        sendClientMessage("§r§5§m                                                                              §r")
-//        sendClientMessage("§r§6§lPlayer ESP Commands")
-//        sendClientMessage("§r§5§m                                                                              §r")
-//        sendClientMessage("§6/playeresp add {IGN}§f: Adds a player to the ESP list. You can add multiple at once by separating the IGNs with spaces.")
-//        sendClientMessage("§6/playeresp remove {IGN}§f: Removes a player from the ESP list. You can remove multiple at once by separating the IGNs with spaces.")
-//        sendClientMessage("§6/playeresp list§f: Displays the shitter list. Use /playeresp list [#] to display a certain page.")
-//        sendClientMessage("§6/playeresp reset§f: Removes every player on the shitter list. Requires confirmation before resetting.")
-//        sendClientMessage("§6/pesp: Alias of /playeresp")
         sendClientMessage("§r§5§m                                                                              §r")
         sendClientMessage("§r§6§lESP Commands")
         sendClientMessage("§r§5§m                                                                              §r")
