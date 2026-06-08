@@ -36,7 +36,7 @@ object DoorKeyESP : SwitchFeature(
 
                     if (PlaySoundOnKeyDrop.enabled && ent.id !in seenKeys) {
                         Meridian.mc.soundManager.play(
-                            SimpleSoundInstance.forUI(SoundEvents.NOTE_BLOCK_PLING, 2.0f)
+                            SimpleSoundInstance.forUI(SoundEvents.VAULT_OPEN_SHUTTER, 2.0f)
                         )
                     }
                 }
