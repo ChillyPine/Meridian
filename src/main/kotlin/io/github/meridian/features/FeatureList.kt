@@ -11,6 +11,7 @@ import io.github.meridian.features.impl.dungeons.BloodCleared
 import io.github.meridian.features.impl.dungeons.BloodFull
 import io.github.meridian.features.impl.dungeons.BloodNotifs
 import io.github.meridian.features.impl.dungeons.BloodOpen
+import io.github.meridian.features.impl.dungeons.BottleFull
 import io.github.meridian.features.impl.dungeons.CustomShitterMessage
 import io.github.meridian.features.impl.dungeons.BoxDoorKeys
 import io.github.meridian.features.impl.dungeons.DoorKeyColor
@@ -172,6 +173,7 @@ object FeatureList {
         FFTimer,
         //LividHealthHUD, <- NOT IMPLEMENTED
         M5WishNotif,
+        BottleFull,
         MaskUsed,
         PlayProcSound,
         SendMaskInPartyChat,

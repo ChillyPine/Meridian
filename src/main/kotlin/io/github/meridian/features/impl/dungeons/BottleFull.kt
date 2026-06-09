@@ -1,48 +1,44 @@
 package io.github.meridian.features.impl.dungeons
 
-// Notifies of storm bottle full (and variants)
-//object BottleFull (
-//)
+import io.github.meridian.Meridian.mc
+import io.github.meridian.features.SwitchFeature
+import io.github.meridian.utils.TickScheduler
+import io.github.meridian.utils.hasItem
+import io.github.meridian.utils.modMessage
+import io.github.meridian.utils.onChatMessage
+import net.minecraft.client.resources.sounds.SimpleSoundInstance
+import net.minecraft.sounds.SoundEvents
 
-// ---------------------------------------------------------------------------
-// Kotlin equivalent of the CT ItemUtils.InvCheck(name).
-//
-// CT:
-//   Player.getInventory().getItems().find(a => a?.getName()?.includes(name))
-//
-// Mojang-mappings notes (verified against the 1.21.11 jar):
-//   - Player.getInventory()          -> net.minecraft.world.entity.player.Inventory
-//   - Inventory.getNonEquipmentItems() -> NonNullList<ItemStack>, the 36 main
-//       slots (hotbar 0-8 + main inventory 9-35). The old `inventory.items`
-//       field is gone after the 1.21.2 inventory refactor — use this instead.
-//   - ItemStack.getHoverName()       -> Component (display name, custom-name
-//       aware). CT's getName(). Read the plain text with `.string`.
-//   - ItemStack.isEmpty()            -> skip air slots.
-//
-//   import io.github.meridian.Meridian
-//
-//   // Returns the first matching stack (mirrors CT's `find`), or null.
-//   fun invCheck(name: String): ItemStack? {
-//       val player = Meridian.mc.player ?: return null
-//       return player.inventory.nonEquipmentItems.firstOrNull { stack ->
-//           !stack.isEmpty && stack.hoverName.string.contains(name)
-//       }
-//   }
-//
-//   // Boolean-only variant, if you just need "is it in there".
-//   fun hasItem(name: String): Boolean {
-//       val player = Meridian.mc.player ?: return false
-//       return player.inventory.nonEquipmentItems.any { stack ->
-//           !stack.isEmpty && stack.hoverName.string.contains(name)
-//       }
-//   }
-//
-//   // To read every item name (e.g. for debugging):
-//   //   player.inventory.nonEquipmentItems
-//   //       .filterNot { it.isEmpty }
-//   //       .map { it.hoverName.string }
-//
-// Note: getNonEquipmentItems() excludes armor and offhand (same as CT's
-// getItems()). If the bottle can sit in the offhand too, also check
-// `player.offhandItem`.
-// ---------------------------------------------------------------------------
+// Notifies of storm bottle full (and variants)
+object BottleFull : SwitchFeature(
+    name = "Bottle Full",
+    description = "Notifies you of filled bottles after a dungeon",
+    category = "Dungeons",
+    configKey = "bottle_full",
+    subcategory = "Miscellaneous",
+) {
+    private val TEAM_SCORE = Regex("^ *Team Score: (\\d+) \\(([\\w+]{1,2})\\)$")
+
+    init {
+
+        onChatMessage { text, _, _ ->
+            if (!enabled) return@onChatMessage
+            if (!TEAM_SCORE.matches(text)) return@onChatMessage
+
+            val bottles = mapOf(
+                "Thunder in a Bottle"    to "Your Thunder Bottle is §aFull! §eNice!",
+                "Storm in a Bottle"      to "Your Storm Bottle is §aFull! §dImpressive!",
+                "Hurricane in a Bottle"  to "Your Hurricane Bottle is §aFull! §6WOW!",
+            )
+
+            bottles.forEach { (item, message) ->
+                if (hasItem(item))
+                    TickScheduler.schedule(5, serverTick = false) {
+                        mc.soundManager.play(SimpleSoundInstance.forUI(SoundEvents.FIREWORK_ROCKET_LAUNCH, 1.0f))
+                        modMessage(message)
+                    }
+            }
+        }
+
+    }
+}
