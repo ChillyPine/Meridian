@@ -7,11 +7,11 @@ import io.github.meridian.utils.ESP
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents
 import net.minecraft.client.player.RemotePlayer
 
-object ShadowAssassinESP : SwitchFeature(
-    name = "Shadow Assassin ESP",
+object BoxShadowAssassins : SwitchFeature(
+    name = "Box Shadow Assassins",
     description = "",
     category = "Dungeons",
-    configKey = "shadow_assassin_esp",
+    configKey = "box_shadow_assassins",
     subcategory = "Clear",
 )  {
     init {
@@ -33,5 +33,5 @@ object ShadowAssassinColor : ColorFeature(
     category = "Dungeons",
     configKey = "shadow_assassin_color",
     subcategory = "Clear",
-    dependsOn = ShadowAssassinESP
+    dependsOn = BoxShadowAssassins
 )
