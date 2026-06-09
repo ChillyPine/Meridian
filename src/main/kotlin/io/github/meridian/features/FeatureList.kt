@@ -56,21 +56,21 @@ import io.github.meridian.features.impl.general.CoordsCommand
 import io.github.meridian.features.impl.general.IRLClockColor
 import io.github.meridian.features.impl.general.IRLTime
 import io.github.meridian.features.impl.general.DTCommand
-import io.github.meridian.features.impl.general.FemboyESP
-import io.github.meridian.features.impl.general.MatchoESP
-import io.github.meridian.features.impl.general.MatchoESPColor
+import io.github.meridian.features.impl.general.BoxFemboys
+import io.github.meridian.features.impl.general.BoxMatchos
+import io.github.meridian.features.impl.general.MatchoColor
 import io.github.meridian.features.impl.general.NonRemover
-import io.github.meridian.features.impl.general.OldWolfESP
-import io.github.meridian.features.impl.general.OldWolfESPColor
+import io.github.meridian.features.impl.general.BoxOldWolves
+import io.github.meridian.features.impl.general.OldWolfColor
 import io.github.meridian.features.impl.general.PLActions
 import io.github.meridian.features.impl.general.PLMoreActions
 import io.github.meridian.features.impl.general.PlayerESP
 import io.github.meridian.features.impl.general.PlayerESPMode
 import io.github.meridian.features.impl.general.SpecificPlayerESP
-import io.github.meridian.features.impl.general.RatESP
+import io.github.meridian.features.impl.general.BoxRats
 import io.github.meridian.features.impl.general.RemoveNausea
 import io.github.meridian.features.impl.general.RunicMobColor
-import io.github.meridian.features.impl.general.RunicMobESP
+import io.github.meridian.features.impl.general.BoxRunicMobs
 import io.github.meridian.features.impl.general.RunicMobTracer
 import io.github.meridian.features.impl.general.SoundListButton
 import io.github.meridian.features.impl.mining.ButterflyESP
@@ -92,18 +92,18 @@ object FeatureList {
         // ================================================== //
 
         // --- ESPs ---
-        RunicMobESP,
+        BoxRunicMobs,
         RunicMobTracer,
         RunicMobColor,
-        MatchoESP,
-        MatchoESPColor,
-        OldWolfESP,
-        OldWolfESPColor,
-        RatESP,
+        BoxMatchos,
+        MatchoColor,
+        BoxOldWolves,
+        OldWolfColor,
+        BoxRats,
         PlayerESP,
         PlayerESPMode,
         SpecificPlayerESP,
-        FemboyESP,
+        BoxFemboys,
 
         // --- ! Commands ---
         DTCommand,

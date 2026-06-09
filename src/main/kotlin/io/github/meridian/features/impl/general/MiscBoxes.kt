@@ -14,7 +14,6 @@ import java.util.Optional
 import net.minecraft.client.player.RemotePlayer
 import java.util.UUID
 
-// Runic ESP function
 private fun Component.hasPurpleBracket(): Boolean {
     var found = false
     this.visit({ style, text ->
@@ -26,7 +25,6 @@ private fun Component.hasPurpleBracket(): Boolean {
     return found
 }
 
-// Runic ESP function #2
 private inline fun forEachRunicMob(block: (ArmorStand) -> Unit) {
     val level = Meridian.mc.level ?: return
     for (ent in level.entitiesForRendering()) {
@@ -38,12 +36,12 @@ private inline fun forEachRunicMob(block: (ArmorStand) -> Unit) {
     }
 }
 
-object RunicMobESP : SwitchFeature(
-    name = "Runic Mob ESP",
+object BoxRunicMobs : SwitchFeature(
+    name = "Box Runic Mobs",
     description = "",
     category = "General",
-    configKey = "runic_mob_esp",
-    subcategory = "ESPs",
+    configKey = "box_runic_mobs",
+    subcategory = "Boxes",
 ) {
     init {
         WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
@@ -60,8 +58,8 @@ object RunicMobTracer : SwitchFeature(
     description = "",
     category = "General",
     configKey = "runic_mob_tracer",
-    subcategory = "ESPs",
-    dependsOn = RunicMobESP
+    subcategory = "Boxes",
+    dependsOn = BoxRunicMobs
 ) {
     init {
         WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
@@ -77,22 +75,19 @@ object RunicMobTracer : SwitchFeature(
 
 object RunicMobColor : ColorFeature(
     name = "Runic Mob Color",
-    description = "Color for Runic Mob ESP & Tracer",
+    description = "Color for Runic Mob Boxes & Tracer",
     category = "General",
     configKey = "runic_mob_color",
-    subcategory = "ESPs",
-    dependsOn = RunicMobESP,
+    subcategory = "Boxes",
+    dependsOn = BoxRunicMobs,
 )
 
-// Rat ESP
-
-// Matcho ESP
-object MatchoESP : SwitchFeature(
-    name = "Matcho ESP",
+object BoxMatchos : SwitchFeature(
+    name = "Box Matchos",
     description = "",
     category = "General",
-    configKey = "matcho_esp",
-    subcategory = "ESPs",
+    configKey = "box_matchos",
+    subcategory = "Boxes",
 ) {
     init {
         WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
@@ -102,29 +97,27 @@ object MatchoESP : SwitchFeature(
                 if (ent !is ArmorStand) continue
                 val name = ent.customName?.string ?: continue
                 if (!name.contains("Matcho")) continue
-                ESP.drawBox(ctx, ent, w = 0.6, h = 2.0, wz = 0.6, yOffset = -2.2, argb = MatchoESPColor.color)
+                ESP.drawBox(ctx, ent, w = 0.6, h = 2.0, wz = 0.6, yOffset = -2.2, argb = MatchoColor.color)
             }
         }
     }
 }
 
-object MatchoESPColor : ColorFeature(
+object MatchoColor : ColorFeature(
     name = "Matcho Color",
     description = "",
     category = "General",
     configKey = "matcho_color",
-    subcategory = "ESPs",
-    dependsOn = MatchoESP,
+    subcategory = "Boxes",
+    dependsOn = BoxMatchos,
 )
-// Player ESP
 
-
-object OldWolfESP : SwitchFeature(
-    name = "Old Wolf ESP",
+object BoxOldWolves : SwitchFeature(
+    name = "Box Old Wolves",
     description = "",
     category = "General",
-    configKey = "old_wolf_esp",
-    subcategory = "ESPs",
+    configKey = "box_old_wolves",
+    subcategory = "Boxes",
 ) {
     init {
         WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
@@ -134,39 +127,30 @@ object OldWolfESP : SwitchFeature(
                 if (ent !is ArmorStand) continue
                 val name = ent.customName?.string ?: continue
                 if (!name.contains("Old Wolf")) continue
-                ESP.drawBox(ctx, ent, w = 1.3, h = 1.0, wz = 1.0, yOffset = -1.0, argb = OldWolfESPColor.color)
+                ESP.drawBox(ctx, ent, w = 1.3, h = 1.0, wz = 1.0, yOffset = -1.0, argb = OldWolfColor.color)
             }
         }
     }
 }
 
-object OldWolfESPColor : ColorFeature(
+object OldWolfColor : ColorFeature(
     name = "Old Wolf Color",
     description = "",
     category = "General",
     configKey = "old_wolf_color",
-    subcategory = "ESPs",
-    dependsOn = OldWolfESP,
+    subcategory = "Boxes",
+    dependsOn = BoxOldWolves,
 )
 
-object RatESP : SwitchFeature(
-    name = "Rat ESP",
+object BoxRats : SwitchFeature(
+    name = "Box Rats",
     description = "",
     category = "General",
-    configKey = "rat_esp",
-    subcategory = "ESPs",
+    configKey = "box_rats",
+    subcategory = "Boxes",
 ) {
     private const val CHECK_RADIUS = 3.0
-    // Named armor stands that mark a different invisible-zombie mob. A rat is an
-    // invisible zombie with none of these nearby.
     private val blockerNames = listOf("armadillo", "wraith", "watcher")
-
-    // Entity ids of invisible zombies confirmed to be a non-rat mob (they were
-    // seen near an armadillo/wraith/watcher nametag). Nametag armor stands stop
-    // being tracked at a shorter range than the zombie hitbox, so once we've
-    // associated the two we keep excluding the zombie even after its nametag
-    // unloads. Pruned to currently-loaded entities each frame so a reused id
-    // (new entity / world change) doesn't inherit a stale tag.
     private val nonRats = HashSet<Int>()
 
     init {
@@ -174,7 +158,6 @@ object RatESP : SwitchFeature(
             if (!enabled) return@register
             val level = Meridian.mc.level ?: return@register
 
-            // Single pass: gather blocker nametags, candidate zombies, loaded ids.
             val blockers = ArrayList<ArmorStand>()
             val zombies = ArrayList<Zombie>()
             val loadedIds = HashSet<Int>()
@@ -187,11 +170,9 @@ object RatESP : SwitchFeature(
                     zombies += ent
                 }
             }
-            // Forget tags for zombies that have unloaded.
             nonRats.retainAll(loadedIds)
 
             for (ent in zombies) {
-                // Tag (permanently, while loaded) any zombie currently near a blocker.
                 if (ent.id !in nonRats && blockers.any { bs ->
                         val dx = ent.x - bs.x
                         val dy = ent.y - bs.y
@@ -209,12 +190,12 @@ object RatESP : SwitchFeature(
 
 // Replayz
 const val targetUUID = "49180e88-3636-4303-85d4-5a7bcad13bc1"
-object FemboyESP : SwitchFeature(
-    name = "Femboy ESP",
+object BoxFemboys : SwitchFeature(
+    name = "Box Femboys",
     description = "For the gayest femboy of them all :3",
     category = "General",
-    configKey = "femboy_esp",
-    subcategory = "ESPs",
+    configKey = "box_femboys",
+    subcategory = "Boxes",
 ) {
     init {
         WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
