@@ -1,5 +1,47 @@
 package io.github.meridian.features.impl.dungeons
 
+import io.github.meridian.Meridian.mc
+import io.github.meridian.features.SwitchFeature
+import io.github.meridian.utils.DungeonState
+import io.github.meridian.utils.hasItem
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
+import net.minecraft.network.chat.Component
+
 // Holding crystal in p1, holding relic
-//object HoldingItem {
-//}
+object HoldingCrystal : SwitchFeature(
+    name = "Holding Crystal",
+    description = "Holding Crystal item",
+    category = "Dungeons",
+    configKey = "holding_crystal",
+    subcategory = "P1",
+) {
+    init {
+        ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick {
+            if (!enabled || !DungeonState.inDungeon) return@EndTick
+            if (hasItem("Energy Crystal")) {
+                mc.gui.setTimes(0, 5, 0)
+                mc.gui.setTitle(Component.literal("§cHolding Crystal"))
+                mc.gui.setSubtitle(Component.empty())
+            }
+        })
+    }
+}
+
+object HoldingRelic : SwitchFeature(
+    name = "Holding Relic",
+    description = "Tells you if you are holding a relic during P5.",
+    category = "Dungeons",
+    configKey = "holding_relic",
+    subcategory = "P5",
+) {
+    init {
+        ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick {
+            if (!enabled || !DungeonState.inDungeon) return@EndTick
+            if (hasItem("Relic")) {
+                mc.gui.setTimes(0, 5, 0)
+                mc.gui.setTitle(Component.empty())
+                mc.gui.setSubtitle(Component.literal("§cHolding Relic"))
+            }
+        })
+    }
+}

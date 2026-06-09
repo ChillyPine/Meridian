@@ -1,6 +1,5 @@
 package io.github.meridian.features
-// ALL NEW FEATURES NEED TO BE IMPORTED BELOW IN ADDITION TO BEING ADDED TO THE FeatureList!
-// Tab autocomplete adds imports automatically
+
 import io.github.meridian.features.impl.dungeons.AnnounceShitter
 import io.github.meridian.features.impl.dungeons.AutoKickShitter
 import io.github.meridian.features.impl.dungeons.BoxBats
@@ -42,6 +41,8 @@ import io.github.meridian.features.impl.dungeons.StarMobColor
 import io.github.meridian.features.impl.dungeons.BoxStarMobs
 import io.github.meridian.features.impl.dungeons.StormColor
 import io.github.meridian.features.impl.dungeons.BoxStorm
+import io.github.meridian.features.impl.dungeons.HoldingCrystal
+import io.github.meridian.features.impl.dungeons.HoldingRelic
 import io.github.meridian.features.impl.dungeons.WatcherYapHider
 import io.github.meridian.features.impl.events.BoxPrimalFears
 import io.github.meridian.features.impl.events.QuickMathsSolver
@@ -81,9 +82,8 @@ import io.github.meridian.features.impl.mining.BoxDiamondGoblins
 import io.github.meridian.features.impl.mining.BoxGoldenGoblins
 import io.github.meridian.features.impl.mining.BoxKeyGuardians
 
-
 // Manifest of every feature in the mod — the only place that needs updating
-// when a new feature file is added. Similar in spirit to a ChatTriggers index.js.
+// when a new feature file is added. Similar in spirit to ChatTriggers' index.js.
 // ORDER MATTERS - KEEP THINGS IN THE CORRECT ORDER!
 object FeatureList {
     private val all: List<Feature> = listOf(
@@ -156,6 +156,7 @@ object FeatureList {
         WatcherYapHider,
 
         // --- P1 ---
+        HoldingCrystal,
         P1WishNotif,
 
         // --- P2 ---
@@ -168,6 +169,9 @@ object FeatureList {
         GoldorColor,
         SimonSaysTime,
         SimonSaysPC,
+
+        // --- P5 ---
+        HoldingRelic,
 
         // --- Miscellaneous ---
         FFTimer,
