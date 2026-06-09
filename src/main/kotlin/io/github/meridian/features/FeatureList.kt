@@ -42,7 +42,7 @@ import io.github.meridian.features.impl.dungeons.BoxStarMobs
 import io.github.meridian.features.impl.dungeons.StormColor
 import io.github.meridian.features.impl.dungeons.BoxStorm
 import io.github.meridian.features.impl.dungeons.WatcherYapHider
-import io.github.meridian.features.impl.events.PrimalFearESP
+import io.github.meridian.features.impl.events.BoxPrimalFears
 import io.github.meridian.features.impl.events.QuickMathsSolver
 import io.github.meridian.features.impl.farming.TrapperESP
 import io.github.meridian.features.impl.general.BlockBlocksInWay
@@ -205,7 +205,7 @@ object FeatureList {
         //                      EVENTS                        //
         // ================================================== //
 
-        PrimalFearESP,
+        BoxPrimalFears,
         QuickMathsSolver
     )
 

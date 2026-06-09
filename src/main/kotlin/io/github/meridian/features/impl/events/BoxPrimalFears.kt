@@ -16,11 +16,11 @@ private val primalFearNames = listOf(
     "Vegan Crawler"
 )
 
-object PrimalFearESP : SwitchFeature(
-    name = "Primal Fear ESP",
+object BoxPrimalFears : SwitchFeature(
+    name = "Box Primal Fears",
     description = "",
     category = "Events",
-    configKey = "primal_fear_esp",
+    configKey = "box_primal_fears",
     subcategory = "The Great Spook",
 ) {
     init {
