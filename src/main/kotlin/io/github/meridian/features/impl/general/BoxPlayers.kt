@@ -8,15 +8,14 @@ import io.github.meridian.utils.ESP
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents
 import net.minecraft.client.player.RemotePlayer
 
-// Only box players within this many blocks of the local player.
-private const val PLAYER_ESP_RADIUS = 75.0
+private const val PLAYER_BOX_RADIUS = 75.0
 
-object PlayerESP : SwitchFeature(
-    name = "Player ESP",
+object BoxPlayers : SwitchFeature(
+    name = "Box Players",
     description = "",
     category = "General",
-    configKey = "player_esp",
-    subcategory = "ESPs"
+    configKey = "box_players",
+    subcategory = "Boxes"
 ) {
     init {
         WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
@@ -25,48 +24,42 @@ object PlayerESP : SwitchFeature(
             val self = Meridian.mc.player ?: return@register
 
             for (ent in level.entitiesForRendering()) {
-                // RemotePlayer is every *other* player; the local player is a
-                // LocalPlayer, so self is excluded for free.
                 if (ent !is RemotePlayer) continue
-                if (ent.distanceToSqr(self.x, self.y, self.z) > PLAYER_ESP_RADIUS * PLAYER_ESP_RADIUS) continue
+                if (ent.distanceToSqr(self.x, self.y, self.z) > PLAYER_BOX_RADIUS * PLAYER_BOX_RADIUS) continue
 
-                when (PlayerESPMode.selectedOption) {
+                when (PlayerBoxMode.selectedOption) {
                     "All Players" -> {}
-                    "Specific Players" -> if (!SpecificPlayerESP.matches(ent.gameProfile.name)) continue
+                    "Specific Players" -> if (!BoxSpecificPlayer.matches(ent.gameProfile.name)) continue
                     else -> continue
                 }
-
-                // depth defaults to ESP.depth, so this honors /md depth automatically.
                 ESP.drawBox(ctx, ent, w = 1.0, h = 2.0, wz = 0.6, argb = 0xFF00B300.toInt())
             }
         }
     }
 }
 
-object PlayerESPMode : DropdownFeature(
-    name = "Player ESP Mode",
+object PlayerBoxMode : DropdownFeature(
+    name = "Player Box Mode",
     description = "",
     category = "General",
-    configKey = "player_esp_mode",
-    subcategory = "ESPs",
+    configKey = "player_box_mode",
+    subcategory = "Boxes",
     options = listOf("All Players", "Specific Players"),
-    dependsOn = PlayerESP
+    dependsOn = BoxPlayers
 )
 
-object SpecificPlayerESP : TextFeature(
-    name = "Player ESP",
+object BoxSpecificPlayer : TextFeature(
+    name = "Box Players",
     description = "",
     category = "General",
-    configKey = "specific_player_esp",
-    subcategory = "ESPs",
-    dependsOn = PlayerESPMode,
+    configKey = "box_specific_player",
+    subcategory = "Boxes",
+    dependsOn = PlayerBoxMode,
     placeholder = "IGN1, IGN2, ..."
 ) {
     init {
-        showWhen { PlayerESPMode.selectedOption == "Specific Players" }
+        showWhen { PlayerBoxMode.selectedOption == "Specific Players" }
     }
-
-    // True if the given IGN is in the comma-separated allowlist (case-insensitive).
     fun matches(playerName: String): Boolean =
         value.split(',')
             .any { it.trim().equals(playerName, ignoreCase = true) && it.isNotBlank() }

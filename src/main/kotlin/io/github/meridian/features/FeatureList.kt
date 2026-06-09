@@ -64,9 +64,9 @@ import io.github.meridian.features.impl.general.BoxOldWolves
 import io.github.meridian.features.impl.general.OldWolfColor
 import io.github.meridian.features.impl.general.PLActions
 import io.github.meridian.features.impl.general.PLMoreActions
-import io.github.meridian.features.impl.general.PlayerESP
-import io.github.meridian.features.impl.general.PlayerESPMode
-import io.github.meridian.features.impl.general.SpecificPlayerESP
+import io.github.meridian.features.impl.general.BoxPlayers
+import io.github.meridian.features.impl.general.PlayerBoxMode
+import io.github.meridian.features.impl.general.BoxSpecificPlayer
 import io.github.meridian.features.impl.general.BoxRats
 import io.github.meridian.features.impl.general.RemoveNausea
 import io.github.meridian.features.impl.general.RunicMobColor
@@ -100,9 +100,9 @@ object FeatureList {
         BoxOldWolves,
         OldWolfColor,
         BoxRats,
-        PlayerESP,
-        PlayerESPMode,
-        SpecificPlayerESP,
+        BoxPlayers,
+        PlayerBoxMode,
+        BoxSpecificPlayer,
         BoxFemboys,
 
         // --- ! Commands ---
