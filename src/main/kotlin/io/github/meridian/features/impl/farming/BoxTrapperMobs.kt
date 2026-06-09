@@ -6,13 +6,12 @@ import io.github.meridian.utils.ESP
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents
 import net.minecraft.world.entity.decoration.ArmorStand
 
-
-object TrapperESP : SwitchFeature(
-    name = "Trapper ESP",
-    description = "Unlike Skyhanni, mine works in the Oasis",
+object BoxTrapperMobs : SwitchFeature(
+    name = "Box Trapper Mobs",
+    description = "Unlike Skyhanni's, this one works in the Oasis.",
     category = "Farming",
-    configKey = "trapper_esp",
-    subcategory = "ESPs"
+    configKey = "box_trapper_mobs",
+    subcategory = "Boxes"
 ) {
     init {
         WorldRenderEvents.AFTER_ENTITIES.register { ctx ->

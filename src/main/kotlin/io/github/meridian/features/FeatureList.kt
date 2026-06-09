@@ -44,7 +44,7 @@ import io.github.meridian.features.impl.dungeons.BoxStorm
 import io.github.meridian.features.impl.dungeons.WatcherYapHider
 import io.github.meridian.features.impl.events.BoxPrimalFears
 import io.github.meridian.features.impl.events.QuickMathsSolver
-import io.github.meridian.features.impl.farming.TrapperESP
+import io.github.meridian.features.impl.farming.BoxTrapperMobs
 import io.github.meridian.features.impl.general.BlockBlocksInWay
 import io.github.meridian.features.impl.general.BlockDiscord
 import io.github.meridian.features.impl.general.BlockGEXP
@@ -188,7 +188,7 @@ object FeatureList {
         //                      FARMING                       //
         // ================================================== //
 
-        TrapperESP,
+        BoxTrapperMobs,
 
         // ================================================== //
         //                      MINING                        //
