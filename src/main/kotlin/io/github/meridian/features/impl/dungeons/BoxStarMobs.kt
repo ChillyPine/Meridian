@@ -8,11 +8,11 @@ import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents
 import net.minecraft.world.entity.decoration.ArmorStand
 
 // Star mobs inc LAs and FAs
-object StarMobESP : SwitchFeature(
-    name = "Star Mob ESP",
+object BoxStarMobs : SwitchFeature(
+    name = "Box Star Mobs",
     description = "",
     category = "Dungeons",
-    configKey = "star_mob_esp",
+    configKey = "box_star_mobs",
     subcategory = "Clear",
 ) {
     init {
@@ -38,14 +38,14 @@ object StarMobColor : ColorFeature(
     category = "Dungeons",
     configKey = "star_mob_color",
     subcategory = "Clear",
-    dependsOn = StarMobESP,
+    dependsOn = BoxStarMobs,
 )
 
-object FelESP : SwitchFeature(
-    name = "Fel ESP",
+object BoxFels : SwitchFeature(
+    name = "Box Fels",
     description = "",
     category = "Dungeons",
-    configKey = "fel_esp",
+    configKey = "box_fels",
     subcategory = "Clear",
 ) {
     init {
@@ -71,5 +71,5 @@ object FelColor : ColorFeature(
     category = "Dungeons",
     configKey = "fel_color",
     subcategory = "Clear",
-    dependsOn = FelESP,
+    dependsOn = BoxFels,
 )

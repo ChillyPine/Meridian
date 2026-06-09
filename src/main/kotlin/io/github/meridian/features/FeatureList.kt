@@ -18,7 +18,7 @@ import io.github.meridian.features.impl.dungeons.DungeonEndMusic
 import io.github.meridian.features.impl.dungeons.FFTimer
 import io.github.meridian.features.impl.dungeons.LividHealthHUD
 import io.github.meridian.features.impl.dungeons.FelColor
-import io.github.meridian.features.impl.dungeons.FelESP
+import io.github.meridian.features.impl.dungeons.BoxFels
 import io.github.meridian.features.impl.dungeons.GoldorColor
 import io.github.meridian.features.impl.dungeons.BoxGoldor
 import io.github.meridian.features.impl.dungeons.LockedChestNotif
@@ -38,7 +38,7 @@ import io.github.meridian.features.impl.dungeons.ShortPFMessage
 import io.github.meridian.features.impl.dungeons.SimonSaysPC
 import io.github.meridian.features.impl.dungeons.SimonSaysTime
 import io.github.meridian.features.impl.dungeons.StarMobColor
-import io.github.meridian.features.impl.dungeons.StarMobESP
+import io.github.meridian.features.impl.dungeons.BoxStarMobs
 import io.github.meridian.features.impl.dungeons.StormColor
 import io.github.meridian.features.impl.dungeons.StormESP
 import io.github.meridian.features.impl.dungeons.WatcherYapHider
@@ -134,9 +134,9 @@ object FeatureList {
         // ================================================== //
 
         // --- Clear ---
-        StarMobESP,
+        BoxStarMobs,
         StarMobColor,
-        FelESP,
+        BoxFels,
         FelColor,
         BoxShadowAssassins,
         ShadowAssassinColor,
