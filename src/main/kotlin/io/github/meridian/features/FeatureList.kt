@@ -40,7 +40,7 @@ import io.github.meridian.features.impl.dungeons.SimonSaysTime
 import io.github.meridian.features.impl.dungeons.StarMobColor
 import io.github.meridian.features.impl.dungeons.BoxStarMobs
 import io.github.meridian.features.impl.dungeons.StormColor
-import io.github.meridian.features.impl.dungeons.StormESP
+import io.github.meridian.features.impl.dungeons.BoxStorm
 import io.github.meridian.features.impl.dungeons.WatcherYapHider
 import io.github.meridian.features.impl.events.PrimalFearESP
 import io.github.meridian.features.impl.events.QuickMathsSolver
@@ -158,7 +158,7 @@ object FeatureList {
         P1WishNotif,
 
         // --- P2 ---
-        StormESP,
+        BoxStorm,
         StormColor,
 
         // --- P3 ---

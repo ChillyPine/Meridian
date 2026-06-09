@@ -10,11 +10,11 @@ import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents
 import net.minecraft.client.multiplayer.ClientLevel
 import net.minecraft.world.entity.boss.wither.WitherBoss
 
-object StormESP : SwitchFeature(
-    name = "Storm ESP",
-    description = "Boxes Storm's §ohitbox during P2.",
+object BoxStorm : SwitchFeature(
+    name = "Box Storm",
+    description = "Boxes Storm's §lhitbox§r during P2.",
     category = "Dungeons",
-    configKey = "storm_esp",
+    configKey = "box_storm",
     subcategory = "P2"
 ) {
 
@@ -57,5 +57,5 @@ object StormColor : ColorFeature(
     category = "Dungeons",
     configKey = "storm_color",
     subcategory = "P2",
-    dependsOn = StormESP,
+    dependsOn = BoxStorm,
 )
