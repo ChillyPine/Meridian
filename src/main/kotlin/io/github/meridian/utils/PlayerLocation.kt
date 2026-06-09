@@ -24,3 +24,23 @@ object DungeonState {
         })
     }
 }
+
+object F4State {
+    @Volatile var inF4Boss = false
+        private set
+
+    private var lastLevel: ClientLevel? = null
+
+    fun init() {
+        onChatMessage { text, _, _ ->
+            if (text.startsWith("[BOSS] Thorn: Welcome Adventurers! I am Thorn, the Spirit! And host of the Vegan Trials!")) inF4Boss = true
+        }
+        ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick {
+            val level = mc.level
+            if (level !== lastLevel) {
+                lastLevel = level
+                inF4Boss = false
+            }
+        })
+    }
+}
