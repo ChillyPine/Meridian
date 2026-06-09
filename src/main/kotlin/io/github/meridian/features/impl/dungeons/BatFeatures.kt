@@ -18,13 +18,17 @@ object BoxBats : SwitchFeature (
     subcategory = "Clear"
 ) {
     @Volatile var inF4Boss = false
+    @Volatile var inDungeon = false
     private var lastLevel: ClientLevel? = null
 
     init {
+
         onChatMessage { text, _, _ ->
             if (text.startsWith("[BOSS] Thorn: Welcome Adventurers! I am Thorn, the Spirit! And host of the Vegan Trials!")) {
                 inF4Boss = true
             }
+            //Temp fix for dungeon detect, like holy fuck code a utils function
+            if (text == "Starting in 1 second.") inDungeon = true
         }
 
         ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick {
@@ -32,11 +36,11 @@ object BoxBats : SwitchFeature (
             if (level !== lastLevel) {
                 lastLevel = level
                 inF4Boss = false
+                inDungeon = false
             }
         })
-
         WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
-            if (!enabled || inF4Boss) return@register
+            if (!enabled || inF4Boss || !inDungeon) return@register
             val level = Meridian.mc.level ?: return@register
             val player = Meridian.mc.player ?: return@register
             val bats = level.entitiesForRendering().filterIsInstance<Bat>()
@@ -63,7 +67,7 @@ object BatTracer : SwitchFeature (
 ) {
     init {
         WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
-            if (!enabled || BoxBats.inF4Boss) return@register
+            if (!enabled || BoxBats.inF4Boss || !BoxBats.inDungeon) return@register
             val level = Meridian.mc.level ?: return@register
             for (ent in level.entitiesForRendering()) {
                 if (ent !is Bat) continue
