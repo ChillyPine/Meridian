@@ -20,7 +20,7 @@ import io.github.meridian.features.impl.dungeons.LividHealthHUD
 import io.github.meridian.features.impl.dungeons.FelColor
 import io.github.meridian.features.impl.dungeons.FelESP
 import io.github.meridian.features.impl.dungeons.GoldorColor
-import io.github.meridian.features.impl.dungeons.GoldorESP
+import io.github.meridian.features.impl.dungeons.BoxGoldor
 import io.github.meridian.features.impl.dungeons.LockedChestNotif
 import io.github.meridian.features.impl.dungeons.M5WishNotif
 import io.github.meridian.features.impl.dungeons.MaskUsed
@@ -163,7 +163,7 @@ object FeatureList {
 
         // --- P3 ---
         P3WishNotif,
-        GoldorESP,
+        BoxGoldor,
         GoldorColor,
         SimonSaysTime,
         SimonSaysPC,

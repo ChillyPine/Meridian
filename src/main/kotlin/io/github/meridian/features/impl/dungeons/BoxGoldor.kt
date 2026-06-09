@@ -10,11 +10,11 @@ import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents
 import net.minecraft.client.multiplayer.ClientLevel
 import net.minecraft.world.entity.boss.wither.WitherBoss
 
-object GoldorESP : SwitchFeature(
-    name = "GoldorESP",
-    description = "Boxes Goldor's §o§hhitbox during P2.",
+object BoxGoldor : SwitchFeature(
+    name = "Box Goldor",
+    description = "Boxes Goldor's §lhitbox §rduring P2.",
     category = "Dungeons",
-    configKey = "goldor_esp",
+    configKey = "box_goldor",
     subcategory = "P3",
 ) {
     @Volatile
@@ -55,5 +55,5 @@ object GoldorColor : ColorFeature(
     category = "Dungeons",
     configKey = "goldor_color",
     subcategory = "P3",
-    dependsOn = GoldorESP,
+    dependsOn = BoxGoldor,
 )
