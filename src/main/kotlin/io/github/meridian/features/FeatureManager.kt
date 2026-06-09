@@ -39,11 +39,21 @@ object FeatureManager {
             Files.createDirectories(configDir)
             val root = JsonObject()
             root.addProperty("version", CONFIG_VERSION)
+            // Group by category -> subcategory -> configKey, derived from each
+            // feature's own declared fields. New features need no extra code here:
+            // they slot into the right place automatically from their category/
+            // subcategory. Category and subcategory appear in first-registered order.
             val featuresJson = JsonObject()
             for (feat in features) {
                 val featJson = JsonObject()
                 feat.saveTo(featJson)
-                if (featJson.size() > 0) featuresJson.add(feat.configKey, featJson)
+                if (featJson.size() == 0) continue
+                val subName = feat.subcategory.ifBlank { "General" }
+                val catObj = featuresJson.getAsJsonObject(feat.category)
+                    ?: JsonObject().also { featuresJson.add(feat.category, it) }
+                val subObj = catObj.getAsJsonObject(subName)
+                    ?: JsonObject().also { catObj.add(subName, it) }
+                subObj.add(feat.configKey, featJson)
             }
             root.add("features", featuresJson)
             val espJson = JsonObject()
@@ -61,17 +71,25 @@ object FeatureManager {
         }
     }
 
+    // Walks the "features" node and loads each feature by configKey, wherever it
+    // sits. Format-agnostic: handles the nested category/subcategory layout, the
+    // older flat layout, and a feature that has since moved category. When a key
+    // matches a feature we load it and stop descending (so we never misread a
+    // feature's own nested state as a group), otherwise we recurse into the group.
+    private fun loadFeaturesNode(node: JsonObject, byKey: Map<String, Feature>) {
+        for ((key, value) in node.entrySet()) {
+            if (!value.isJsonObject) continue
+            val feat = byKey[key]
+            if (feat != null) feat.loadFrom(value.asJsonObject)
+            else loadFeaturesNode(value.asJsonObject, byKey)
+        }
+    }
+
     fun load() {
         try {
             if (!configFile.exists()) return
             val root = JsonParser.parseString(configFile.readText()).asJsonObject
-            val featuresJson = root.getAsJsonObject("features")
-            if (featuresJson != null) {
-                for (feat in features) {
-                    val featJson = featuresJson.getAsJsonObject(feat.configKey) ?: continue
-                    feat.loadFrom(featJson)
-                }
-            }
+            root.getAsJsonObject("features")?.let { loadFeaturesNode(it, features.associateBy { f -> f.configKey }) }
             root.getAsJsonObject("esp")?.let { ESP.loadFrom(it) }
             root.getAsJsonObject("hud")?.let { HudManager.loadFrom(it) }
             root.getAsJsonObject("shitter")?.let { ShitterList.loadFrom(it) }
