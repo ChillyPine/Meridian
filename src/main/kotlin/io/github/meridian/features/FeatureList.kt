@@ -3,8 +3,8 @@ package io.github.meridian.features
 // Tab autocomplete adds imports automatically
 import io.github.meridian.features.impl.dungeons.AnnounceShitter
 import io.github.meridian.features.impl.dungeons.AutoKickShitter
-import io.github.meridian.features.impl.dungeons.BatESP
-import io.github.meridian.features.impl.dungeons.BatESPColor
+import io.github.meridian.features.impl.dungeons.BoxBats
+import io.github.meridian.features.impl.dungeons.BoxBatsColor
 import io.github.meridian.features.impl.dungeons.BatTracer
 import io.github.meridian.features.impl.dungeons.BlockPFWarning
 import io.github.meridian.features.impl.dungeons.BloodCleared
@@ -31,7 +31,6 @@ import io.github.meridian.features.impl.dungeons.PlayProcSound
 import io.github.meridian.features.impl.dungeons.PlaySoundOnKeyDrop
 import io.github.meridian.features.impl.dungeons.SendBloodToParty
 import io.github.meridian.features.impl.dungeons.SendMaskInPartyChat
-//import io.github.meridian.features.impl.dungeons.SendSSTime
 import io.github.meridian.features.impl.dungeons.ShadowAssassinColor
 import io.github.meridian.features.impl.dungeons.ShadowAssassinESP
 import io.github.meridian.features.impl.dungeons.ShitterListButton
@@ -141,9 +140,9 @@ object FeatureList {
         FelColor,
         ShadowAssassinESP,
         ShadowAssassinColor,
-        BatESP,
+        BoxBats,
         BatTracer,
-        BatESPColor,
+        BoxBatsColor,
         LockedChestNotif,
         DoorKeyESP,
         DoorKeyESPColor,
