@@ -36,6 +36,7 @@ import io.github.meridian.features.impl.dungeons.ShadowAssassinColor
 import io.github.meridian.features.impl.dungeons.ShadowAssassinESP
 import io.github.meridian.features.impl.dungeons.ShitterListButton
 import io.github.meridian.features.impl.dungeons.ShortPFMessage
+import io.github.meridian.features.impl.dungeons.SimonSaysPC
 import io.github.meridian.features.impl.dungeons.SimonSaysTime
 import io.github.meridian.features.impl.dungeons.StarMobColor
 import io.github.meridian.features.impl.dungeons.StarMobESP
@@ -166,7 +167,7 @@ object FeatureList {
         GoldorESP,
         GoldorColor,
         SimonSaysTime,
-        //SendSSTime,
+        SimonSaysPC,
 
         // --- Miscellaneous ---
         FFTimer,
