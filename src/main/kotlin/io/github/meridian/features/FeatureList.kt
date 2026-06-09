@@ -12,8 +12,8 @@ import io.github.meridian.features.impl.dungeons.BloodFull
 import io.github.meridian.features.impl.dungeons.BloodNotifs
 import io.github.meridian.features.impl.dungeons.BloodOpen
 import io.github.meridian.features.impl.dungeons.CustomShitterMessage
-import io.github.meridian.features.impl.dungeons.DoorKeyESP
-import io.github.meridian.features.impl.dungeons.DoorKeyESPColor
+import io.github.meridian.features.impl.dungeons.BoxDoorKeys
+import io.github.meridian.features.impl.dungeons.DoorKeyColor
 import io.github.meridian.features.impl.dungeons.DungeonEndMusic
 import io.github.meridian.features.impl.dungeons.FFTimer
 import io.github.meridian.features.impl.dungeons.LividHealthHUD
@@ -144,8 +144,8 @@ object FeatureList {
         BatTracer,
         BoxBatsColor,
         LockedChestNotif,
-        DoorKeyESP,
-        DoorKeyESPColor,
+        BoxDoorKeys,
+        DoorKeyColor,
         PlaySoundOnKeyDrop,
         BloodNotifs,
         BloodOpen,
