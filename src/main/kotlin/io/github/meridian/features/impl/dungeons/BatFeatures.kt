@@ -4,10 +4,9 @@ import io.github.meridian.Meridian
 import io.github.meridian.features.ColorFeature
 import io.github.meridian.features.SwitchFeature
 import io.github.meridian.utils.ESP
-import io.github.meridian.utils.onChatMessage
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
+import io.github.meridian.utils.DungeonState
+import io.github.meridian.utils.F4State
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents
-import net.minecraft.client.multiplayer.ClientLevel
 import net.minecraft.world.entity.ambient.Bat
 
 object BoxBats : SwitchFeature (
@@ -17,30 +16,9 @@ object BoxBats : SwitchFeature (
     configKey = "box_bats",
     subcategory = "Clear"
 ) {
-    @Volatile var inF4Boss = false
-    @Volatile var inDungeon = false
-    private var lastLevel: ClientLevel? = null
-
     init {
-
-        onChatMessage { text, _, _ ->
-            if (text.startsWith("[BOSS] Thorn: Welcome Adventurers! I am Thorn, the Spirit! And host of the Vegan Trials!")) {
-                inF4Boss = true
-            }
-            //Temp fix for dungeon detect, like holy fuck code a utils function
-            if (text == "Starting in 1 second.") inDungeon = true
-        }
-
-        ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick {
-            val level = Meridian.mc.level
-            if (level !== lastLevel) {
-                lastLevel = level
-                inF4Boss = false
-                inDungeon = false
-            }
-        })
         WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
-            if (!enabled || inF4Boss || !inDungeon) return@register
+            if (!enabled || F4State.inF4Boss || !DungeonState.inDungeon) return@register
             val level = Meridian.mc.level ?: return@register
             val player = Meridian.mc.player ?: return@register
             val bats = level.entitiesForRendering().filterIsInstance<Bat>()
@@ -67,7 +45,7 @@ object BatTracer : SwitchFeature (
 ) {
     init {
         WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
-            if (!enabled || BoxBats.inF4Boss || !BoxBats.inDungeon) return@register
+            if (!enabled || F4State.inF4Boss || !DungeonState.inDungeon) return@register
             val level = Meridian.mc.level ?: return@register
             for (ent in level.entitiesForRendering()) {
                 if (ent !is Bat) continue
