@@ -73,12 +73,12 @@ import io.github.meridian.features.impl.general.RunicMobColor
 import io.github.meridian.features.impl.general.BoxRunicMobs
 import io.github.meridian.features.impl.general.RunicMobTracer
 import io.github.meridian.features.impl.general.SoundListButton
-import io.github.meridian.features.impl.mining.ButterflyESP
+import io.github.meridian.features.impl.mining.BoxButterflies
 import io.github.meridian.features.impl.mining.ButterflyTracer
-import io.github.meridian.features.impl.mining.CorleoneESP
-import io.github.meridian.features.impl.mining.DiamondGoblinESP
-import io.github.meridian.features.impl.mining.GoldenGoblinESP
-import io.github.meridian.features.impl.mining.KeyGuardianESP
+import io.github.meridian.features.impl.mining.BoxCorleone
+import io.github.meridian.features.impl.mining.BoxDiamondGoblins
+import io.github.meridian.features.impl.mining.BoxGoldenGoblins
+import io.github.meridian.features.impl.mining.BoxKeyGuardians
 
 
 // Manifest of every feature in the mod — the only place that needs updating
@@ -194,12 +194,12 @@ object FeatureList {
         //                      MINING                        //
         // ================================================== //
 
-        ButterflyESP,
+        BoxButterflies,
         ButterflyTracer,
-        CorleoneESP,
-        GoldenGoblinESP,
-        DiamondGoblinESP,
-        KeyGuardianESP,
+        BoxCorleone,
+        BoxGoldenGoblins,
+        BoxDiamondGoblins,
+        BoxKeyGuardians,
 
         // ================================================== //
         //                      EVENTS                        //

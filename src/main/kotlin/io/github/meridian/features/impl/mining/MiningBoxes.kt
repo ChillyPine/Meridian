@@ -7,12 +7,12 @@ import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents
 import net.minecraft.world.entity.decoration.ArmorStand
 
 // Butterfly, Corleone, Golden Goblin, Diamond Goblin, Key Guardian
-object ButterflyESP : SwitchFeature(
-    name = "Butterfly ESP",
+object BoxButterflies : SwitchFeature(
+    name = "Box Butterflies",
     description = "",
     category = "Mining",
-    configKey = "butterfly_esp",
-    subcategory = "ESPs",
+    configKey = "box_butterflies",
+    subcategory = "Boxes",
 ) {
     init {
         WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
@@ -33,8 +33,8 @@ object ButterflyTracer : SwitchFeature(
     description = "",
     category = "Mining",
     configKey = "butterfly_tracer",
-    subcategory = "ESPs",
-    dependsOn = ButterflyESP,
+    subcategory = "Boxes",
+    dependsOn = BoxButterflies,
 ) {
     init {
         WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
@@ -52,12 +52,12 @@ object ButterflyTracer : SwitchFeature(
     }
 }
 
-object CorleoneESP : SwitchFeature(
-    name = "Corleone ESP",
+object BoxCorleone : SwitchFeature(
+    name = "Box Corleone",
     description = "",
     category = "Mining",
-    configKey = "corleone_esp",
-    subcategory = "ESPs",
+    configKey = "box_corleone",
+    subcategory = "Boxes",
 ) {
     init {
         WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
@@ -73,12 +73,12 @@ object CorleoneESP : SwitchFeature(
     }
 }
 
-object GoldenGoblinESP : SwitchFeature(
-    name = "Golden Goblin ESP",
+object BoxGoldenGoblins : SwitchFeature(
+    name = "Box Golden Goblins",
     description = "",
     category = "Mining",
-    configKey = "golden_goblin_esp",
-    subcategory = "ESPs",
+    configKey = "box_golden_goblins",
+    subcategory = "Boxes",
 ) {
     init {
         WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
@@ -94,12 +94,12 @@ object GoldenGoblinESP : SwitchFeature(
     }
 }
 
-object DiamondGoblinESP : SwitchFeature(
-    name = "Diamond Goblin ESP",
+object BoxDiamondGoblins : SwitchFeature(
+    name = "Box Diamond Goblins",
     description = "",
     category = "Mining",
-    configKey = "diamond_goblin_esp",
-    subcategory = "ESPs",
+    configKey = "box_diamond_goblins",
+    subcategory = "Boxes",
 ) {
     init {
         WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
@@ -115,12 +115,12 @@ object DiamondGoblinESP : SwitchFeature(
     }
 }
 
-object KeyGuardianESP : SwitchFeature(
-    name = "Key Guardian ESP",
+object BoxKeyGuardians : SwitchFeature(
+    name = "Box Key Guardians",
     description = "",
     category = "Mining",
-    configKey = "key_guardian_esp",
-    subcategory = "ESPs",
+    configKey = "box_key_guardians",
+    subcategory = "Boxes",
 ) {
     init {
         WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
