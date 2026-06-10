@@ -38,7 +38,7 @@ object AutoKickShitter : SwitchFeature(
 }
 
 object AnnounceShitter : SwitchFeature(
-    name = "Annouce Shitters to Party",
+    name = "Announce Shitters to Party",
     description = "Sends a message in party chat when a player from the shitter list joins your party.",
     category = "Dungeons",
     configKey = "announce_shitter",
@@ -62,13 +62,14 @@ object AnnounceShitter : SwitchFeature(
 
             val message = CustomShitterMessage.value.trim()
             if (message.isEmpty()) return@onChatMessage
-            sendCommand("pc ${message.replace("{player}", player)}")
+            CompletableFuture.delayedExecutor(200, TimeUnit.MILLISECONDS)
+                .execute { sendCommand("pc ${message.replace("{player}", player)}") }
         }
     }
 }
 
 object CustomShitterMessage : TextFeature(
-    name = "Annouce Shitters to Party",
+    name = "Announce Shitters to Party",
     description = "Use {player} to insert the player's IGN into the message text.\nYou §emust §rinput a message for this feature to work.",
     category = "Dungeons",
     configKey = "custom_shitter_message",
