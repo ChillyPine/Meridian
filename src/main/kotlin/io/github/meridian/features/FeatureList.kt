@@ -33,6 +33,7 @@ import io.github.meridian.features.impl.dungeons.SendBloodToParty
 import io.github.meridian.features.impl.dungeons.SendMaskInPartyChat
 import io.github.meridian.features.impl.dungeons.ShadowAssassinColor
 import io.github.meridian.features.impl.dungeons.BoxShadowAssassins
+import io.github.meridian.features.impl.dungeons.BoxSpiritBear
 import io.github.meridian.features.impl.dungeons.ShitterListButton
 import io.github.meridian.features.impl.dungeons.ShortPFMessage
 import io.github.meridian.features.impl.dungeons.SimonSaysPC
@@ -173,8 +174,12 @@ object FeatureList {
         // --- P5 ---
         HoldingRelic,
 
-        // --- Miscellaneous ---
+        // --- M3 ---
         FFTimer,
+
+        // --- M4 ---
+        BoxSpiritBear,
+
         //LividHealthHUD, <- NOT IMPLEMENTED
         M5WishNotif,
         BottleFull,
