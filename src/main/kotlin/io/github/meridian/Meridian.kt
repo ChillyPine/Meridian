@@ -7,6 +7,7 @@ import io.github.meridian.hud.HudManager
 import io.github.meridian.utils.ChatBlocker
 import io.github.meridian.utils.DungeonState
 import io.github.meridian.utils.F4State
+import io.github.meridian.utils.F5State
 import io.github.meridian.utils.TickScheduler
 import net.fabricmc.api.ClientModInitializer
 import org.slf4j.Logger
@@ -25,6 +26,7 @@ object Meridian : ClientModInitializer {
         TickScheduler.init()
         DungeonState.init()
         F4State.init()
+        F5State.init()
         FeatureList.registerAll()
         FeatureManager.load()
         HudManager.init()

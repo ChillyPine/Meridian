@@ -180,7 +180,7 @@ object FeatureList {
         // --- M4 ---
         BoxSpiritBear,
 
-        //LividHealthHUD, <- NOT IMPLEMENTED
+        LividHealthHUD,
         M5WishNotif,
         BottleFull,
         MaskUsed,
