@@ -44,3 +44,23 @@ object F4State {
         })
     }
 }
+
+object F5State {
+    @Volatile var inF5Boss = false
+        private set
+
+    private var lastLevel: ClientLevel? = null
+
+    fun init() {
+        onChatMessage { text, _, _ ->
+            if (text.startsWith("[BOSS] Livid: I respect you for making it to here, but I'll be your undoing.")) inF5Boss = true
+        }
+        ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick {
+            val level = mc.level
+            if (level !== lastLevel) {
+                lastLevel = level
+                inF5Boss = false
+            }
+        })
+    }
+}
