@@ -2,6 +2,7 @@ package io.github.meridian.features.impl.dungeons
 
 import io.github.meridian.Meridian.mc
 import io.github.meridian.features.SwitchFeature
+import io.github.meridian.utils.F5State
 import io.github.meridian.utils.TickScheduler
 import io.github.meridian.utils.onChatMessage
 import net.minecraft.client.Minecraft
@@ -18,7 +19,7 @@ object M5WishNotif : SwitchFeature(
 ) {
     init {
         onChatMessage { text, _, _ ->
-            if (!enabled) return@onChatMessage
+            if (!enabled || !F5State.inF5Boss) return@onChatMessage
             if (!text.startsWith("[BOSS] Livid: I respect you for making it to here, but I'll be your undoing.")) return@onChatMessage
             // mc.gui.setTimes(fadeIn, stay, fadeOut)
             mc.gui.setTimes(0, 60, 0)
