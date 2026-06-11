@@ -1,6 +1,7 @@
 package io.github.meridian.features.impl.dungeons
 
 import io.github.meridian.features.SwitchFeature
+import io.github.meridian.utils.DungeonState
 import io.github.meridian.utils.modMessage
 import io.github.meridian.utils.onChatMessage
 import io.github.meridian.utils.sendCommand
@@ -56,7 +57,7 @@ object SimonSaysTime : SwitchFeature(
 
     init {
         onChatMessage { text, _, _ ->
-            if (!enabled) return@onChatMessage
+            if (!enabled || !DungeonState.inDungeon) return@onChatMessage
             val elapsed = tracker.detect(text) ?: return@onChatMessage
             TickScheduler.schedule(1) {
                 modMessage("§fSimon Says Took: ${timeColor(elapsed)}${String.format("%.2f", elapsed)}s")
@@ -76,7 +77,7 @@ object SimonSaysPC : SwitchFeature(
 
     init {
         onChatMessage { text, _, _ ->
-            if (!enabled) return@onChatMessage
+            if (!enabled || !DungeonState.inDungeon) return@onChatMessage
             val elapsed = tracker.detect(text) ?: return@onChatMessage
             sendCommand("pc Simon Says Took: ${String.format("%.2f", elapsed)}s")
         }
