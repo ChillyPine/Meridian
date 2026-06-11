@@ -26,6 +26,7 @@ import io.github.meridian.features.impl.dungeons.M5WishNotif
 import io.github.meridian.features.impl.dungeons.MaskUsed
 import io.github.meridian.features.impl.dungeons.P1WishNotif
 import io.github.meridian.features.impl.dungeons.P3WishNotif
+import io.github.meridian.features.impl.dungeons.P4Platform
 import io.github.meridian.features.impl.dungeons.PartyActions
 import io.github.meridian.features.impl.dungeons.PlayProcSound
 import io.github.meridian.features.impl.dungeons.PlaySoundOnKeyDrop
@@ -170,6 +171,9 @@ object FeatureList {
         GoldorColor,
         SimonSaysTime,
         SimonSaysPC,
+
+        // --- P4 ---
+        P4Platform,
 
         // --- P5 ---
         HoldingRelic,

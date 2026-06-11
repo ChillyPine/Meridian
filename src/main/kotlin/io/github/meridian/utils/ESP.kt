@@ -166,6 +166,15 @@ object ESP {
         return level.clip(ctx).type == HitResult.Type.MISS
     }
 
+    /** Wireframe box at fixed world coordinates (not entity-anchored). */
+    fun drawWorldBox(
+        ctx: WorldRenderContext,
+        x0: Double, y0: Double, z0: Double,
+        x1: Double, y1: Double, z1: Double,
+        argb: Int,
+        depth: Boolean = ESP.depth,
+    ) = drawBoxAt(ctx, x0, y0, z0, x1, y1, z1, argb, depth)
+
     private fun drawBoxAt(
         ctx: WorldRenderContext,
         x0: Double, y0: Double, z0: Double,
