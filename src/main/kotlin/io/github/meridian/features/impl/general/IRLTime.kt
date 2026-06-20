@@ -1,7 +1,7 @@
 package io.github.meridian.features.impl.general
 
-import io.github.meridian.features.ColorFeature
-import io.github.meridian.features.SwitchFeature
+import io.github.meridian.features.types.ColorFeature
+import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.hud.HudElement
 import io.github.meridian.hud.HudManager
 import java.time.LocalTime

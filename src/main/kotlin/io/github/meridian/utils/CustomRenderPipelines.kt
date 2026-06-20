@@ -1,7 +1,8 @@
 package io.github.meridian.utils
 
+import com.mojang.blaze3d.pipeline.DepthStencilState
 import com.mojang.blaze3d.pipeline.RenderPipeline
-import com.mojang.blaze3d.platform.DepthTestFunction
+import com.mojang.blaze3d.platform.CompareOp
 import io.github.meridian.mixin.accessor.RenderPipelinesAccessor
 import io.github.meridian.mixin.accessor.RenderTypeInvoker
 import net.minecraft.client.renderer.rendertype.RenderSetup
@@ -16,16 +17,14 @@ object CustomRenderPipelines {
     val LINES_NO_DEPTH: RenderPipeline = RenderPipelinesAccessor.`meridian$callRegister`(
         RenderPipeline.builder(RenderPipelinesAccessor.`meridian$getLinesSnippet`())
             .withLocation(Identifier.fromNamespaceAndPath("meridian", "pipeline/lines_no_depth"))
-            .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
-            .withDepthWrite(false)
+            .withDepthStencilState(DepthStencilState(CompareOp.ALWAYS_PASS, false))
             .build()
     )
 
     val DEBUG_FILLED_BOX_NO_DEPTH: RenderPipeline = RenderPipelinesAccessor.`meridian$callRegister`(
         RenderPipeline.builder(RenderPipelinesAccessor.`meridian$getDebugFilledSnippet`())
             .withLocation(Identifier.fromNamespaceAndPath("meridian", "pipeline/debug_filled_box_no_depth"))
-            .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
-            .withDepthWrite(false)
+            .withDepthStencilState(DepthStencilState(CompareOp.ALWAYS_PASS, false))
             .build()
     )
 

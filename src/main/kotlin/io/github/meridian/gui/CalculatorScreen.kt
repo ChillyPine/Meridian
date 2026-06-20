@@ -1,7 +1,7 @@
 package io.github.meridian.gui
 
 import io.github.meridian.utils.playClickSound
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.client.input.CharacterEvent
 import net.minecraft.client.input.KeyEvent
@@ -24,12 +24,12 @@ class CalculatorScreen : Screen(Component.literal("Calculator")) {
     private data class BtnRect(val label: String, val x: Int, val y: Int, val w: Int, val h: Int, val isOp: Boolean)
     private val buttons = mutableListOf<BtnRect>()
 
-    override fun renderBackground(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+    override fun extractBackground(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
         guiGraphics.fill(0, 0, width, height, BG_DIM)
     }
 
-    override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
-        super.render(guiGraphics, mouseX, mouseY, partialTick)
+    override fun extractRenderState(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick)
         buttons.clear()
 
         panelX = (width - PANEL_WIDTH) / 2
@@ -39,7 +39,7 @@ class CalculatorScreen : Screen(Component.literal("Calculator")) {
         guiGraphics.fill(panelX, panelY, panelX + PANEL_WIDTH, panelY + 2, ACCENT_COLOR)
 
         val title = "§lCalculator"
-        guiGraphics.drawString(font, title,
+        guiGraphics.text(font, title,
             panelX + (PANEL_WIDTH - font.width(title)) / 2, panelY + 7, NAME_COLOR, false)
 
         val dispX = panelX + PADDING
@@ -48,12 +48,12 @@ class CalculatorScreen : Screen(Component.literal("Calculator")) {
         val dispH = DISPLAY_H
         guiGraphics.fill(dispX, dispY, dispX + dispW, dispY + dispH, DISPLAY_BG)
 
-        guiGraphics.drawString(font, "§7$expressionLine",
+        guiGraphics.text(font, "§7$expressionLine",
             dispX + dispW - font.width(expressionLine) - 4,
             dispY + 4, DESC_COLOR, false)
 
         val valStr = displayValue
-        guiGraphics.drawString(font, "§f$valStr",
+        guiGraphics.text(font, "§f$valStr",
             dispX + dispW - font.width(valStr) - 4,
             dispY + dispH - font.lineHeight - 4, NAME_COLOR, false)
 
@@ -85,7 +85,7 @@ class CalculatorScreen : Screen(Component.literal("Calculator")) {
                     else            -> BTN_BG
                 }
                 guiGraphics.fill(bx, by, bx + bw, by + cellH, bg)
-                guiGraphics.drawString(font, label,
+                guiGraphics.text(font, label,
                     bx + (bw - font.width(label)) / 2,
                     by + (cellH - font.lineHeight) / 2 + 1,
                     NAME_COLOR, false)

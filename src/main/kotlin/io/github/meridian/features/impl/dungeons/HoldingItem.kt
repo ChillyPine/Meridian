@@ -1,8 +1,9 @@
 package io.github.meridian.features.impl.dungeons
 
 import io.github.meridian.Meridian.mc
-import io.github.meridian.features.SwitchFeature
+import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.DungeonState
+import io.github.meridian.utils.P5State
 import io.github.meridian.utils.hasItem
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.minecraft.network.chat.Component
@@ -36,7 +37,7 @@ object HoldingRelic : SwitchFeature(
 ) {
     init {
         ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick {
-            if (!enabled || !DungeonState.inDungeon) return@EndTick
+            if (!enabled || !P5State.inP5) return@EndTick
             if (hasItem("Relic")) {
                 mc.gui.setTimes(0, 5, 0)
                 mc.gui.setTitle(Component.empty())

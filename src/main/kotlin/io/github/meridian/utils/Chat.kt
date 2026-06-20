@@ -17,11 +17,11 @@ fun sendCommand(command: String) {
 }
 
 fun sendClientMessage(message: Component) {
-    mc.execute { mc.gui.chat.addMessage(message) }
+    mc.execute { mc.gui.chat.addClientSystemMessage(message) }
 }
 
 fun sendClientMessage(message: String) {
-    mc.execute { mc.gui.chat.addMessage(Component.literal(message)) }
+    mc.execute { mc.gui.chat.addClientSystemMessage(Component.literal(message)) }
 }
 
 // Simulates a game message as if the server sent it — runs the full receive
@@ -33,7 +33,7 @@ fun simulateGameMessage(message: Component) {
             .allowReceiveGameMessage(message, false)
         if (!allowed) return@execute
         ClientReceiveMessageEvents.GAME.invoker().onReceiveGameMessage(message, false)
-        mc.gui.chat.addMessage(message)
+        mc.gui.chat.addClientSystemMessage(message)
     }
 }
 
@@ -45,14 +45,14 @@ fun simulateGameMessage(message: String) {
 fun modMessage(message: Any?, prefix: String = "§6Meridian §5»§r ", chatStyle: Style? = null) {
     val text = Component.literal("$prefix$message")
     chatStyle?.let { text.setStyle(chatStyle) }
-    mc.execute { mc.gui.chat.addMessage(text) }
+    mc.execute { mc.gui.chat.addClientSystemMessage(text) }
 }
 
 // Used for rich messages, meaning hover-able text, clickable links, etc
 fun modMessage(message: Component, prefix: String = "§6Meridian §5»§r ", chatStyle: Style? = null) {
     val text = Component.literal(prefix).append(message)
     chatStyle?.let { text.setStyle(chatStyle) }
-    mc.execute { mc.gui.chat.addMessage(text) }
+    mc.execute { mc.gui.chat.addClientSystemMessage(text) }
 }
 
 //fun devMessage(message: Any?) {

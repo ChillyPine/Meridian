@@ -1,12 +1,18 @@
 {
 	"required": true,
 	"package": "io.github.meridian.mixin",
-	"compatibilityLevel": "JAVA_21",
+	"compatibilityLevel": "JAVA_25",
 	"mixins": [
 		"ConnectionMixin"
 	],
 	"client": [
 		"MixinGui",
+		"MixinChatTagBackground",
+		"MixinChatTagFocused",
+		"MixinChatIndent",
+		"MixinEntityRenderer",
+		"MixinLivingEntityRenderer",
+		"MixinPlayerTabOverlay",
 		"accessor.RenderPipelinesAccessor",
 		"accessor.RenderTypeInvoker"
 	],

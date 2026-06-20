@@ -1,10 +1,10 @@
 package io.github.meridian.features.impl.general
 
 import io.github.meridian.Meridian
-import io.github.meridian.features.ColorFeature
-import io.github.meridian.features.SwitchFeature
+import io.github.meridian.features.types.ColorFeature
+import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.ESP
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents
 import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.Style
@@ -44,7 +44,7 @@ object BoxRunicMobs : SwitchFeature(
     subcategory = "Boxes",
 ) {
     init {
-        WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
+        LevelRenderEvents.AFTER_SOLID_FEATURES.register { ctx ->
             if (!enabled) return@register
             forEachRunicMob { ent ->
                 ESP.drawBox(ctx, ent, w = 1.0, h = 1.0, wz = 1.0, yOffset = -1.0, argb = RunicMobColor.color)
@@ -62,7 +62,7 @@ object RunicMobTracer : SwitchFeature(
     dependsOn = BoxRunicMobs
 ) {
     init {
-        WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
+        LevelRenderEvents.AFTER_SOLID_FEATURES.register { ctx ->
             if (!isActive()) return@register
             val pt = Meridian.mc.deltaTracker.getGameTimeDeltaPartialTick(true)
             forEachRunicMob { ent ->
@@ -90,7 +90,7 @@ object BoxMatchos : SwitchFeature(
     subcategory = "Boxes",
 ) {
     init {
-        WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
+        LevelRenderEvents.AFTER_SOLID_FEATURES.register { ctx ->
             if (!enabled) return@register
             val level = Meridian.mc.level ?: return@register
             for (ent in level.entitiesForRendering()) {
@@ -120,7 +120,7 @@ object BoxOldWolves : SwitchFeature(
     subcategory = "Boxes",
 ) {
     init {
-        WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
+        LevelRenderEvents.AFTER_SOLID_FEATURES.register { ctx ->
             if (!enabled) return@register
             val level = Meridian.mc.level ?: return@register
             for (ent in level.entitiesForRendering()) {
@@ -154,7 +154,7 @@ object BoxRats : SwitchFeature(
     private val nonRats = HashSet<Int>()
 
     init {
-        WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
+        LevelRenderEvents.AFTER_SOLID_FEATURES.register { ctx ->
             if (!enabled) return@register
             val level = Meridian.mc.level ?: return@register
 
@@ -198,7 +198,7 @@ object BoxFemboys : SwitchFeature(
     subcategory = "Boxes",
 ) {
     init {
-        WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
+        LevelRenderEvents.AFTER_SOLID_FEATURES.register { ctx ->
             if (!enabled) return@register
             val level = Meridian.mc.level ?: return@register
             for (ent in level.entitiesForRendering()) {

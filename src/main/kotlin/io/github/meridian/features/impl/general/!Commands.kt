@@ -1,7 +1,7 @@
 package io.github.meridian.features.impl.general
 
 import io.github.meridian.Meridian
-import io.github.meridian.features.SwitchFeature
+import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.onChatMessage
 import io.github.meridian.utils.sendChatMessage
 import io.github.meridian.utils.sendCommand
@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
 private const val DT_ART =
     "゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜ ゛゜゛███゛゜█████゛゜█゛゜█゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜ ゜゛゜█゜゛█゛゜゛█゜゛゜゛█゜゛█゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛ ゛゜゛█゛゜█゜゛゜█゛゜゛゜█゛゜█゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜ ゜゛゜█゜゛█゛゜゛█゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛ ゛゜゛███゛゜゛゜█゛゜゛゜█゛゜█゜゛゜゛゜"
 
-private val dtRegex = Regex("^Party > .+: !dt$")
+private val dtRegex = Regex("^Party > .+: !dt.*$")
 // private val ptRegex = Regex("^Party > (?:\\S+ )*(\\S+): !(?:ptme|pt me|pt)$")
 private val coordsRegex = Regex("^Party > .+: !coords$")
 

@@ -1,12 +1,12 @@
 package io.github.meridian.features.impl.dungeons
 
 import io.github.meridian.Meridian
-import io.github.meridian.features.ColorFeature
-import io.github.meridian.features.SwitchFeature
+import io.github.meridian.features.types.ColorFeature
+import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.ESP
 import io.github.meridian.utils.onChatMessage
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents
 import net.minecraft.client.multiplayer.ClientLevel
 import net.minecraft.world.entity.boss.wither.WitherBoss
 
@@ -37,7 +37,7 @@ object BoxGoldor : SwitchFeature(
             }
         })
 
-        WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
+        LevelRenderEvents.AFTER_SOLID_FEATURES.register { ctx ->
             if (!enabled || !goldorPhase) return@register
             val level = Meridian.mc.level ?: return@register
 

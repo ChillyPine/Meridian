@@ -1,7 +1,7 @@
 package io.github.meridian.features.impl.dungeons
 
 import io.github.meridian.Meridian.mc
-import io.github.meridian.features.SwitchFeature
+import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.modMessage
 import io.github.meridian.utils.onChatMessage
 import io.github.meridian.utils.sendCommand

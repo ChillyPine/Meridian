@@ -1,7 +1,7 @@
 package io.github.meridian.features.impl.general
 
 import io.github.meridian.Meridian
-import io.github.meridian.features.ButtonFeature
+import io.github.meridian.features.types.ButtonFeature
 import io.github.meridian.utils.sendCommand
 import net.minecraft.network.chat.Component
 import java.util.concurrent.CompletableFuture

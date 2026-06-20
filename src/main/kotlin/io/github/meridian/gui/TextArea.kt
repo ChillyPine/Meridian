@@ -1,10 +1,10 @@
 package io.github.meridian.gui
 
-import io.github.meridian.features.TextFeature
+import io.github.meridian.features.types.TextFeature
 import io.github.meridian.utils.playClickSound
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Font
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.input.CharacterEvent
 import net.minecraft.client.input.KeyEvent
 import org.lwjgl.glfw.GLFW
@@ -62,7 +62,7 @@ class TextArea(private val placeholderText: String = "") {
         return lines * font.lineHeight + VPAD * 2
     }
 
-    fun render(g: GuiGraphics, font: Font, x: Int, y: Int, w: Int) {
+    fun render(g: GuiGraphicsExtractor, font: Font, x: Int, y: Int, w: Int) {
         boxX = x; boxY = y; boxW = w
         maxTextW = w - HPAD * 2
         val segs = layout(font, maxTextW)
@@ -83,7 +83,7 @@ class TextArea(private val placeholderText: String = "") {
         g.enableScissor(x + 1, y + 1, x + w - 1, y + h - 1)
 
         if (text.isEmpty() && !focused) {
-            g.drawString(font, placeholderText, textLeft, textTop, 0xFF777777.toInt(), false)
+            g.text(font, placeholderText, textLeft, textTop, 0xFF777777.toInt(), false)
             g.disableScissor()
             return
         }
@@ -102,7 +102,7 @@ class TextArea(private val placeholderText: String = "") {
         }
 
         segs.forEachIndexed { j, s ->
-            g.drawString(font, text.substring(s.start, s.end), textLeft,
+            g.text(font, text.substring(s.start, s.end), textLeft,
                 textTop + j * font.lineHeight, 0xFFFFFFFF.toInt(), false)
         }
 

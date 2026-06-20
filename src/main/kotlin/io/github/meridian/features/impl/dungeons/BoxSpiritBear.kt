@@ -1,10 +1,10 @@
 package io.github.meridian.features.impl.dungeons
 
 import io.github.meridian.Meridian
-import io.github.meridian.features.SwitchFeature
+import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.ESP
 import io.github.meridian.utils.F4State
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents
 import net.minecraft.world.entity.decoration.ArmorStand
 
 object BoxSpiritBear : SwitchFeature(
@@ -15,7 +15,7 @@ object BoxSpiritBear : SwitchFeature(
     subcategory = "M4",
 )  {
     init {
-        WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
+        LevelRenderEvents.AFTER_SOLID_FEATURES.register { ctx ->
             if (!enabled || !F4State.inF4Boss) return@register
             val level = Meridian.mc.level ?: return@register
             for (ent in level.entitiesForRendering()) {

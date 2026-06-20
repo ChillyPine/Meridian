@@ -3,7 +3,7 @@ package io.github.meridian.gui
 import io.github.meridian.features.FeatureManager
 import io.github.meridian.hud.HudElement
 import io.github.meridian.hud.HudManager
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.client.input.KeyEvent
 import net.minecraft.client.input.MouseButtonEvent
@@ -24,20 +24,20 @@ class HudEditScreen : Screen(Component.literal("Meridian HUD Editor")) {
     private var hovered: HudElement? = null
     private var hoverStartMs = 0L
 
-    override fun renderBackground(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+    override fun extractBackground(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
         // Dim the world so the HUD elements stand out while editing.
         guiGraphics.fill(0, 0, width, height, BG_DIM)
     }
 
-    override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+    override fun extractRenderState(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
         // Screen.render() invokes our renderBackground() (the dim) first.
-        super.render(guiGraphics, mouseX, mouseY, partialTick)
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick)
 
         // Header / instructions.
         val title = "§lHUD Editor"
-        guiGraphics.drawString(font, title, (width - font.width(title)) / 2, 6, ACCENT_COLOR, true)
+        guiGraphics.text(font, title, (width - font.width(title)) / 2, 6, ACCENT_COLOR, true)
         val help = "Drag to move  ·  Scroll to scale  ·  R resets hovered  ·  Esc saves & exits"
-        guiGraphics.drawString(font, help, (width - font.width(help)) / 2, 6 + font.lineHeight + 2, HELP_COLOR, true)
+        guiGraphics.text(font, help, (width - font.width(help)) / 2, 6 + font.lineHeight + 2, HELP_COLOR, true)
 
         // Draw each element's preview (also refreshes its on-screen bounds).
         for (el in HudManager.elements()) {
@@ -69,11 +69,11 @@ class HudEditScreen : Screen(Component.literal("Meridian HUD Editor")) {
             val tx = h.lastX + (h.lastW - lw) / 2
             val ty = h.lastY + h.lastH + 4
             guiGraphics.fill(tx - 3, ty - 2, tx + lw + 3, ty + font.lineHeight + 1, TOOLTIP_BG)
-            guiGraphics.drawString(font, label, tx, ty, NAME_COLOR, false)
+            guiGraphics.text(font, label, tx, ty, NAME_COLOR, false)
         }
     }
 
-    private fun drawOutline(g: GuiGraphics, el: HudElement, color: Int) {
+    private fun drawOutline(g: GuiGraphicsExtractor, el: HudElement, color: Int) {
         val x1 = el.lastX
         val y1 = el.lastY
         val x2 = el.lastX + el.lastW.coerceAtLeast(1)

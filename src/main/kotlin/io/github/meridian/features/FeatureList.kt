@@ -27,6 +27,7 @@ import io.github.meridian.features.impl.dungeons.MaskUsed
 import io.github.meridian.features.impl.dungeons.P1WishNotif
 import io.github.meridian.features.impl.dungeons.P3WishNotif
 import io.github.meridian.features.impl.dungeons.P4Platform
+import io.github.meridian.features.impl.dungeons.PadHelper
 import io.github.meridian.features.impl.dungeons.PartyActions
 import io.github.meridian.features.impl.dungeons.PlayProcSound
 import io.github.meridian.features.impl.dungeons.PlaySoundOnKeyDrop
@@ -43,10 +44,16 @@ import io.github.meridian.features.impl.dungeons.StarMobColor
 import io.github.meridian.features.impl.dungeons.BoxStarMobs
 import io.github.meridian.features.impl.dungeons.StormColor
 import io.github.meridian.features.impl.dungeons.BoxStorm
+import io.github.meridian.features.impl.dungeons.CooldownTimerHUD
+import io.github.meridian.features.impl.dungeons.CustomLeapMEssageTXT
+import io.github.meridian.features.impl.dungeons.CustomLeapMessage
 import io.github.meridian.features.impl.dungeons.HoldingCrystal
 import io.github.meridian.features.impl.dungeons.HoldingRelic
+import io.github.meridian.features.impl.dungeons.SendShitterReason
+import io.github.meridian.features.impl.dungeons.StackHelper
 import io.github.meridian.features.impl.dungeons.WatcherYapHider
 import io.github.meridian.features.impl.events.BoxPrimalFears
+import io.github.meridian.features.impl.events.JerryNotif
 import io.github.meridian.features.impl.events.QuickMathsSolver
 import io.github.meridian.features.impl.farming.BoxTrapperMobs
 import io.github.meridian.features.impl.general.BlockBlocksInWay
@@ -66,6 +73,7 @@ import io.github.meridian.features.impl.general.MatchoColor
 import io.github.meridian.features.impl.general.NonRemover
 import io.github.meridian.features.impl.general.BoxOldWolves
 import io.github.meridian.features.impl.general.OldWolfColor
+import io.github.meridian.features.impl.general.PlayerNametag
 import io.github.meridian.features.impl.general.PLActions
 import io.github.meridian.features.impl.general.PLMoreActions
 import io.github.meridian.features.impl.general.BoxPlayers
@@ -73,8 +81,10 @@ import io.github.meridian.features.impl.general.PlayerBoxMode
 import io.github.meridian.features.impl.general.BoxSpecificPlayer
 import io.github.meridian.features.impl.general.BoxRats
 import io.github.meridian.features.impl.general.RemoveNausea
+import io.github.meridian.features.impl.general.RemoveRealms
 import io.github.meridian.features.impl.general.RunicMobColor
 import io.github.meridian.features.impl.general.BoxRunicMobs
+import io.github.meridian.features.impl.general.RemoveChatBar
 import io.github.meridian.features.impl.general.RunicMobTracer
 import io.github.meridian.features.impl.general.SoundListButton
 import io.github.meridian.features.impl.mining.BoxButterflies
@@ -83,6 +93,7 @@ import io.github.meridian.features.impl.mining.BoxCorleone
 import io.github.meridian.features.impl.mining.BoxDiamondGoblins
 import io.github.meridian.features.impl.mining.BoxGoldenGoblins
 import io.github.meridian.features.impl.mining.BoxKeyGuardians
+import net.minecraft.network.chat.ClickEvent
 
 // Manifest of every feature in the mod — the only place that needs updating
 // when a new feature file is added. Similar in spirit to ChatTriggers' index.js.
@@ -129,7 +140,6 @@ object FeatureList {
         // --- Miscellaneous ---
         IRLTime,
         IRLClockColor,
-        RemoveNausea,
         NonRemover,
         SoundListButton,
         // ================================================== //
@@ -164,6 +174,7 @@ object FeatureList {
         // --- P2 ---
         BoxStorm,
         StormColor,
+        PadHelper,
 
         // --- P3 ---
         P3WishNotif,
@@ -177,6 +188,7 @@ object FeatureList {
 
         // --- P5 ---
         HoldingRelic,
+        StackHelper,
 
         // --- M3 ---
         FFTimer,
@@ -184,13 +196,17 @@ object FeatureList {
         // --- M4 ---
         BoxSpiritBear,
 
+        // --- M5 ---
         LividHealthHUD,
         M5WishNotif,
+
+        // --- Misc ---
         BottleFull,
         MaskUsed,
         PlayProcSound,
         SendMaskInPartyChat,
         DungeonEndMusic,
+        CooldownTimerHUD,
         ShortPFMessage,
         PartyActions,
         BlockPFWarning,
@@ -198,6 +214,9 @@ object FeatureList {
         AutoKickShitter,
         AnnounceShitter,
         CustomShitterMessage,
+        SendShitterReason,
+        CustomLeapMessage,
+        CustomLeapMEssageTXT,
 
         // ================================================== //
         //                      FARMING                       //
@@ -221,7 +240,18 @@ object FeatureList {
         // ================================================== //
 
         BoxPrimalFears,
-        QuickMathsSolver
+        QuickMathsSolver,
+        JerryNotif,
+
+        // ================================================== //
+        //                      VANILLA                       //
+        // ================================================== //
+
+        // --- Tweaks ---
+        RemoveRealms,
+        RemoveNausea,
+        RemoveChatBar,
+        PlayerNametag,
     )
 
     fun registerAll() {

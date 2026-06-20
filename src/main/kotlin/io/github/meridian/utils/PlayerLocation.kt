@@ -45,6 +45,7 @@ object F4State {
     }
 }
 
+// Could also check the wool on the ceiling. It always starts out red. Or maybe some other blocks?
 object F5State {
     @Volatile var inF5Boss = false
         private set
@@ -60,6 +61,50 @@ object F5State {
             if (level !== lastLevel) {
                 lastLevel = level
                 inF5Boss = false
+            }
+        })
+    }
+}
+
+object P2State {
+    @Volatile var inP2 = false
+        private set
+
+    private var lastLevel: ClientLevel? = null
+
+    fun init() {
+        onChatMessage { text, _, _ ->
+            when (text) {
+                "[BOSS] Storm: Pathetic Maxor, just like expected." -> inP2 = true
+                "[BOSS] Storm: I should have known that I stood no chance." -> inP2 = false
+            }
+        }
+        ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick {
+            val level = mc.level
+            if (level !== lastLevel) {
+                lastLevel = level
+                inP2 = false
+            }
+        })
+    }
+}
+
+// Add another way to detect if in P5 (check for wither king?? maybe that's retarded)
+object P5State {
+    @Volatile var inP5 = false
+        private set
+
+    private var lastLevel: ClientLevel? = null
+
+    fun init() {
+        onChatMessage { text, _, _ ->
+            if (text == "[BOSS] Wither King: Ohhh?" || text == "[BOSS] Wither King: You... again?") inP5 = true
+        }
+        ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick {
+            val level = mc.level
+            if (level !== lastLevel) {
+                lastLevel = level
+                inP5 = false
             }
         })
     }

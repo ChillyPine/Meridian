@@ -6,7 +6,7 @@ import io.github.meridian.Meridian.mc
 import io.github.meridian.gui.HudEditScreen
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
 import net.minecraft.client.gui.Font
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.resources.Identifier
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement as FabricHudElement
 
@@ -44,7 +44,7 @@ object HudManager {
         )
     }
 
-    private fun renderLive(g: GuiGraphics) {
+    private fun renderLive(g: GuiGraphicsExtractor) {
         if (mc.options.hideGui) return
         if (mc.level == null) return
         // The editor renders its own (preview) copies — don't double-draw.
@@ -60,7 +60,7 @@ object HudManager {
     // Shared draw used by both the live layer and the editor. Applies the
     // element's anchor + scale in a gui-scale-independent space, paints the
     // lines, and records the on-screen (gui-scaled) bounds on the element.
-    fun draw(g: GuiGraphics, font: Font, el: HudElement, lines: List<String>) {
+    fun draw(g: GuiGraphicsExtractor, font: Font, el: HudElement, lines: List<String>) {
         val guiScale = mc.window.guiScale.toFloat().coerceAtLeast(1f)
         val swP = mc.window.guiScaledWidth * guiScale
         val shP = mc.window.guiScaledHeight * guiScale
@@ -87,7 +87,7 @@ object HudManager {
         pose.scale(el.scale, el.scale)
         var ly = 0
         for (line in lines) {
-            g.drawString(font, line, 0, ly, el.color(), el.shadow)
+            g.text(font, line, 0, ly, el.color(), el.shadow)
             ly += font.lineHeight + HudElement.LINE_GAP
         }
         pose.popMatrix()

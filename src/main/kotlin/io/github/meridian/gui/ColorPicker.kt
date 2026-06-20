@@ -3,7 +3,7 @@ package io.github.meridian.gui
 import com.mojang.blaze3d.platform.NativeImage
 import io.github.meridian.utils.playClickSound
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.client.input.CharacterEvent
 import net.minecraft.client.input.KeyEvent
@@ -109,9 +109,9 @@ class ColorPicker(
         hexInput = "%02X%02X%02X%02X".format(a, r, g, b)
     }
 
-    override fun renderBackground(g: GuiGraphics, mx: Int, my: Int, pt: Float) {}
+    override fun extractBackground(g: GuiGraphicsExtractor, mx: Int, my: Int, pt: Float) {}
 
-    override fun render(g: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+    override fun extractRenderState(g: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
         val px = (width - PANEL_WIDTH) / 2
         val py = (height - PANEL_HEIGHT) / 2
         val panelColor = (PANEL_OPACITY shl 24) or PANEL_COLOR
@@ -119,7 +119,7 @@ class ColorPicker(
         g.fill(px, py, px + PANEL_WIDTH, py + PANEL_HEIGHT, panelColor)
 
         val titleX = px + (PANEL_WIDTH - font.width(TITLE_TEXT)) / 2
-        g.drawString(font, TITLE_TEXT, titleX, py + TITLE_TOP_PADDING, TITLE_COLOR, false)
+        g.text(font, TITLE_TEXT, titleX, py + TITLE_TOP_PADDING, TITLE_COLOR, false)
 
         svX = px + SV_SIDE_PADDING
         svY = py + SV_TOP_PADDING + font.lineHeight
@@ -138,14 +138,14 @@ class ColorPicker(
         renderHueSlider(g, hueX, hueY, hueW, SLIDER_HEIGHT)
         renderAlphaSlider(g, alphaX, alphaY, alphaW, SLIDER_HEIGHT)
 
-        g.drawString(font, "H", svX, hueY + (SLIDER_HEIGHT - font.lineHeight) / 2 + 1, 0xFFAAAAAA.toInt(), false)
-        g.drawString(font, "A", svX, alphaY + (SLIDER_HEIGHT - font.lineHeight) / 2 + 1, 0xFFAAAAAA.toInt(), false)
+        g.text(font, "H", svX, hueY + (SLIDER_HEIGHT - font.lineHeight) / 2 + 1, 0xFFAAAAAA.toInt(), false)
+        g.text(font, "A", svX, alphaY + (SLIDER_HEIGHT - font.lineHeight) / 2 + 1, 0xFFAAAAAA.toInt(), false)
 
         val hueVal = hue.toInt().toString()
         val alphaVal = "${(alpha * 100 / 255)}%"
         val valX = sliderXStart + sliderW + 4
-        g.drawString(font, hueVal, valX, hueY + (SLIDER_HEIGHT - font.lineHeight) / 2 + 1, 0xFFCCCCCC.toInt(), false)
-        g.drawString(font, alphaVal, valX, alphaY + (SLIDER_HEIGHT - font.lineHeight) / 2 + 1, 0xFFCCCCCC.toInt(), false)
+        g.text(font, hueVal, valX, hueY + (SLIDER_HEIGHT - font.lineHeight) / 2 + 1, 0xFFCCCCCC.toInt(), false)
+        g.text(font, alphaVal, valX, alphaY + (SLIDER_HEIGHT - font.lineHeight) / 2 + 1, 0xFFCCCCCC.toInt(), false)
 
         hexY = sliderY2 + SLIDER_HEIGHT + HEX_TOP_GAP + 4
         hexX = svX + 28
@@ -175,7 +175,7 @@ class ColorPicker(
         confirmX = px + PANEL_WIDTH - confirmW - 10; confirmY = buttonY
         renderButton(g, confirmX, confirmY, confirmW, CONFIRM_LABEL, CONFIRM_COLOR)
 
-        super.render(g, mouseX, mouseY, partialTick)
+        super.extractRenderState(g, mouseX, mouseY, partialTick)
     }
 
     private fun ensureSvTexture(w: Int, h: Int) {
@@ -247,7 +247,7 @@ class ColorPicker(
         alphaTexRgb = rgb
     }
 
-    private fun renderSVPicker(g: GuiGraphics, x: Int, y: Int, w: Int, h: Int) {
+    private fun renderSVPicker(g: GuiGraphicsExtractor, x: Int, y: Int, w: Int, h: Int) {
         ensureSvTexture(w, h)
         g.blit(RenderPipelines.GUI_TEXTURED, svTexId, x, y, 0f, 0f, w, h, w, h)
         val cx = x + (sat * w).toInt()
@@ -256,7 +256,7 @@ class ColorPicker(
         g.fill(cx - 1, cy - 4, cx + 1, cy + 4, 0xFFFFFFFF.toInt())
     }
 
-    private fun renderHueSlider(g: GuiGraphics, x: Int, y: Int, w: Int, h: Int) {
+    private fun renderHueSlider(g: GuiGraphicsExtractor, x: Int, y: Int, w: Int, h: Int) {
         ensureHueTexture(w, h)
         g.blit(RenderPipelines.GUI_TEXTURED, hueTexId, x, y, 0f, 0f, w, h, w, h)
         val tx = x + (hue / 360f * w).toInt()
@@ -264,7 +264,7 @@ class ColorPicker(
         g.fill(tx - THUMB_RADIUS + 1, y - 1, tx + THUMB_RADIUS - 1, y + h + 1, 0xFF333333.toInt())
     }
 
-    private fun renderAlphaSlider(g: GuiGraphics, x: Int, y: Int, w: Int, h: Int) {
+    private fun renderAlphaSlider(g: GuiGraphicsExtractor, x: Int, y: Int, w: Int, h: Int) {
         val cellSize = 4
         for (col in 0 until w step cellSize) {
             for (row in 0 until h step cellSize) {
@@ -282,8 +282,8 @@ class ColorPicker(
         g.fill(tx - THUMB_RADIUS + 1, y - 1, tx + THUMB_RADIUS - 1, y + h + 1, 0xFF333333.toInt())
     }
 
-    private fun renderHexInput(g: GuiGraphics, panelX: Int, x: Int, y: Int, w: Int) {
-        g.drawString(font, "Hex", panelX + SV_SIDE_PADDING, y + (HEX_HEIGHT - font.lineHeight) / 2 + 1, 0xFFAAAAAA.toInt(), false)
+    private fun renderHexInput(g: GuiGraphicsExtractor, panelX: Int, x: Int, y: Int, w: Int) {
+        g.text(font, "Hex", panelX + SV_SIDE_PADDING, y + (HEX_HEIGHT - font.lineHeight) / 2 + 1, 0xFFAAAAAA.toInt(), false)
         val bgColor = if (hexFocused) 0xFF2A2A38.toInt() else 0xFF222228.toInt()
         g.fill(x, y, x + w, y + HEX_HEIGHT, bgColor)
         g.fill(x, y, x + w, y + 1, if (hexFocused) 0xFFBB86FC.toInt() else 0xFF444444.toInt())
@@ -292,18 +292,18 @@ class ColorPicker(
         g.fill(x + w - 1, y, x + w, y + HEX_HEIGHT, if (hexFocused) 0xFFBB86FC.toInt() else 0xFF444444.toInt())
         val display = "#$hexInput"
         val textY = y + (HEX_HEIGHT - font.lineHeight) / 2 + 1
-        g.drawString(font, display, x + 3, textY, 0xFFFFFFFF.toInt(), false)
+        g.text(font, display, x + 3, textY, 0xFFFFFFFF.toInt(), false)
         if (hexFocused && (System.currentTimeMillis() / 500) % 2 == 0L) {
             val cursorX = x + 3 + font.width("#" + hexInput.substring(0, hexCursorPos))
             g.fill(cursorX, y + 2, cursorX + 1, y + HEX_HEIGHT - 2, 0xFFFFFFFF.toInt())
         }
     }
 
-    private fun renderButton(g: GuiGraphics, bx: Int, by: Int, bw: Int, label: String, bgColor: Int) {
+    private fun renderButton(g: GuiGraphicsExtractor, bx: Int, by: Int, bw: Int, label: String, bgColor: Int) {
         g.fill(bx, by, bx + bw, by + BUTTON_HEIGHT, bgColor)
         val lx = bx + (bw - font.width(label)) / 2
         val ly = by + (BUTTON_HEIGHT - font.lineHeight) / 2 + 1
-        g.drawString(font, label, lx, ly, BUTTON_TEXT_COLOR, false)
+        g.text(font, label, lx, ly, BUTTON_TEXT_COLOR, false)
     }
 
     override fun mouseClicked(event: MouseButtonEvent, bl: Boolean): Boolean {

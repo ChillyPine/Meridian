@@ -2,7 +2,7 @@ package io.github.meridian.gui
 
 import io.github.meridian.features.impl.dungeons.ShitterList
 import io.github.meridian.utils.playClickSound
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.client.input.CharacterEvent
 import net.minecraft.client.input.KeyEvent
@@ -58,13 +58,13 @@ class ShitterListScreen : Screen(Component.literal("Shitter List")) {
     private var draggingThumb = false
     private var thumbDragOffsetY = 0
 
-    override fun renderBackground(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+    override fun extractBackground(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
         // Dim the world behind the panel (the default blur is skipped).
         guiGraphics.fill(0, 0, width, height, BG_DIM)
     }
 
-    override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
-        super.render(guiGraphics, mouseX, mouseY, partialTick)
+    override fun extractRenderState(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick)
 
         panelX = (width - PANEL_WIDTH) / 2
         panelY = (height - PANEL_HEIGHT) / 2
@@ -73,7 +73,7 @@ class ShitterListScreen : Screen(Component.literal("Shitter List")) {
         guiGraphics.fill(panelX, panelY, panelX + PANEL_WIDTH, panelY + 2, ACCENT_COLOR)
 
         val title = "§lShitter List"
-        guiGraphics.drawString(font, title, panelX + (PANEL_WIDTH - font.width(title)) / 2, panelY + 8, NAME_COLOR, false)
+        guiGraphics.text(font, title, panelX + (PANEL_WIDTH - font.width(title)) / 2, panelY + 8, NAME_COLOR, false)
 
         // Input + Add button row.
         val inputY = panelY + 24
@@ -88,14 +88,14 @@ class ShitterListScreen : Screen(Component.literal("Shitter List")) {
         val addHovered = mouseX in addBtnX until (addBtnX + addBtnW) && mouseY in addBtnY until (addBtnY + addBtnH)
         guiGraphics.fill(addBtnX, addBtnY, addBtnX + addBtnW, addBtnY + addBtnH,
             if (addHovered) ACCENT_HOVER else ACCENT_COLOR)
-        guiGraphics.drawString(font, ADD_LABEL,
+        guiGraphics.text(font, ADD_LABEL,
             addBtnX + (addBtnW - font.width(ADD_LABEL)) / 2,
             addBtnY + (addBtnH - font.lineHeight) / 2 + 1, NAME_COLOR, false)
 
         // Count line.
         val names = ShitterList.all()
         val countY = inputY + addBtnH + 6
-        guiGraphics.drawString(font, "§7${names.size} player${if (names.size == 1) "" else "s"}",
+        guiGraphics.text(font, "§7${names.size} player${if (names.size == 1) "" else "s"}",
             panelX + PADDING, countY, DESC_COLOR, false)
 
         // List area geometry.
@@ -113,7 +113,7 @@ class ShitterListScreen : Screen(Component.literal("Shitter List")) {
 
         if (names.isEmpty()) {
             val empty = "§7List is empty — add a player above."
-            guiGraphics.drawString(font, empty,
+            guiGraphics.text(font, empty,
                 listLeft + (listRight - listLeft - font.width(empty)) / 2, listTop + 6, DESC_COLOR, false)
             return
         }
@@ -138,7 +138,7 @@ class ShitterListScreen : Screen(Component.literal("Shitter List")) {
             if (nameHovered || editingName.equals(name, ignoreCase = true)) {
                 guiGraphics.fill(listLeft, rowTop, listRight, rowTop + ROW_H - 1, HOVER_COLOR)
             }
-            guiGraphics.drawString(font, "§f$name", listLeft + 6,
+            guiGraphics.text(font, "§f$name", listLeft + 6,
                 rowTop + (ROW_H - font.lineHeight) / 2 + 1, NAME_COLOR, false)
 
             val rbHovered = mouseX in rbX until (rbX + REMOVE_SIZE) &&
@@ -146,7 +146,7 @@ class ShitterListScreen : Screen(Component.literal("Shitter List")) {
                             mouseY in listTop until listBottom
             guiGraphics.fill(rbX, rbY, rbX + REMOVE_SIZE, rbY + REMOVE_SIZE,
                 if (rbHovered) REMOVE_COLOR_HOVER else REMOVE_COLOR)
-            guiGraphics.drawString(font, REMOVE_GLYPH,
+            guiGraphics.text(font, REMOVE_GLYPH,
                 rbX + (REMOVE_SIZE - font.width(REMOVE_GLYPH)) / 2 + 1,
                 rbY + (REMOVE_SIZE - font.lineHeight) / 2 + 1, NAME_COLOR, false)
         }
@@ -160,7 +160,7 @@ class ShitterListScreen : Screen(Component.literal("Shitter List")) {
         else hoveredName?.let { renderReasonPreview(guiGraphics, it) }
     }
 
-    private fun renderScrollbar(g: GuiGraphics, trackX: Int, viewportH: Int, contentH: Int, mouseX: Int, mouseY: Int) {
+    private fun renderScrollbar(g: GuiGraphicsExtractor, trackX: Int, viewportH: Int, contentH: Int, mouseX: Int, mouseY: Int) {
         scrollbarX = trackX
         g.fill(trackX, listTop, trackX + SCROLLBAR_W, listBottom, SCROLLBAR_TRACK)
         thumbH = (viewportH.toLong() * viewportH / contentH).toInt().coerceAtLeast(MIN_THUMB_H).coerceAtMost(viewportH)
@@ -173,7 +173,7 @@ class ShitterListScreen : Screen(Component.literal("Shitter List")) {
 
     // Read-only reason shown while the mouse is over a row. Sizes to its content
     // and vanishes the instant the mouse leaves (driven by [hoveredName]).
-    private fun renderReasonPreview(g: GuiGraphics, name: String) {
+    private fun renderReasonPreview(g: GuiGraphicsExtractor, name: String) {
         sideW = SIDE_WIDTH
         sideX = panelX + PANEL_WIDTH + SIDE_GAP
         sideY = panelY
@@ -187,15 +187,15 @@ class ShitterListScreen : Screen(Component.literal("Shitter List")) {
         val sideH = (bodyTop - sideY) + lines.size * font.lineHeight + PADDING
 
         drawSidePanelBg(g, sideH)
-        g.drawString(font, "§b$name", contentX, sideY + 8, NAME_COLOR, false)
+        g.text(font, "§b$name", contentX, sideY + 8, NAME_COLOR, false)
         lines.forEachIndexed { i, line ->
-            g.drawString(font, line, contentX, bodyTop + i * font.lineHeight, DESC_COLOR, false)
+            g.text(font, line, contentX, bodyTop + i * font.lineHeight, DESC_COLOR, false)
         }
     }
 
     // Sticky editor opened by clicking a row's IGN: a reason input + Save button
     // plus a close (x) in the corner.
-    private fun renderReasonEditor(g: GuiGraphics, name: String, mouseX: Int, mouseY: Int) {
+    private fun renderReasonEditor(g: GuiGraphicsExtractor, name: String, mouseX: Int, mouseY: Int) {
         sideW = SIDE_WIDTH
         sideX = panelX + PANEL_WIDTH + SIDE_GAP
         sideY = panelY
@@ -216,15 +216,15 @@ class ShitterListScreen : Screen(Component.literal("Shitter List")) {
 
         drawSidePanelBg(g, sideH)
 
-        g.drawString(font, "§lEdit Reason", contentX, titleY, NAME_COLOR, false)
-        g.drawString(font, "§b$name", contentX, nameY, ACCENT_COLOR, false)
+        g.text(font, "§lEdit Reason", contentX, titleY, NAME_COLOR, false)
+        g.text(font, "§b$name", contentX, nameY, ACCENT_COLOR, false)
         reasonArea.render(g, font, areaX, areaY, areaW)
 
         val saveHovered = mouseX in saveBtnX until (saveBtnX + saveBtnW) &&
                           mouseY in saveBtnY until (saveBtnY + saveBtnH)
         g.fill(saveBtnX, saveBtnY, saveBtnX + saveBtnW, saveBtnY + saveBtnH,
             if (saveHovered) ACCENT_HOVER else ACCENT_COLOR)
-        g.drawString(font, SAVE_LABEL,
+        g.text(font, SAVE_LABEL,
             saveBtnX + (saveBtnW - font.width(SAVE_LABEL)) / 2,
             saveBtnY + (saveBtnH - font.lineHeight) / 2 + 1, NAME_COLOR, false)
 
@@ -233,11 +233,11 @@ class ShitterListScreen : Screen(Component.literal("Shitter List")) {
         closeBtnY = sideY + 4
         val closeHovered = mouseX in closeBtnX until (closeBtnX + CLOSE_SIZE) &&
                            mouseY in closeBtnY until (closeBtnY + CLOSE_SIZE)
-        g.drawString(font, REMOVE_GLYPH, closeBtnX + 2, closeBtnY + 1,
+        g.text(font, REMOVE_GLYPH, closeBtnX + 2, closeBtnY + 1,
             if (closeHovered) REMOVE_COLOR_HOVER else DESC_COLOR, false)
     }
 
-    private fun drawSidePanelBg(g: GuiGraphics, sideH: Int) {
+    private fun drawSidePanelBg(g: GuiGraphicsExtractor, sideH: Int) {
         val panelColor = (PANEL_OPACITY shl 24) or PANEL_COLOR
         g.fill(sideX, sideY, sideX + sideW, sideY + sideH, panelColor)
         g.fill(sideX, sideY, sideX + sideW, sideY + 2, ACCENT_COLOR)

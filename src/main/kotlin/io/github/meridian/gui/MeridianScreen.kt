@@ -2,7 +2,8 @@ package io.github.meridian.gui
 
 import io.github.meridian.features.Feature
 import io.github.meridian.features.FeatureManager
-import net.minecraft.client.gui.GuiGraphics
+import kotlin.math.roundToInt
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.client.input.CharacterEvent
 import net.minecraft.client.input.KeyEvent
@@ -40,9 +41,10 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
         private const val SCROLLBAR_THUMB_COLOR = 0xFFBB86FC.toInt()
         private const val SCROLLBAR_THUMB_HOVER = 0xFFD0A6FF.toInt()
         private const val MIN_THUMB_HEIGHT = 16
-        private const val WHEEL_STEP_PX = 16
-        // Hold Ctrl while scrolling to move through the list faster.
-        private const val CTRL_SCROLL_MULTIPLIER = 4
+        private const val WHEEL_STEP_PX = 30
+        // Higher = snappier scrolling, lower = smoother/floatier. Controls the scrolling animation
+        private const val SCROLL_EASE = 0.3f
+        private const val CTRL_SCROLL_MULTIPLIER = 6
 
         private fun hasControlDown(): Boolean {
             val window = net.minecraft.client.Minecraft.getInstance().window.handle()
@@ -51,8 +53,6 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
         }
 
         private const val SEARCH_TOP_GAP = 6
-        // Fixed width so the search bar size doesn't grow with the main panel.
-        // Sits centered below the panel.
         private const val SEARCH_WIDTH = 266
     }
 
@@ -62,14 +62,14 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
     private var searchX = 0
     private var searchY = 0
 
-    // Scroll state for the right-side content area.
     private var scrollOffset = 0
+    private var animScroll = 0f
+    private var animScrollPx = 0
     private var lastTotalContentH = 0
     private var lastViewportH = 0
     private var lastMaxScroll = 0
     private var lastScrollbarShown = false
 
-    // Cached layout for hit-testing (set during render).
     private var contentLeft = 0
     private var contentRight = 0
     private var contentTop = 0
@@ -92,12 +92,12 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
         if (previousSelected != null) categoryPanel.selected = previousSelected
     }
 
-    override fun renderBackground(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+    override fun extractBackground(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
         // Intentionally empty: this override disables the default background blur.
     }
 
-    override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
-        super.render(guiGraphics, mouseX, mouseY, partialTick)
+    override fun extractRenderState(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick)
 
         val x = (width - PANEL_WIDTH) / 2
         val y = (height - PANEL_HEIGHT) / 2
@@ -110,11 +110,11 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
 
         val textX = x + (LEFT_PANEL_WIDTH - font.width(TITLE_TEXT)) / 2
         val textY = y + TITLE_TOP_PADDING
-        guiGraphics.drawString(font, TITLE_TEXT, textX, textY, TITLE_COLOR, false)
+        guiGraphics.text(font, TITLE_TEXT, textX, textY, TITLE_COLOR, false)
 
         val versionTextX = x + 5
         val versionTextY = y + PANEL_HEIGHT - font.lineHeight - 5
-        guiGraphics.drawString(font, VERSION_TEXT, versionTextX, versionTextY, VERSION_COLOR, false)
+        guiGraphics.text(font, VERSION_TEXT, versionTextX, versionTextY, VERSION_COLOR, false)
 
         categoryPanel.render(guiGraphics, font, mouseX, mouseY)
 
@@ -126,7 +126,7 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
     }
 
     private fun renderFeaturesForCategory(
-        g: GuiGraphics,
+        g: GuiGraphicsExtractor,
         panelX: Int,
         panelY: Int,
         category: String,
@@ -147,10 +147,7 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
                           else "${it.category}→${it.subcategory}"
                       } else features.groupBy { it.subcategory }
 
-        // Row heights are dynamic because descriptions wrap. Measure twice: once
-        // assuming no scrollbar (wider rows → fewer wrapped lines), and if that
-        // already overflows the viewport, again at the narrower scrollbar width
-        // (which can re-wrap descriptions taller and grow totalH further).
+
         fun measureTotalH(rowsWidth: Int): Int {
             var t = 0
             for ((subcat, feats) in grouped) {
@@ -180,11 +177,16 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
         lastMaxScroll = maxScroll
         lastScrollbarShown = showScrollbar
 
+        val diff = scrollOffset - animScroll
+        animScroll = if (kotlin.math.abs(diff) < 0.5f) scrollOffset.toFloat()
+                     else animScroll + diff * SCROLL_EASE
+        animScrollPx = animScroll.roundToInt()
+
         g.enableScissor(contentLeft, contentTop, contentRight, contentBottom)
-        var currentY = contentTop - scrollOffset
+        var currentY = contentTop - animScrollPx
         for ((subcat, feats) in grouped) {
             if (subcat.isNotEmpty()) {
-                g.drawString(font, subcat, contentLeft + (contentW - font.width(subcat)) / 2, currentY, BAR_COLOR, false)
+                g.text(font, subcat, contentLeft + (contentW - font.width(subcat)) / 2, currentY, BAR_COLOR, false)
                 currentY += font.lineHeight + 4
             }
             for (feat in feats) {
@@ -200,14 +202,12 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
         }
         g.disableScissor()
 
-        // Overlays (dropdown menus, future popups). Drawn after the row scissor is
-        // released so they can extend past the row's natural bounds.
         for (feat in features) feat.renderOverlay(g, font, mouseX, mouseY)
 
         if (showScrollbar) renderScrollbar(g, rightEdge - SCROLLBAR_WIDTH, mouseX, mouseY)
     }
 
-    private fun renderScrollbar(g: GuiGraphics, trackX: Int, mouseX: Int, mouseY: Int) {
+    private fun renderScrollbar(g: GuiGraphicsExtractor, trackX: Int, mouseX: Int, mouseY: Int) {
         scrollbarTrackX = trackX
         scrollbarTrackY = contentTop
         scrollbarTrackH = lastViewportH
@@ -221,7 +221,7 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
             .coerceAtMost(scrollbarTrackH)
         val thumbTravel = scrollbarTrackH - thumbH
         thumbY = if (lastMaxScroll == 0) scrollbarTrackY
-                 else scrollbarTrackY + (scrollOffset.toLong() * thumbTravel / lastMaxScroll).toInt()
+                 else scrollbarTrackY + (animScrollPx.toLong() * thumbTravel / lastMaxScroll).toInt()
 
         val hovering = mouseX in scrollbarTrackX..(scrollbarTrackX + SCROLLBAR_WIDTH) &&
                        mouseY in thumbY..(thumbY + thumbH)
@@ -237,11 +237,6 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
         }
     }
 
-    // The features currently shown on the right: search results when a query is
-    // active, otherwise the selected category. Filtered to visible. Render and
-    // click/key routing MUST use this same list so input lands on the rows that
-    // were actually drawn — otherwise clicks during a search route to the
-    // selected category and silently miss (or hit a stale off-screen row).
     private fun activeFeatures(): List<Feature> =
         (if (searchBar.query.isNotEmpty()) searchResults(searchBar.query)
          else FeatureManager.byCategory(categoryPanel.selected))
@@ -256,11 +251,6 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
 
         if (searchBar.mouseClicked(mx, my, SearchBar.HEIGHT)) return true
 
-        // Any feature with an open overlay (e.g. an expanded dropdown menu) gets
-        // first dibs on the click — its overlay may extend past the row scissor,
-        // and we want a click on a menu item below contentBottom to land correctly.
-        // If the feature returns false, its overlay has already closed itself; we
-        // still skip the normal row-routing for this feature so we don't double-handle.
         val active = activeFeatures()
         val overlayFeat = active.firstOrNull { it.hasOpenOverlay() }
         if (overlayFeat != null && overlayFeat.mouseClicked(mx, my)) return true
@@ -286,17 +276,12 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
             return true
         }
 
-        // Feature rows — gate by viewport so clipped rows aren't clickable.
-        // Hidden (parent-gated) features must not be clickable either; their last
-        // rendered hit-bounds are stale once the parent goes off. Skip overlayFeat:
-        // it's already had its turn above.
         if (inContentArea(mx, my)) {
             for (feat in active) {
                 if (feat === overlayFeat) continue
                 if (feat.mouseClicked(mx, my)) return true
             }
         } else {
-            // Click outside the input area still needs to unfocus any focused TextFeature.
             for (feat in active) {
                 if (feat === overlayFeat) continue
                 feat.mouseClicked(mx, my)

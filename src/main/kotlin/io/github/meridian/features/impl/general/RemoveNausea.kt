@@ -1,11 +1,11 @@
 package io.github.meridian.features.impl.general
 
-import io.github.meridian.features.SwitchFeature
+import io.github.meridian.features.types.SwitchFeature
 
 object RemoveNausea : SwitchFeature (
     name = "Remove Green Nausea Effect",
     description = "Removes green nausea effect created when Distortion Effects are turned off.\n§eThanks to Soon2BeATaco_ for the code.",
-    category = "General",
+    category = "Vanilla",
     configKey = "remove_nausea",
-    subcategory = "Miscellaneous",
+    subcategory = "Tweaks",
 )

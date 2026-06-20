@@ -2,7 +2,7 @@ package io.github.meridian.features.impl.dungeons
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-import io.github.meridian.features.ButtonFeature
+import io.github.meridian.features.types.ButtonFeature
 import io.github.meridian.features.FeatureManager
 import io.github.meridian.utils.modMessage
 import io.github.meridian.utils.sendClientMessage

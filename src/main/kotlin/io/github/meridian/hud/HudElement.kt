@@ -3,7 +3,7 @@ package io.github.meridian.hud
 // A draggable, scalable on-screen overlay owned by a feature.
 //
 // Content is expressed as a list of pre-formatted lines — legacy §-color codes
-// are honored by Font/GuiGraphics, so each line carries its own coloring. An
+// are honored by Font/GuiGraphicsExtractor, so each line carries its own coloring. An
 // empty live content() list means "nothing to draw right now": the element
 // stays invisible in-game but is still positionable in the HUD editor through
 // its preview() content.

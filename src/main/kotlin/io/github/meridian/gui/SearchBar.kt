@@ -1,10 +1,10 @@
 package io.github.meridian.gui
 
-import io.github.meridian.features.TextFeature
+import io.github.meridian.features.types.TextFeature
 import io.github.meridian.utils.playClickSound
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Font
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.input.CharacterEvent
 import net.minecraft.client.input.KeyEvent
 
@@ -50,7 +50,7 @@ class SearchBar(private val placeholderText: String = "Search") {
         selectionAnchor = cursorPos
     }
 
-    fun render(g: GuiGraphics, font: Font, x: Int, y: Int, w: Int, h: Int) {
+    fun render(g: GuiGraphicsExtractor, font: Font, x: Int, y: Int, w: Int, h: Int) {
         inputX = x; inputY = y; inputW = w
 
         val bg = if (focused) 0xFF2A2A38.toInt() else 0xFF1E1E22.toInt()
@@ -79,7 +79,7 @@ class SearchBar(private val placeholderText: String = "Search") {
             g.fill(hx1, y + 2, hx2, y + h - 2, 0x803366CC.toInt())
         }
 
-        g.drawString(font, displayText, baseX, textY, displayColor, false)
+        g.text(font, displayText, baseX, textY, displayColor, false)
 
         if (focused && !hasSelection && (System.currentTimeMillis() / 500) % 2 == 0L) {
             val caretX = baseX + font.width(query.substring(0, cursorPos))

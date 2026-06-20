@@ -1,6 +1,6 @@
 package io.github.meridian.features.impl.general
 
-import io.github.meridian.features.ButtonFeature
+import io.github.meridian.features.types.ButtonFeature
 import net.minecraft.util.Util
 import java.net.URI
 

@@ -1,6 +1,6 @@
 package io.github.meridian.features.impl.dungeons
 
-import io.github.meridian.features.SwitchFeature
+import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.ChatBlocker
 import io.github.meridian.utils.sendClientMessage
 import io.github.meridian.utils.simulateGameMessage
@@ -14,7 +14,7 @@ object ShortPFMessage : SwitchFeature(
     subcategory = "Miscellaneous",
 ) {
     private val joinRegex =
-        Regex("""Party Finder > (\S+) joined the dungeon group! \((Tank|Archer|Mage|Healer|Berserk) Level (\d+)\)""")
+        Regex("""^Party Finder > (\S+) joined the dungeon group! \((Tank|Archer|Mage|Healer|Berserk) Level (\d+)\)$""")
 
     private val replacements = listOf(
         "Party Finder > Your party has been queued in the dungeon finder!" to "§dPF §f> §aQueued",
@@ -38,7 +38,7 @@ object ShortPFMessage : SwitchFeature(
                 return@register false
             }
 
-            replacements.firstOrNull { plain.contains(it.first) }
+            replacements.firstOrNull { plain.startsWith(it.first) }
                 ?.let { sendClientMessage(it.second); return@register false }
 
             true

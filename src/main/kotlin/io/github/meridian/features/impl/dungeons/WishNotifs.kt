@@ -1,7 +1,7 @@
 package io.github.meridian.features.impl.dungeons
 
 import io.github.meridian.Meridian.mc
-import io.github.meridian.features.SwitchFeature
+import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.F5State
 import io.github.meridian.utils.TickScheduler
 import io.github.meridian.utils.onChatMessage
@@ -44,10 +44,13 @@ object P1WishNotif : SwitchFeature(
         onChatMessage { text, _, _ ->
             if (!enabled) return@onChatMessage
             if (!text.startsWith("⚠ Maxor is enraged! ⚠")) return@onChatMessage
-            // mc.gui.setTimes(fadeIn, stay, fadeOut)
-            mc.gui.setTimes(0, 40, 0)
-            mc.gui.setTitle(Component.literal("§4WISH"))
-            mc.gui.setSubtitle(Component.empty())
+            // Hypixel pushes its own title on this same chat line; delay ours a
+            // few ticks so it lands after Hypixel's instead of being overwritten.
+            TickScheduler.schedule(3) {
+                mc.gui.setTimes(0, 40, 0)
+                mc.gui.setTitle(Component.literal("§4WISH"))
+                mc.gui.setSubtitle(Component.empty())
+            }
         }
     }
 }
@@ -63,10 +66,13 @@ object P3WishNotif : SwitchFeature(
         onChatMessage { text, _, _ ->
             if (!enabled) return@onChatMessage
             if (!text.startsWith("The Core entrance is opening!")) return@onChatMessage
-            // mc.gui.setTimes(fadeIn, stay, fadeOut)
-            mc.gui.setTimes(0, 40, 0)
-            mc.gui.setTitle(Component.literal("§4WISH"))
-            mc.gui.setSubtitle(Component.empty())
+            // Hypixel pushes its own title on this same chat line; delay ours a
+            // few ticks so it lands after Hypixel's instead of being overwritten.
+            TickScheduler.schedule(3) {
+                mc.gui.setTimes(0, 40, 0)
+                mc.gui.setTitle(Component.literal("§4WISH"))
+                mc.gui.setSubtitle(Component.empty())
+            }
         }
     }
 }

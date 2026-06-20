@@ -1,7 +1,7 @@
 package io.github.meridian.features.impl.events
 
 import io.github.meridian.Meridian
-import io.github.meridian.features.SwitchFeature
+import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.modMessage
 import io.github.meridian.utils.onChatMessage
 import java.util.concurrent.CompletableFuture

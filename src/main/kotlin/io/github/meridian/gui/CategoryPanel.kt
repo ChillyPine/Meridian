@@ -2,7 +2,7 @@ package io.github.meridian.gui
 
 import io.github.meridian.utils.playClickSound
 import net.minecraft.client.gui.Font
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 
 data class Category(val name: String, val id: String)
 
@@ -27,14 +27,15 @@ class CategoryPanel(
         Category("Dungeons", "Dungeons"),
         Category("Farming", "Farming"),
         Category("Mining", "Mining"),
-        Category("Events", "Events")
+        Category("Events", "Events"),
+        Category("Vanilla", "Vanilla"),
     )
 
     // tracks which category is currently active; defaults to the first one
     var selected: String = categories.first().id
 
     // draws each category row, applying hover/selected highlight and appropriate text color
-    fun render(guiGraphics: GuiGraphics, font: Font, mouseX: Int, mouseY: Int) {
+    fun render(guiGraphics: GuiGraphicsExtractor, font: Font, mouseX: Int, mouseY: Int) {
         categories.forEachIndexed { index, category ->
             val itemY = y + ITEM_TOP + (index * ITEM_HEIGHT)
             val isSelected = category.id == selected
@@ -48,7 +49,7 @@ class CategoryPanel(
 
             // draw label with color based on selection state
             val color = if (isSelected) TEXT_COLOR_SELECTED else TEXT_COLOR
-            guiGraphics.drawString(font, category.name, x + ITEM_PADDING_X, itemY + 5, color, false)
+            guiGraphics.text(font, category.name, x + ITEM_PADDING_X, itemY + 5, color, false)
         }
     }
 

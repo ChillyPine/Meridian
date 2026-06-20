@@ -1,10 +1,10 @@
 package io.github.meridian.features.impl.dungeons
 
 import io.github.meridian.Meridian
-import io.github.meridian.features.ColorFeature
-import io.github.meridian.features.SwitchFeature
+import io.github.meridian.features.types.ColorFeature
+import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.ESP
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents
 import net.minecraft.world.entity.decoration.ArmorStand
 
 // Star mobs inc LAs and FAs
@@ -16,7 +16,7 @@ object BoxStarMobs : SwitchFeature(
     subcategory = "Clear",
 ) {
     init {
-        WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
+        LevelRenderEvents.AFTER_SOLID_FEATURES.register { ctx ->
             if (!enabled) return@register
             val level = Meridian.mc.level ?: return@register
             val player = Meridian.mc.player ?: return@register
@@ -24,7 +24,7 @@ object BoxStarMobs : SwitchFeature(
                 if (ent !is ArmorStand) continue
                 if (ent.distanceToSqr(player.x, player.y, player.z) > 100 * 100) continue
                 val name = ent.customName?.string ?: continue
-                if (name.contains("✯") && !name.endsWith("✯") && !name.contains("Fel")) {
+                if ((name.contains("✯") && !name.startsWith("✯")) && name.endsWith("❤") && !name.endsWith("✯") && !name.contains("Fel")) {
                     ESP.drawBox(ctx, ent, w = 0.75, h = 2.0, wz = 0.75, yOffset = -2.2, argb = StarMobColor.color)
                 }
             }
@@ -49,7 +49,7 @@ object BoxFels : SwitchFeature(
     subcategory = "Clear",
 ) {
     init {
-        WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
+        LevelRenderEvents.AFTER_SOLID_FEATURES.register { ctx ->
             if (!enabled) return@register
             val level = Meridian.mc.level ?: return@register
             val player = Meridian.mc.player ?: return@register

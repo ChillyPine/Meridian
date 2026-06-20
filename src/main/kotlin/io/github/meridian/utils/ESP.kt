@@ -2,17 +2,19 @@ package io.github.meridian.utils
 
 import com.mojang.blaze3d.vertex.VertexConsumer
 import io.github.meridian.Meridian
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext
-import net.minecraft.client.renderer.MultiBufferSource
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext
 import net.minecraft.client.renderer.rendertype.RenderTypes
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.level.ClipContext
 import net.minecraft.world.phys.HitResult
 import net.minecraft.world.phys.Vec3
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 /**
  * Central ESP utility. Per-feature ESP code calls into here from a
- * WorldRenderEvents.AFTER_ENTITIES handler.
+ * LevelRenderEvents.AFTER_SOLID_FEATURES handler.
  *
  * Two styles:
  *   BOX        - wireframe AABB
@@ -45,13 +47,13 @@ object ESP {
     }
 
     /** Wireframe box around the entity's interpolated bounding box. */
-    fun drawBox(ctx: WorldRenderContext, entity: Entity, argb: Int, depth: Boolean = ESP.depth) {
+    fun drawBox(ctx: LevelRenderContext, entity: Entity, argb: Int, depth: Boolean = ESP.depth) {
         val bb = renderBoundingBox(entity)
         drawBoxAt(ctx, bb.minX, bb.minY, bb.minZ, bb.maxX, bb.maxY, bb.maxZ, argb, depth)
     }
 
     /** Filled translucent box plus a wireframe edge. */
-    fun drawFilled(ctx: WorldRenderContext, entity: Entity, argb: Int, depth: Boolean = ESP.depth) {
+    fun drawFilled(ctx: LevelRenderContext, entity: Entity, argb: Int, depth: Boolean = ESP.depth) {
         val bb = renderBoundingBox(entity)
         drawFilledAt(ctx, bb.minX, bb.minY, bb.minZ, bb.maxX, bb.maxY, bb.maxZ, halfAlpha(argb), depth)
         drawBoxAt(ctx, bb.minX, bb.minY, bb.minZ, bb.maxX, bb.maxY, bb.maxZ, argb, depth)
@@ -66,7 +68,7 @@ object ESP {
      * axis; yOffset shifts the bottom up/down from the entity's feet.
      */
     fun drawBox(
-        ctx: WorldRenderContext,
+        ctx: LevelRenderContext,
         entity: Entity,
         w: Double, h: Double, wz: Double,
         yOffset: Double = 0.0,
@@ -82,7 +84,7 @@ object ESP {
 
     /** Fixed-size filled box variant of the above. */
     fun drawFilled(
-        ctx: WorldRenderContext,
+        ctx: LevelRenderContext,
         entity: Entity,
         w: Double, h: Double, wz: Double,
         yOffset: Double = 0.0,
@@ -107,14 +109,14 @@ object ESP {
      * target is occluded by a block, the tracer is skipped.
      */
     fun drawTracer(
-        ctx: WorldRenderContext,
+        ctx: LevelRenderContext,
         x: Double, y: Double, z: Double,
         argb: Int,
         depth: Boolean = ESP.depth,
     ) {
         if (depth && !hasLineOfSight(x, y, z)) return
-        val pose = ctx.matrices()
-        val consumers = ctx.consumers() as? MultiBufferSource.BufferSource ?: return
+        val pose = ctx.poseStack()
+        val consumers = ctx.bufferSource()
         val cam = Meridian.mc.gameRenderer.mainCamera
         val camPos = cam.position()
         val look = cam.forwardVector()
@@ -168,22 +170,157 @@ object ESP {
 
     /** Wireframe box at fixed world coordinates (not entity-anchored). */
     fun drawWorldBox(
-        ctx: WorldRenderContext,
+        ctx: LevelRenderContext,
         x0: Double, y0: Double, z0: Double,
         x1: Double, y1: Double, z1: Double,
         argb: Int,
         depth: Boolean = ESP.depth,
     ) = drawBoxAt(ctx, x0, y0, z0, x1, y1, z1, argb, depth)
 
+    /**
+     * Filled translucent box (alpha halved, like [drawFilled]) plus a wireframe
+     * edge, at fixed world coordinates.
+     */
+    fun drawWorldFilled(
+        ctx: LevelRenderContext,
+        x0: Double, y0: Double, z0: Double,
+        x1: Double, y1: Double, z1: Double,
+        argb: Int,
+        depth: Boolean = ESP.depth,
+    ) {
+        drawFilledAt(ctx, x0, y0, z0, x1, y1, z1, halfAlpha(argb), depth)
+        drawBoxAt(ctx, x0, y0, z0, x1, y1, z1, argb, depth)
+    }
+
+    /**
+     * Flat horizontal ring of line segments centered on (cx, cz) at height cy.
+     * Floor marker for "stand here" spots — no height, like a drawCyl with
+     * height 0 in line mode.
+     */
+    fun drawWorldCircle(
+        ctx: LevelRenderContext,
+        cx: Double, cy: Double, cz: Double,
+        radius: Double,
+        argb: Int,
+        segments: Int = 48,
+        depth: Boolean = ESP.depth,
+        lineWidth: Float = 2f,
+    ) {
+        val pose = ctx.poseStack()
+        val consumers = ctx.bufferSource()
+        val cam = Meridian.mc.gameRenderer.mainCamera.position()
+        pose.pushPose()
+        pose.translate(-cam.x, -cam.y, -cam.z)
+        val rt = linesType(depth)
+        val buf = consumers.getBuffer(rt)
+        val last = pose.last()
+        val m = last.pose()
+        val y = cy.toFloat()
+        for (i in 0 until segments) {
+            val a0 = i.toDouble() / segments * 2.0 * Math.PI
+            val a1 = (i + 1).toDouble() / segments * 2.0 * Math.PI
+            val ax = (cx + radius * cos(a0)).toFloat()
+            val az = (cz + radius * sin(a0)).toFloat()
+            val bx = (cx + radius * cos(a1)).toFloat()
+            val bz = (cz + radius * sin(a1)).toFloat()
+            var nx = bx - ax
+            var nz = bz - az
+            val len = sqrt(nx * nx + nz * nz).coerceAtLeast(1e-4f)
+            nx /= len; nz /= len
+            buf.addVertex(m, ax, y, az).setColor(argb).setNormal(last, nx, 0f, nz).setLineWidth(lineWidth)
+            buf.addVertex(m, bx, y, bz).setColor(argb).setNormal(last, nx, 0f, nz).setLineWidth(lineWidth)
+        }
+        pose.popPose()
+        consumers.endBatch(rt)
+    }
+
+    /**
+     * Closed loop of line segments on a flat XZ plane at height [y]. Like
+     * [drawWorldCircle] but for an arbitrary polygon outline. [pts] are
+     * absolute world (x, z) pairs; the loop closes back to the first point.
+     */
+    fun drawWorldFlatLoop(
+        ctx: LevelRenderContext,
+        y: Double,
+        pts: List<Pair<Double, Double>>,
+        argb: Int,
+        depth: Boolean = ESP.depth,
+        lineWidth: Float = 2f,
+    ) {
+        if (pts.size < 2) return
+        val pose = ctx.poseStack()
+        val consumers = ctx.bufferSource()
+        val cam = Meridian.mc.gameRenderer.mainCamera.position()
+        pose.pushPose()
+        pose.translate(-cam.x, -cam.y, -cam.z)
+        val rt = linesType(depth)
+        val buf = consumers.getBuffer(rt)
+        val last = pose.last()
+        val m = last.pose()
+        val fy = y.toFloat()
+        for (i in pts.indices) {
+            val a = pts[i]
+            val b = pts[(i + 1) % pts.size]
+            var nx = (b.first - a.first).toFloat()
+            var nz = (b.second - a.second).toFloat()
+            val len = sqrt(nx * nx + nz * nz).coerceAtLeast(1e-4f)
+            nx /= len; nz /= len
+            buf.addVertex(m, a.first.toFloat(), fy, a.second.toFloat())
+                .setColor(argb).setNormal(last, nx, 0f, nz).setLineWidth(lineWidth)
+            buf.addVertex(m, b.first.toFloat(), fy, b.second.toFloat())
+                .setColor(argb).setNormal(last, nx, 0f, nz).setLineWidth(lineWidth)
+        }
+        pose.popPose()
+        consumers.endBatch(rt)
+    }
+
+    /**
+     * Flat translucent quads on the XZ plane at height [y]. Each rect is
+     * [x0, z0, x1, z1] in absolute world coords; each quad is emitted with
+     * both windings so it's visible from above and below. Alpha is used as
+     * given — unlike [drawFilledAt]'s callers this does not halve it.
+     */
+    fun drawWorldFlatFill(
+        ctx: LevelRenderContext,
+        y: Double,
+        rects: List<DoubleArray>,
+        argb: Int,
+        depth: Boolean = ESP.depth,
+    ) {
+        val pose = ctx.poseStack()
+        val consumers = ctx.bufferSource()
+        val cam = Meridian.mc.gameRenderer.mainCamera.position()
+        pose.pushPose()
+        pose.translate(-cam.x, -cam.y, -cam.z)
+        val rt = filledBoxType(depth)
+        val buf = consumers.getBuffer(rt)
+        val m = pose.last().pose()
+        val fy = y.toFloat()
+        for (r in rects) {
+            val x0 = r[0].toFloat(); val z0 = r[1].toFloat()
+            val x1 = r[2].toFloat(); val z1 = r[3].toFloat()
+            buf.addVertex(m, x0, fy, z0).setColor(argb)
+            buf.addVertex(m, x0, fy, z1).setColor(argb)
+            buf.addVertex(m, x1, fy, z1).setColor(argb)
+            buf.addVertex(m, x1, fy, z0).setColor(argb)
+            buf.addVertex(m, x1, fy, z0).setColor(argb)
+            buf.addVertex(m, x1, fy, z1).setColor(argb)
+            buf.addVertex(m, x0, fy, z1).setColor(argb)
+            buf.addVertex(m, x0, fy, z0).setColor(argb)
+        }
+        pose.popPose()
+        consumers.endBatch(rt)
+    }
+
     private fun drawBoxAt(
-        ctx: WorldRenderContext,
+        ctx: LevelRenderContext,
         x0: Double, y0: Double, z0: Double,
         x1: Double, y1: Double, z1: Double,
         argb: Int,
         depth: Boolean,
     ) {
-        val pose = ctx.matrices()
-        val consumers = ctx.consumers() as? MultiBufferSource.BufferSource ?: return
+        val pose = ctx.poseStack()
+        val consumers = ctx.bufferSource()
         val cam = Meridian.mc.gameRenderer.mainCamera.position()
         pose.pushPose()
         pose.translate(-cam.x, -cam.y, -cam.z)
@@ -195,14 +332,14 @@ object ESP {
     }
 
     private fun drawFilledAt(
-        ctx: WorldRenderContext,
+        ctx: LevelRenderContext,
         x0: Double, y0: Double, z0: Double,
         x1: Double, y1: Double, z1: Double,
         argb: Int,
         depth: Boolean,
     ) {
-        val pose = ctx.matrices()
-        val consumers = ctx.consumers() as? MultiBufferSource.BufferSource ?: return
+        val pose = ctx.poseStack()
+        val consumers = ctx.bufferSource()
         val cam = Meridian.mc.gameRenderer.mainCamera.position()
         pose.pushPose()
         pose.translate(-cam.x, -cam.y, -cam.z)

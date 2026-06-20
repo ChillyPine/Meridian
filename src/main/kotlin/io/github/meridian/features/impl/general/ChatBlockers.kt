@@ -1,7 +1,7 @@
 package io.github.meridian.features.impl.general
 
 import io.github.meridian.Meridian
-import io.github.meridian.features.SwitchFeature
+import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.ChatBlocker
 import io.github.meridian.utils.modMessage
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
@@ -76,7 +76,7 @@ object BlockDiscord : SwitchFeature (
             if (!enabled || WARNING !in message.string) return@register true
             val cleaned = stripWarning(message)
             if (cleaned != null && cleaned.string.isNotBlank()) {
-                Meridian.mc.gui.chat.addMessage(cleaned)
+                Meridian.mc.gui.chat.addClientSystemMessage(cleaned)
             }
             false
         }

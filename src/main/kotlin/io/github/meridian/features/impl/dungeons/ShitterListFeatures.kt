@@ -1,7 +1,11 @@
 package io.github.meridian.features.impl.dungeons
 
-import io.github.meridian.features.SwitchFeature
-import io.github.meridian.features.TextFeature
+import io.github.meridian.features.types.SwitchFeature
+import io.github.meridian.features.types.TextFeature
+import io.github.meridian.features.impl.dungeons.AnnounceShitter.partyJoinRegex
+import io.github.meridian.features.impl.dungeons.AnnounceShitter.pfJoinRegex
+import io.github.meridian.features.impl.dungeons.AnnounceShitter.shortPfJoinRegex
+import io.github.meridian.utils.modMessage
 import io.github.meridian.utils.onChatMessage
 import io.github.meridian.utils.sendCommand
 import java.util.concurrent.CompletableFuture
@@ -44,11 +48,11 @@ object AnnounceShitter : SwitchFeature(
     configKey = "announce_shitter",
     subcategory = "Miscellaneous",
 ) {
-    private val pfJoinRegex =
+    val pfJoinRegex =
         Regex("^Party Finder > (\\w+) joined the dungeon group! \\(.+\\)$")
-    private val shortPfJoinRegex =
+    val shortPfJoinRegex =
         Regex("^PF > (\\S+) joined \\(.+\\)$")
-    private val partyJoinRegex =
+    val partyJoinRegex =
         Regex("^(?:\\[.+?] )?(\\w+) joined the party\\.$")
 
     init {
@@ -69,10 +73,33 @@ object AnnounceShitter : SwitchFeature(
 }
 
 object CustomShitterMessage : TextFeature(
-    name = "Announce Shitters to Party",
+    name = "Custom Shitter Message",
     description = "Use {player} to insert the player's IGN into the message text.\nYou §emust §rinput a message for this feature to work.",
     category = "Dungeons",
     configKey = "custom_shitter_message",
     subcategory = "Miscellaneous",
     dependsOn = AnnounceShitter
 )
+
+object SendShitterReason : SwitchFeature(
+    name = "Send Shitter Reason",
+    description = "Sends the reason the player is on the shitter list to local chat.\nDoes not send in chat for other players to see!",
+    category = "Dungeons",
+    configKey = "send_shitter_reason",
+    subcategory = "Miscellaneous",
+) {
+    init {
+        onChatMessage { text, _, _ ->
+            if (!isActive()) return@onChatMessage
+            val player = pfJoinRegex.find(text)?.groupValues?.get(1)
+                ?: shortPfJoinRegex.find(text)?.groupValues?.get(1)
+                ?: partyJoinRegex.find(text)?.groupValues?.get(1)
+                ?: return@onChatMessage
+            if (!ShitterList.contains(player)) return@onChatMessage
+
+            val reason = ShitterList.reasonFor(player) ?: "No reason set"
+            CompletableFuture.delayedExecutor(150, TimeUnit.MILLISECONDS)
+                .execute { modMessage("§r§fShitter §r§b$player§r§f joined (§7$reason§r§f)") }
+        }
+    }
+}

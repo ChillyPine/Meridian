@@ -1,10 +1,10 @@
 package io.github.meridian.features.impl.dungeons
 
 import io.github.meridian.Meridian
-import io.github.meridian.features.ColorFeature
-import io.github.meridian.features.SwitchFeature
+import io.github.meridian.features.types.ColorFeature
+import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.ESP
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents
 import net.minecraft.client.player.RemotePlayer
 
 object BoxShadowAssassins : SwitchFeature(
@@ -15,7 +15,7 @@ object BoxShadowAssassins : SwitchFeature(
     subcategory = "Clear",
 )  {
     init {
-        WorldRenderEvents.AFTER_ENTITIES.register { ctx ->
+        LevelRenderEvents.AFTER_SOLID_FEATURES.register { ctx ->
             if (!enabled) return@register
             val level = Meridian.mc.level ?: return@register
             for (ent in level.entitiesForRendering()) {
