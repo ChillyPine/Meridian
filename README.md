@@ -1,6 +1,6 @@
 # Feature List
 ## General
-### ESPs
+### Boxes
 - ***Runic Mob ESP***
 - ***Rat ESP***
 - ***Matcho ESP***
@@ -17,56 +17,80 @@
 - ***Block Profile Message***
 - ***Block Annoying HOTF Perk Disable Message***
 - ***Block Discord Warning Message***
+- ***Block Watchdog Message***
 ### Party
 - ***"Party List" Quick Actions***
 - ***Extra "Party List" Quick Actions***
 ### Misc
 - ***IRL Time***
-- ***Remove Green Nausea Effect***
-- ***1.21.11 Sound list button***
+- ***Latest Version Sound List Button***
 ## Dungeons
 ### Clear
-- ***Star Mob ESP***
-- ***Fel ESP***
-- ***Shadow Assassin ESP***
-- ***Bat ESP***
+- ***Box Star Mob***
+- ***Box Fels***
+- ***Box Shadow Assassins***
+- ***Box Bats***
 - ***Bat Tracer***
 - ***Locked Chest Notification***
+- ***Box Door Keys***
+- ***Play Sound on Key Drop***
 - ***Blood Open***
 - ***Blood Full***
 - ***Blood Cleared***
 - ***Send Blood Progress in Party Chat***
 - ***Watcher Yap Hider***
 ### P1
+- ***Holding Crystal***
 - ***Healer Wish Notif***
 ### P2
-- ***Storm ESP***
+- ***Box Storm***
+- ***PY Pad Helper
 ### P3
-- ***Goldor ESP***
+- ***Simon Says Time & Party Noticiation***
+- ***Box Goldor***
 - ***Healer Wish Notif***
+### P4
+- ***Highlight Platform Blocks to Mine***
 ### M3
 - ***Fire Freeze Timer***
 ### M5
 - ***M5 Wish Reminder***
+- ***Livid Health HUD***
 ### Misc
+- ***Bottle Full Notification***
+- ***Mask Used Notification***
+- ***Instance Cooldown Timer***
+- ***Shitter List***
+- ***Auto Kick Shitter***
+- ***Annouce Shitter w/ Custom Message***
+- ***Send Shitter Reason Locally***
 - ***Play music at end***
 - ***Short PF message***
 - ***Block Party Finder Warning Message***
 - ***Quick Party Actions***
+- ***Custom Leap Message***
 ## Farming
-### ESPs
-- ***Trapper ESP***
+### Boxes
+- ***Box Trapper Mob***
 ## Mining
-### ESPs
-- ***Butterfly ESP***
-- ***Corleone ESP***
-- ***Diamond Goblin ESP***
-- ***Golden Goblin ESP***
-- ***Key Guardian ESP***
+### Boxes
+- ***Box Butterflies***
+- ***Box Corleone***
+- ***Box Diamond Goblins***
+- ***Box Golden Goblins***
+- ***Box Key Guardians***
 ## Events
 ### The Great Spook
-- ***Primal Fear ESP***
+- ***Box Primal Fears***
 - ***Quick Maths Solver***
+### Jerrypocalypse
+- ***Jerry Spawn Notifier***
+## Vanilla
+### Tweaks
+- ***Remove Realms***
+- ***Remove Green Nasuea Effect***
+- ***Remove White Chat Bar***
+- ***Show Own Nametag in Third-Person***
 - - - 
 # Dependencies
 ### Fabric Language Kotlin
