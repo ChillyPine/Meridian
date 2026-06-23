@@ -45,7 +45,7 @@ import io.github.meridian.features.impl.dungeons.BoxStarMobs
 import io.github.meridian.features.impl.dungeons.StormColor
 import io.github.meridian.features.impl.dungeons.BoxStorm
 import io.github.meridian.features.impl.dungeons.CooldownTimerHUD
-import io.github.meridian.features.impl.dungeons.CustomLeapMEssageTXT
+import io.github.meridian.features.impl.dungeons.CustomLeapMessageTXT
 import io.github.meridian.features.impl.dungeons.CustomLeapMessage
 import io.github.meridian.features.impl.dungeons.HoldingCrystal
 import io.github.meridian.features.impl.dungeons.HoldingRelic
@@ -216,7 +216,7 @@ object FeatureList {
         CustomShitterMessage,
         SendShitterReason,
         CustomLeapMessage,
-        CustomLeapMEssageTXT,
+        CustomLeapMessageTXT,
 
         // ================================================== //
         //                      FARMING                       //
