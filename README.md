@@ -24,6 +24,7 @@
 ### Misc
 - ***IRL Time***
 - ***Latest Version Sound List Button***
+- ***Check for Updates***
 ## Dungeons
 ### Clear
 - ***Box Star Mob***
