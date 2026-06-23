@@ -18,6 +18,7 @@ class CalculatorScreen : Screen(Component.literal("Calculator")) {
     private var pendingOp: Char? = null
     private var pendingLeft: Double = 0.0
     private var freshInput = true
+    private var expressionHistory = ""
 
     private var panelX = 0
     private var panelY = 0
@@ -163,7 +164,8 @@ class CalculatorScreen : Screen(Component.literal("Calculator")) {
         when (label) {
             "AC" -> {
                 displayValue = "0"; expressionLine = ""
-                pendingOp = null; pendingLeft = 0.0; freshInput = true
+                pendingOp = null; pendingLeft = 0.0
+                expressionHistory = ""; freshInput = true
             }
             "⌫" -> {
                 if (!freshInput && displayValue.length > 1)
@@ -179,9 +181,13 @@ class CalculatorScreen : Screen(Component.literal("Calculator")) {
             "=" -> {
                 val op = pendingOp ?: return
                 val right = displayValue.toDoubleOrNull() ?: return
-                expressionLine = "$pendingLeft $op $right"
-                displayValue = compute(pendingLeft, right, op).format()
-                pendingOp = null; freshInput = true
+                val result = compute(pendingLeft, right, op)
+                expressionLine = if (expressionHistory.isEmpty())
+                    "${pendingLeft.format()} $op ${right.format()}"
+                else
+                    "($expressionHistory $op ${right.format()})"
+                displayValue = result.format()
+                pendingOp = null; expressionHistory = ""; freshInput = true
             }
             "Thousand" -> {
                 val current = displayValue.toDoubleOrNull() ?: 1.0
@@ -205,9 +211,20 @@ class CalculatorScreen : Screen(Component.literal("Calculator")) {
                 freshInput = true
             }
             in listOf("+", "−", "×", "÷") -> {
-                pendingLeft = displayValue.toDoubleOrNull() ?: 0.0
+                val current = displayValue.toDoubleOrNull() ?: 0.0
+                if (pendingOp != null && !freshInput) {
+                    val result = compute(pendingLeft, current, pendingOp!!)
+                    expressionHistory = if (expressionHistory.isEmpty())
+                        "(${pendingLeft.format()} $pendingOp ${current.format()})"
+                    else
+                        "($expressionHistory $pendingOp ${current.format()})"
+                    pendingLeft = result
+                } else {
+                    expressionHistory = current.format()
+                    pendingLeft = current
+                }
                 pendingOp = label[0]
-                expressionLine = "$pendingLeft $label"
+                expressionLine = "$expressionHistory $label"
                 freshInput = true
             }
             else -> {
@@ -227,9 +244,12 @@ class CalculatorScreen : Screen(Component.literal("Calculator")) {
 
     private fun Double.format(): String {
         if (isNaN()) return "Error"
+        if (kotlin.math.abs(this) >= 1_000_000_000_000.0) {
+            return "%.6e".format(this)
+        }
         val long = toLong()
         return if (this == long.toDouble()) long.toString()
-        else "%.10g".format(this).trimEnd('0').trimEnd('.')
+        else "%.10f".format(this).trimEnd('0').trimEnd('.')
     }
 
     override fun isPauseScreen(): Boolean = false
