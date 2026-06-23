@@ -44,7 +44,7 @@
 - ***Healer Wish Notif***
 ### P2
 - ***Box Storm***
-- ***PY Pad Helper
+- ***PY Pad Helper***
 ### P3
 - ***Simon Says Time & Party Noticiation***
 - ***Box Goldor***
