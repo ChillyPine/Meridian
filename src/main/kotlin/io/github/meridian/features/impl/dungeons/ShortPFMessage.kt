@@ -21,7 +21,8 @@ object ShortPFMessage : SwitchFeature(
         "Party Finder > Your group has been de-listed!" to "§dPF §f> §cDe-listed",
         "Party Finder > Your group has been removed from the party finder!" to "§dPF §f> §cGroup Removed",
         "Party Finder > This group has been de-listed." to "§dPF §f> §cGroup Not Found",
-        "Refreshing..." to "§dPF §f> §aRefreshing..."
+        "Refreshing..." to "§dPF §f> §aRefreshing...",
+        "Attempting to add you to the party..." to "§dPF §f> §aAttempting to join party..."
     )
 
     init {
