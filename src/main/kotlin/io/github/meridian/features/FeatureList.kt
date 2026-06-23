@@ -84,9 +84,11 @@ import io.github.meridian.features.impl.general.RemoveNausea
 import io.github.meridian.features.impl.general.RemoveRealms
 import io.github.meridian.features.impl.general.RunicMobColor
 import io.github.meridian.features.impl.general.BoxRunicMobs
+import io.github.meridian.features.impl.general.LatestGHAction
 import io.github.meridian.features.impl.general.RemoveChatBar
 import io.github.meridian.features.impl.general.RunicMobTracer
 import io.github.meridian.features.impl.general.SoundListButton
+import io.github.meridian.features.impl.general.UpdateChecker
 import io.github.meridian.features.impl.mining.BoxButterflies
 import io.github.meridian.features.impl.mining.ButterflyTracer
 import io.github.meridian.features.impl.mining.BoxCorleone
@@ -105,7 +107,7 @@ object FeatureList {
         //                      GENERAL                       //
         // ================================================== //
 
-        // --- ESPs ---
+        // --- Boxes ---
         BoxRunicMobs,
         RunicMobTracer,
         RunicMobColor,
@@ -142,6 +144,8 @@ object FeatureList {
         IRLClockColor,
         NonRemover,
         SoundListButton,
+        UpdateChecker,
+        LatestGHAction,
         // ================================================== //
         //                     DUNGEONS                       //
         // ================================================== //
