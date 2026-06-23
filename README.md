@@ -1,12 +1,12 @@
-# Feature List
+# Feature List (v1.0.3)
 ## General
 ### Boxes
-- ***Runic Mob ESP***
-- ***Rat ESP***
-- ***Matcho ESP***
-- ***Player ESP***
-- ***Old Wolf ESP***
-- ***Femboy ESP***
+- ***Box Runic Mobs***
+- ***Box Rats***
+- ***Box Matchos***
+- ***Box Players (All Players, Specific Players)***
+- ***Box Old Wolves***
+- ***Box Femboys***
 ### ! Commands
 - ***!dt***
 - ***!coords***
