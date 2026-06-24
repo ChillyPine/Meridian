@@ -21,14 +21,14 @@ object ShortPFMessage : SwitchFeature(
         "Party Finder > Your group has been de-listed!" to "§dPF §f> §cDe-listed",
         "Party Finder > Your group has been removed from the party finder!" to "§dPF §f> §cGroup Removed",
         "Party Finder > This group has been de-listed." to "§dPF §f> §cGroup Not Found",
-        "Refreshing..." to "§dPF §f> §aRefreshing...",
-        "Attempting to add you to the party..." to "§dPF §f> §aAttempting to join party..."
     )
 
     init {
         ChatBlocker.register({ enabled }, "Queueing your party...")
         ChatBlocker.register({ enabled }, "De-listing your group...")
         ChatBlocker.register({ enabled }, "You are already queued with a party!")
+        ChatBlocker.register({ enabled }, "Refreshing...")
+        ChatBlocker.register({ enabled }, "Attempting to add you to the party...")
         ClientReceiveMessageEvents.ALLOW_GAME.register { message, overlay ->
             if (overlay || !enabled) return@register true
             val plain = message.string
