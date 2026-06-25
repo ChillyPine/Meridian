@@ -16,6 +16,7 @@ import io.github.meridian.features.impl.dungeons.BoxDoorKeys
 import io.github.meridian.features.impl.dungeons.DoorKeyColor
 import io.github.meridian.features.impl.dungeons.DungeonEndMusic
 import io.github.meridian.features.impl.dungeons.FFTimer
+//import io.github.meridian.features.impl.dungeons.LavaBounceFix
 import io.github.meridian.features.impl.dungeons.LividHealthHUD
 import io.github.meridian.features.impl.dungeons.FelColor
 import io.github.meridian.features.impl.dungeons.BoxFels
@@ -205,6 +206,7 @@ object FeatureList {
         M5WishNotif,
 
         // --- Misc ---
+        //LavaBounceFix,
         BottleFull,
         MaskUsed,
         PlayProcSound,
