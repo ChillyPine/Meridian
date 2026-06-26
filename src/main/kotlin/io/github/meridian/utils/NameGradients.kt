@@ -7,8 +7,8 @@ import kotlin.math.roundToInt
 
 object NameGradients {
     private val GRADIENTS: Map<String, List<Int>> = mapOf(
-        // 0x1F4FA8, 0x2BD4C4 | 0x0BADF5
-        "ChillyPine" to listOf(0xBC1B68, 0xB15F86, 0xA6A6A6),
+        // 0x1F4FA8, 0x2BD4C4 | 0x0BADF5 | 0x9bafd9, 0x103783
+        "ChillyPine" to listOf(0x6274e7, 0x133a94),
         "DwnInFraggleRock" to listOf(0x6A0DAD, 0x9B30FF, 0xC77DFF, 0xE0AAFF),
     )
 
