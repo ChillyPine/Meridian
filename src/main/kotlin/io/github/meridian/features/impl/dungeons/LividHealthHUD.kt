@@ -5,7 +5,6 @@ import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.hud.HudElement
 import io.github.meridian.hud.HudManager
 import io.github.meridian.utils.F5State
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.minecraft.ChatFormatting
 import net.minecraft.core.BlockPos
 import net.minecraft.network.chat.Component
@@ -52,13 +51,17 @@ object LividHealthHUD : SwitchFeature(
     init {
         HudManager.register(element)
 
-        ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick {
-            if (!enabled || !F5State.inF5Boss) {
+        onTick {
+            if (!F5State.inF5Boss) {
                 lividHealth = null
-                return@EndTick
+                return@onTick
             }
             update()
-        })
+        }
+    }
+
+    override fun onDeactivate() {
+        lividHealth = null
     }
 
     private fun update() {

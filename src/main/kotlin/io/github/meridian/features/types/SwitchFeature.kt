@@ -1,10 +1,16 @@
 package io.github.meridian.features.types
 
 import com.google.gson.JsonObject
+import io.github.meridian.events.BusListener
+import io.github.meridian.events.MeridianEvents
 import io.github.meridian.features.Feature
 import io.github.meridian.features.FeatureManager
 import io.github.meridian.gui.ACCENT_COLOR
+import io.github.meridian.utils.BasicState
+import io.github.meridian.utils.State
+import io.github.meridian.utils.Toggleable
 import io.github.meridian.utils.playClickSound
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphicsExtractor
 
@@ -18,7 +24,38 @@ open class SwitchFeature(
     defaultEnabled: Boolean = false
 ) : Feature(name, description, category, configKey, subcategory, dependsOn) {
 
-    var enabled: Boolean = defaultEnabled
+    /** Reactive backing for [enabled]; every write fans out to bound listeners. */
+    val enabledState = BasicState(defaultEnabled)
+
+    var enabled: Boolean
+        get() = enabledState.value
+        set(value) { enabledState.value = value }
+
+    /** Own enabled-state AND-ed with the `dependsOn` chain (the parent already folds its own chain). */
+    val activeState: State<Boolean> =
+        (dependsOn as? SwitchFeature)?.let { enabledState.zip(it.activeState, Boolean::and) } ?: enabledState
+
+    private val children = mutableListOf<Toggleable>()
+
+    init {
+        activeState.listen { active -> if (active) onActivate() else onDeactivate() }
+    }
+
+    /** Registers a render callback that is attached only while this feature is active. */
+    protected fun onRender(cb: (ctx: LevelRenderContext) -> Unit) {
+        children += BusListener(MeridianEvents.render, cb).bind(activeState)
+    }
+
+    /** Registers an end-client-tick callback that is attached only while this feature is active. */
+    protected fun onTick(cb: () -> Unit) {
+        children += BusListener<Unit>(MeridianEvents.tick) { cb() }.bind(activeState)
+    }
+
+    /** Called when the feature becomes active (enabled + dependencies satisfied). */
+    open fun onActivate() {}
+
+    /** Called when the feature becomes inactive — use to clear transient state (HUD data, caches). */
+    open fun onDeactivate() {}
 
     override fun isDependencyActive(): Boolean = enabled
 

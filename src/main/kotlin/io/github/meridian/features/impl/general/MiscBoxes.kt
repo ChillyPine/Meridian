@@ -44,8 +44,7 @@ object BoxRunicMobs : SwitchFeature(
     subcategory = "Boxes",
 ) {
     init {
-        LevelRenderEvents.AFTER_SOLID_FEATURES.register { ctx ->
-            if (!enabled) return@register
+        onRender { ctx ->
             forEachRunicMob { ent ->
                 ESP.drawBox(ctx, ent, w = 1.0, h = 1.0, wz = 1.0, yOffset = -1.0, argb = RunicMobColor.color)
             }
@@ -62,8 +61,7 @@ object RunicMobTracer : SwitchFeature(
     dependsOn = BoxRunicMobs
 ) {
     init {
-        LevelRenderEvents.AFTER_SOLID_FEATURES.register { ctx ->
-            if (!isActive()) return@register
+        onRender { ctx ->
             val pt = Meridian.mc.deltaTracker.getGameTimeDeltaPartialTick(true)
             forEachRunicMob { ent ->
                 val p = ent.getPosition(pt)

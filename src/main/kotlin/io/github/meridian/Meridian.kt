@@ -1,6 +1,7 @@
 package io.github.meridian
 
 import io.github.meridian.commands.MeridianCommand
+import io.github.meridian.events.MeridianEvents
 import io.github.meridian.features.FeatureList
 import io.github.meridian.features.FeatureManager
 import io.github.meridian.hud.HudManager
@@ -33,6 +34,7 @@ object Meridian : ClientModInitializer {
         F5State.init()
         P2State.init()
         P5State.init()
+        MeridianEvents.init()
         FeatureList.registerAll()
         FeatureManager.load()
         HudManager.init()
