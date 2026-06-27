@@ -16,8 +16,7 @@ object BoxBats : SwitchFeature (
     subcategory = "Clear"
 ) {
     init {
-        onRender { ctx ->
-            if (F4State.inF4Boss || !DungeonState.inDungeon) return@onRender
+        onRender(DungeonState.state.zip(F4State.state) { dungeon, f4 -> dungeon && !f4 }) { ctx ->
             val level = Meridian.mc.level ?: return@onRender
             val player = Meridian.mc.player ?: return@onRender
             val bats = level.entitiesForRendering().filterIsInstance<Bat>()
@@ -43,8 +42,7 @@ object BatTracer : SwitchFeature (
     dependsOn = BoxBats,
 ) {
     init {
-        onRender { ctx ->
-            if (F4State.inF4Boss || !DungeonState.inDungeon) return@onRender
+        onRender(DungeonState.state.zip(F4State.state) { dungeon, f4 -> dungeon && !f4 }) { ctx ->
             val level = Meridian.mc.level ?: return@onRender
             for (ent in level.entitiesForRendering()) {
                 if (ent !is Bat) continue

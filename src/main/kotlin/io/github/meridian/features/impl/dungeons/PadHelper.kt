@@ -43,8 +43,7 @@ object PadHelper : SwitchFeature(
     )
 
     init {
-        onRender { ctx ->
-            if (!DungeonState.inDungeon || !P2State.inP2) return@onRender
+        onRender(DungeonState.state.zip(P2State.state, Boolean::and)) { ctx ->
             for (p in pads) {
                 val y = p.topY.toDouble()
                 val rects = FILL.map {

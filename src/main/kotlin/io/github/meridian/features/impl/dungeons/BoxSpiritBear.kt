@@ -14,8 +14,7 @@ object BoxSpiritBear : SwitchFeature(
     subcategory = "M4",
 )  {
     init {
-        onRender { ctx ->
-            if (!F4State.inF4Boss) return@onRender
+        onRender(F4State.state) { ctx ->
             val level = Meridian.mc.level ?: return@onRender
             for (ent in level.entitiesForRendering()) {
                 if (ent !is ArmorStand) continue

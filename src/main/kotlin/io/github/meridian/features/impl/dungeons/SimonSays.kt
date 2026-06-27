@@ -55,8 +55,7 @@ object SimonSaysTime : SwitchFeature(
     }
 
     init {
-        onChat { text, _, _ ->
-            if (!DungeonState.inDungeon) return@onChat
+        onChat(DungeonState.state) { text, _, _ ->
             val elapsed = tracker.detect(text) ?: return@onChat
             TickScheduler.schedule(1) {
                 modMessage("§fSimon Says Took: ${timeColor(elapsed)}${String.format("%.2f", elapsed)}s")
@@ -75,8 +74,7 @@ object SimonSaysPC : SwitchFeature(
     private val tracker = SimonSaysTracker()
 
     init {
-        onChat { text, _, _ ->
-            if (!DungeonState.inDungeon) return@onChat
+        onChat(DungeonState.state) { text, _, _ ->
             val elapsed = tracker.detect(text) ?: return@onChat
             sendCommand("pc Simon Says Took: ${String.format("%.2f", elapsed)}s")
         }

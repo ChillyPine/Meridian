@@ -16,8 +16,7 @@ object HoldingCrystal : SwitchFeature(
     subcategory = "P1",
 ) {
     init {
-        onTick {
-            if (!DungeonState.inDungeon) return@onTick
+        onTick(DungeonState.state) {
             if (hasItem("Energy Crystal")) {
                 mc.gui.setTimes(0, 5, 0)
                 mc.gui.setTitle(Component.literal("§cHolding Crystal"))
@@ -35,8 +34,7 @@ object HoldingRelic : SwitchFeature(
     subcategory = "P5",
 ) {
     init {
-        onTick {
-            if (!P5State.inP5) return@onTick
+        onTick(P5State.state) {
             if (hasItem("Relic")) {
                 mc.gui.setTimes(0, 5, 0)
                 mc.gui.setTitle(Component.empty())

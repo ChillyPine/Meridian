@@ -43,9 +43,7 @@ object StackHelper : SwitchFeature(
     )
 
     init {
-        onRender { ctx ->
-            if (!P5State.inP5) return@onRender
-
+        onRender(P5State.state) { ctx ->
             for (c in circles) {
                 ESP.drawWorldCircle(ctx, c.x, c.y, c.z, c.r, CIRCLE_ALPHA or c.rgb, depth = true, lineWidth = 4f)
             }

@@ -32,8 +32,7 @@ object P4Platform : SwitchFeature(
     }
 
     init {
-        onChat { text, _, _ ->
-            if (!DungeonState.inDungeon) return@onChat
+        onChat(DungeonState.state) { text, _, _ ->
             if (text.startsWith("The Core entrance is opening!")) active = true
             else if (text.startsWith("[BOSS] Necron: Goodbye.")) active = false
         }

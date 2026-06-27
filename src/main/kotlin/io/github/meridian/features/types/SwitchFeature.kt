@@ -45,25 +45,34 @@ open class SwitchFeature(
         activeState.listen { active -> if (active) onActivate() else onDeactivate() }
     }
 
-    /** Registers a render callback that is attached only while this feature is active. */
-    protected fun onRender(cb: (ctx: LevelRenderContext) -> Unit) {
-        children += BusListener(MeridianEvents.render, cb).bind(activeState)
+    /** The state a listener attaches on: active, optionally AND-ed with a phase/area [gate]. */
+    private fun effective(gate: State<Boolean>?): State<Boolean> =
+        if (gate == null) activeState else activeState.zip(gate, Boolean::and)
+
+    /**
+     * Registers a render callback attached only while this feature is active. If a [gate] state
+     * is given (e.g. a phase state from PlayerLocation), the listener also detaches whenever the
+     * gate is false — so an enabled-but-out-of-phase feature has no listener on the bus at all.
+     */
+    protected fun onRender(gate: State<Boolean>? = null, cb: (ctx: LevelRenderContext) -> Unit) {
+        children += BusListener(MeridianEvents.render, cb).bind(effective(gate))
     }
 
-    /** Registers an end-client-tick callback that is attached only while this feature is active. */
-    protected fun onTick(cb: () -> Unit) {
-        children += BusListener<Unit>(MeridianEvents.tick) { cb() }.bind(activeState)
+    /** Registers an end-client-tick callback, attached only while active (and the [gate], if given). */
+    protected fun onTick(gate: State<Boolean>? = null, cb: () -> Unit) {
+        children += BusListener<Unit>(MeridianEvents.tick) { cb() }.bind(effective(gate))
     }
 
-    /** Registers an incoming-game-chat callback, attached only while this feature is active. */
+    /** Registers an incoming-game-chat callback, attached only while active (and the [gate], if given). */
     protected fun onChat(
+        gate: State<Boolean>? = null,
         includeOverlay: Boolean = false,
         cb: (text: String, component: Component, overlay: Boolean) -> Unit
     ) {
         val listener = BusListener(MeridianEvents.chat) { m: ChatMessage ->
             if (!m.overlay || includeOverlay) cb(m.text, m.component, m.overlay)
         }
-        children += listener.bind(activeState)
+        children += listener.bind(effective(gate))
     }
 
     private fun addBlockRule(rule: ChatBlocker.Rule) {

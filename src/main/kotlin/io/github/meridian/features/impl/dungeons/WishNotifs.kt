@@ -17,8 +17,7 @@ object M5WishNotif : SwitchFeature(
     subcategory = "M5"
 ) {
     init {
-        onChat { text, _, _ ->
-            if (!F5State.inF5Boss) return@onChat
+        onChat(F5State.state) { text, _, _ ->
             if (!text.startsWith("[BOSS] Livid: I respect you for making it to here, but I'll be your undoing.")) return@onChat
             // mc.gui.setTimes(fadeIn, stay, fadeOut)
             mc.gui.setTimes(0, 60, 0)
