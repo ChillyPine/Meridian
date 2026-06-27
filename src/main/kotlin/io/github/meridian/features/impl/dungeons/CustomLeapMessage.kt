@@ -2,7 +2,6 @@ package io.github.meridian.features.impl.dungeons
 
 import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.features.types.TextFeature
-import io.github.meridian.utils.onChatMessage
 import io.github.meridian.utils.sendCommand
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
@@ -18,13 +17,11 @@ object CustomLeapMessage : SwitchFeature(
         Regex("You have teleported to (\\w+)!") //You have teleported to {IGN}!
 
     init {
-        onChatMessage { text, _, _ ->
-            if (!isActive()) return@onChatMessage
-
-            val player = LeapMessageRegex.find(text)?.groupValues?.get(1) ?: return@onChatMessage
+        onChat { text, _, _ ->
+            val player = LeapMessageRegex.find(text)?.groupValues?.get(1) ?: return@onChat
 
             val message = CustomLeapMessageTXT.value.trim()
-            if (message.isEmpty()) return@onChatMessage
+            if (message.isEmpty()) return@onChat
             CompletableFuture.delayedExecutor(200, TimeUnit.MILLISECONDS)
                 .execute { sendCommand("pc ${message.replace("{player}", player)}") }
         }

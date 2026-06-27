@@ -3,7 +3,6 @@ package io.github.meridian.features.impl.dungeons
 import io.github.meridian.Meridian.mc
 import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.modMessage
-import io.github.meridian.utils.onChatMessage
 import io.github.meridian.utils.sendCommand
 import net.minecraft.client.resources.sounds.SimpleSoundInstance
 import net.minecraft.network.chat.Component
@@ -18,8 +17,7 @@ object MaskUsed : SwitchFeature(
     subcategory = "Miscellaneous"
 ) {
     init {
-        onChatMessage { text, _, _ ->
-            if (!enabled) return@onChatMessage
+        onChat { text, _, _ ->
             when {
                 text.startsWith("Your ⚚ Bonzo's Mask saved your life!") -> {
                     mc.gui.setTimes(0, 50, 0)

@@ -3,7 +3,6 @@ package io.github.meridian.features.impl.dungeons
 import io.github.meridian.Meridian.mc
 import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.modMessage
-import io.github.meridian.utils.onChatMessage
 import io.github.meridian.utils.sendCommand
 import net.minecraft.network.chat.Component
 
@@ -28,9 +27,8 @@ object BloodOpen : SwitchFeature(
     dependsOn = BloodNotifs
 ) {
     init {
-        onChatMessage { text, _, _ ->
-            if (!enabled) return@onChatMessage
-            if (!text.startsWith("The BLOOD DOOR has been opened!")) return@onChatMessage
+        onChat { text, _, _ ->
+            if (!text.startsWith("The BLOOD DOOR has been opened!")) return@onChat
             // mc.gui.setTimes(fadeIn, stay, fadeOut)
             mc.gui.setTimes(0, 50, 0)
             mc.gui.setTitle(Component.literal("§cBlood Opened!"))
@@ -52,9 +50,8 @@ object BloodFull : SwitchFeature(
     dependsOn = BloodNotifs
 ) {
     init {
-        onChatMessage { text, _, _ ->
-            if (!enabled) return@onChatMessage
-            if (!text.startsWith("[BOSS] The Watcher: That will be enough for now.")) return@onChatMessage
+        onChat { text, _, _ ->
+            if (!text.startsWith("[BOSS] The Watcher: That will be enough for now.")) return@onChat
             // mc.gui.setTimes(fadeIn, stay, fadeOut)
             mc.gui.setTimes(0, 50, 0)
             mc.gui.setTitle(Component.literal("§cBlood Full!"))
@@ -76,9 +73,8 @@ object BloodCleared : SwitchFeature(
     dependsOn = BloodNotifs
 ) {
     init {
-        onChatMessage { text, _, _ ->
-            if (!enabled) return@onChatMessage
-            if (!text.startsWith("[BOSS] The Watcher: You have proven yourself. You may pass.")) return@onChatMessage
+        onChat { text, _, _ ->
+            if (!text.startsWith("[BOSS] The Watcher: You have proven yourself. You may pass.")) return@onChat
             // mc.gui.setTimes(fadeIn, stay, fadeOut)
             mc.gui.setTimes(0, 50, 0)
             mc.gui.setTitle(Component.literal("§cBlood Cleared!"))

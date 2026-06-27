@@ -4,7 +4,6 @@ import io.github.meridian.Meridian.mc
 import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.F5State
 import io.github.meridian.utils.TickScheduler
-import io.github.meridian.utils.onChatMessage
 import net.minecraft.client.Minecraft
 import net.minecraft.network.chat.Component
 import net.minecraft.client.resources.sounds.SimpleSoundInstance
@@ -18,9 +17,9 @@ object M5WishNotif : SwitchFeature(
     subcategory = "M5"
 ) {
     init {
-        onChatMessage { text, _, _ ->
-            if (!enabled || !F5State.inF5Boss) return@onChatMessage
-            if (!text.startsWith("[BOSS] Livid: I respect you for making it to here, but I'll be your undoing.")) return@onChatMessage
+        onChat { text, _, _ ->
+            if (!F5State.inF5Boss) return@onChat
+            if (!text.startsWith("[BOSS] Livid: I respect you for making it to here, but I'll be your undoing.")) return@onChat
             // mc.gui.setTimes(fadeIn, stay, fadeOut)
             mc.gui.setTimes(0, 60, 0)
             mc.gui.setTitle(Component.literal("§4WISH"))
@@ -41,9 +40,8 @@ object P1WishNotif : SwitchFeature(
     subcategory = "P1"
 ) {
     init {
-        onChatMessage { text, _, _ ->
-            if (!enabled) return@onChatMessage
-            if (!text.startsWith("⚠ Maxor is enraged! ⚠")) return@onChatMessage
+        onChat { text, _, _ ->
+            if (!text.startsWith("⚠ Maxor is enraged! ⚠")) return@onChat
             // Hypixel pushes its own title on this same chat line; delay ours a
             // few ticks so it lands after Hypixel's instead of being overwritten.
             TickScheduler.schedule(3) {
@@ -63,9 +61,8 @@ object P3WishNotif : SwitchFeature(
     subcategory = "P3"
 ) {
     init {
-        onChatMessage { text, _, _ ->
-            if (!enabled) return@onChatMessage
-            if (!text.startsWith("The Core entrance is opening!")) return@onChatMessage
+        onChat { text, _, _ ->
+            if (!text.startsWith("The Core entrance is opening!")) return@onChat
             // Hypixel pushes its own title on this same chat line; delay ours a
             // few ticks so it lands after Hypixel's instead of being overwritten.
             TickScheduler.schedule(3) {

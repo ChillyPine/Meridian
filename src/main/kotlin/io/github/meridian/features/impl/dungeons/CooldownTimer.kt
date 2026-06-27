@@ -3,8 +3,6 @@ package io.github.meridian.features.impl.dungeons
 import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.hud.HudElement
 import io.github.meridian.hud.HudManager
-import io.github.meridian.utils.onChatMessage
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 
 object CooldownTimerHUD : SwitchFeature(
     name = "Cooldown Timer",
@@ -32,16 +30,14 @@ object CooldownTimerHUD : SwitchFeature(
 
         var endTime: Long = -1L  // System.currentTimeMillis() target
 
-        onChatMessage { text, _, _ ->
-            if (!enabled) return@onChatMessage
+        onChat { text, _, _ ->
             if (text.contains("Queuing... (Attempt 1/3)")) {
                 endTime = System.currentTimeMillis() + 30_000L
             }
         }
 
-        ClientTickEvents.END_CLIENT_TICK.register {
-            if (!enabled) return@register
-            if (endTime < 0L) return@register
+        onTick {
+            if (endTime < 0L) return@onTick
 
             val remaining = endTime - System.currentTimeMillis()
             if (remaining <= 0L) {
@@ -57,5 +53,9 @@ object CooldownTimerHUD : SwitchFeature(
                 cooldowntimer = "${color}Cooldown : ${"%.2f".format(secs)}s"
             }
         }
+    }
+
+    override fun onDeactivate() {
+        cooldowntimer = null
     }
 }

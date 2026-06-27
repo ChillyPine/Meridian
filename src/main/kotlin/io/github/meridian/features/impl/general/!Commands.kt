@@ -2,7 +2,6 @@ package io.github.meridian.features.impl.general
 
 import io.github.meridian.Meridian
 import io.github.meridian.features.types.SwitchFeature
-import io.github.meridian.utils.onChatMessage
 import io.github.meridian.utils.sendChatMessage
 import io.github.meridian.utils.sendCommand
 import kotlin.math.floor
@@ -25,9 +24,8 @@ object DTCommand : SwitchFeature(
     subcategory = "! Commands",
 ) {
     init {
-        onChatMessage { text, _, _ ->
-            if (!enabled) return@onChatMessage
-            if (!dtRegex.matches(text)) return@onChatMessage
+        onChat { text, _, _ ->
+            if (!dtRegex.matches(text)) return@onChat
             CompletableFuture.delayedExecutor(30, TimeUnit.MILLISECONDS).execute {
                 Meridian.mc.execute {
                     sendChatMessage("/pc $DT_ART")
@@ -45,10 +43,9 @@ object CoordsCommand : SwitchFeature(
     subcategory = "! Commands",
 ) {
     init {
-        onChatMessage { text, _, _ ->
-            if (!enabled) return@onChatMessage
-            if (!coordsRegex.matches(text)) return@onChatMessage
-            val p = Meridian.mc.player ?: return@onChatMessage
+        onChat { text, _, _ ->
+            if (!coordsRegex.matches(text)) return@onChat
+            val p = Meridian.mc.player ?: return@onChat
             val x = floor(p.x).toInt()
             val y = floor(p.y).toInt()
             val z = floor(p.z).toInt()

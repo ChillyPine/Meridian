@@ -4,7 +4,6 @@ import io.github.meridian.Meridian
 import io.github.meridian.features.types.ColorFeature
 import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.ESP
-import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents
 import net.minecraft.client.resources.sounds.SimpleSoundInstance
 import net.minecraft.sounds.SoundEvents
 import net.minecraft.world.entity.decoration.ArmorStand
@@ -19,9 +18,8 @@ object BoxDoorKeys : SwitchFeature(
     private val seenKeys = mutableSetOf<Int>()
 
     init {
-        LevelRenderEvents.AFTER_SOLID_FEATURES.register { ctx ->
-            if (!enabled) return@register
-            val level = Meridian.mc.level ?: return@register
+        onRender { ctx ->
+            val level = Meridian.mc.level ?: return@onRender
 
             val currentKeys = mutableSetOf<Int>()
 

@@ -6,7 +6,6 @@ import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.ESP
 import io.github.meridian.utils.onChatMessage
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
-import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents
 import net.minecraft.client.multiplayer.ClientLevel
 import net.minecraft.world.entity.boss.wither.WitherBoss
 
@@ -37,12 +36,12 @@ object BoxGoldor : SwitchFeature(
             }
         })
 
-        LevelRenderEvents.AFTER_SOLID_FEATURES.register { ctx ->
-            if (!enabled || !goldorPhase) return@register
-            val level = Meridian.mc.level ?: return@register
+        onRender { ctx ->
+            if (!goldorPhase) return@onRender
+            val level = Meridian.mc.level ?: return@onRender
 
             val storm = level.entitiesForRendering()
-                .firstOrNull { it is WitherBoss && !it.isInvisible } as? WitherBoss ?: return@register
+                .firstOrNull { it is WitherBoss && !it.isInvisible } as? WitherBoss ?: return@onRender
 
             ESP.drawFilled(ctx, storm, argb = GoldorColor.color)
         }

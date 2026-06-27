@@ -1,7 +1,6 @@
 package io.github.meridian.features.impl.dungeons
 
 import io.github.meridian.features.types.SwitchFeature
-import io.github.meridian.utils.onChatMessage
 import io.github.meridian.utils.sendClientMessage
 import net.minecraft.network.chat.ClickEvent
 import net.minecraft.network.chat.Component
@@ -24,11 +23,10 @@ object PartyActions : SwitchFeature(
         Regex("^PF > (\\S+) joined \\(.+\\)$")
 
     init {
-        onChatMessage { text, _, _ ->
-            if (!isActive()) return@onChatMessage
+        onChat { text, _, _ ->
             val player = joinRegex.find(text)?.groupValues?.get(1)
                 ?: shortJoinRegex.find(text)?.groupValues?.get(1)
-                ?: return@onChatMessage
+                ?: return@onChat
 
             val line = buildButtons(player)
             CompletableFuture.delayedExecutor(100, TimeUnit.MILLISECONDS)

@@ -3,7 +3,6 @@ package io.github.meridian.features.impl.dungeons
 import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.ESP
 import io.github.meridian.utils.P5State
-import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents
 
 object StackHelper : SwitchFeature(
     name = "Arrow Stack Helper",
@@ -44,8 +43,8 @@ object StackHelper : SwitchFeature(
     )
 
     init {
-        LevelRenderEvents.AFTER_SOLID_FEATURES.register { ctx ->
-            if (!enabled || !P5State.inP5) return@register
+        onRender { ctx ->
+            if (!P5State.inP5) return@onRender
 
             for (c in circles) {
                 ESP.drawWorldCircle(ctx, c.x, c.y, c.z, c.r, CIRCLE_ALPHA or c.rgb, depth = true, lineWidth = 4f)

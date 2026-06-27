@@ -1,7 +1,6 @@
 package io.github.meridian.features.impl.dungeons
 
 import io.github.meridian.features.types.SwitchFeature
-import io.github.meridian.utils.ChatBlocker
 
 object WatcherYapHider : SwitchFeature(
     name = "Watcher Yap Hider",
@@ -31,7 +30,7 @@ object WatcherYapHider : SwitchFeature(
     )
 
     init {
-        ChatBlocker.register({ enabled }) { msg ->
+        blockChatIf { msg ->
             msg.startsWith(PREFIX) && msg.removePrefix(PREFIX).trim() in messagesToCancel
         }
     }

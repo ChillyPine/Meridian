@@ -3,7 +3,6 @@ package io.github.meridian.features.impl.events
 import io.github.meridian.Meridian
 import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.ESP
-import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents
 import net.minecraft.world.entity.decoration.ArmorStand
 
 private val primalFearNames = listOf(
@@ -24,10 +23,9 @@ object BoxPrimalFears : SwitchFeature(
     subcategory = "The Great Spook",
 ) {
     init {
-        LevelRenderEvents.AFTER_SOLID_FEATURES.register { ctx ->
-            if (!enabled) return@register
-            val level = Meridian.mc.level ?: return@register
-            val playerIGN = Meridian.mc.player?.gameProfile?.name ?: return@register
+        onRender { ctx ->
+            val level = Meridian.mc.level ?: return@onRender
+            val playerIGN = Meridian.mc.player?.gameProfile?.name ?: return@onRender
             val tag = "Spawned by: $playerIGN"
             val ents = level.entitiesForRendering().toList()
             for (ent in ents) {

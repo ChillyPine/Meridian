@@ -6,7 +6,6 @@ import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.ESP
 import io.github.meridian.utils.DungeonState
 import io.github.meridian.utils.F4State
-import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents
 import net.minecraft.world.entity.ambient.Bat
 
 object BoxBats : SwitchFeature (
@@ -17,10 +16,10 @@ object BoxBats : SwitchFeature (
     subcategory = "Clear"
 ) {
     init {
-        LevelRenderEvents.AFTER_SOLID_FEATURES.register { ctx ->
-            if (!enabled || F4State.inF4Boss || !DungeonState.inDungeon) return@register
-            val level = Meridian.mc.level ?: return@register
-            val player = Meridian.mc.player ?: return@register
+        onRender { ctx ->
+            if (F4State.inF4Boss || !DungeonState.inDungeon) return@onRender
+            val level = Meridian.mc.level ?: return@onRender
+            val player = Meridian.mc.player ?: return@onRender
             val bats = level.entitiesForRendering().filterIsInstance<Bat>()
             for (bat in bats) {
                 if (bat.distanceToSqr(player.x, player.y, player.z) > 100 * 100) continue
@@ -44,9 +43,9 @@ object BatTracer : SwitchFeature (
     dependsOn = BoxBats,
 ) {
     init {
-        LevelRenderEvents.AFTER_SOLID_FEATURES.register { ctx ->
-            if (!enabled || F4State.inF4Boss || !DungeonState.inDungeon) return@register
-            val level = Meridian.mc.level ?: return@register
+        onRender { ctx ->
+            if (F4State.inF4Boss || !DungeonState.inDungeon) return@onRender
+            val level = Meridian.mc.level ?: return@onRender
             for (ent in level.entitiesForRendering()) {
                 if (ent !is Bat) continue
                 val p = ent.getPosition(Meridian.mc.deltaTracker.getGameTimeDeltaPartialTick(true))

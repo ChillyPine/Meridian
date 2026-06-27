@@ -3,7 +3,6 @@ package io.github.meridian.features.impl.events
 import io.github.meridian.Meridian
 import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.modMessage
-import io.github.meridian.utils.onChatMessage
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
 
@@ -18,13 +17,12 @@ object QuickMathsSolver : SwitchFeature(
     private val sanitize = Regex("[^-()\\d/*+.]")
 
     init {
-        onChatMessage { text, _, _ ->
-            if (!enabled) return@onChatMessage
-            if (!text.startsWith(PREFIX)) return@onChatMessage
+        onChat { text, _, _ ->
+            if (!text.startsWith(PREFIX)) return@onChat
             val math = text.removePrefix(PREFIX)
             val calculation = math.replace("x", "*").replace(sanitize, "")
             val answer = runCatching { Parser(calculation).parse() }.getOrNull()
-                ?: return@onChatMessage
+                ?: return@onChat
             CompletableFuture.delayedExecutor(50, TimeUnit.MILLISECONDS).execute {
                 Meridian.mc.execute {
                     modMessage("§dQuick Maths Answer: §a§l${format(answer)}")

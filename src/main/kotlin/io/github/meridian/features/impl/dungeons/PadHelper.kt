@@ -4,7 +4,6 @@ import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.DungeonState
 import io.github.meridian.utils.ESP
 import io.github.meridian.utils.P2State
-import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents
 
 object PadHelper : SwitchFeature(
     name = "Pad Helper (PY)",
@@ -44,8 +43,8 @@ object PadHelper : SwitchFeature(
     )
 
     init {
-        LevelRenderEvents.AFTER_SOLID_FEATURES.register { ctx ->
-            if (!enabled || !DungeonState.inDungeon || !P2State.inP2) return@register
+        onRender { ctx ->
+            if (!DungeonState.inDungeon || !P2State.inP2) return@onRender
             for (p in pads) {
                 val y = p.topY.toDouble()
                 val rects = FILL.map {

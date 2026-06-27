@@ -2,9 +2,6 @@ package io.github.meridian.features.impl.general
 
 import io.github.meridian.Meridian
 import io.github.meridian.features.types.SwitchFeature
-import io.github.meridian.utils.ChatBlocker
-import io.github.meridian.utils.modMessage
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 
@@ -15,7 +12,7 @@ object BlockBlocksInWay : SwitchFeature (
     configKey = "block_blocks_in_way",
     subcategory = "Chat Blockers",
 ) {
-    init { ChatBlocker.register({ enabled }, Regex("^There are blocks in the way!$")) }
+    init { blockChat(Regex("^There are blocks in the way!$")) }
 }
 
 object BlockGEXP : SwitchFeature (
@@ -25,9 +22,7 @@ object BlockGEXP : SwitchFeature (
     configKey = "block_gexp",
     subcategory = "Chat Blockers",
 ) {
-    init {
-        ChatBlocker.register({ enabled }, Regex("^You earned .+ from playing SkyBlock!$"))
-    }
+    init { blockChat(Regex("^You earned .+ from playing SkyBlock!$")) }
 }
 
 object BlockProfileID : SwitchFeature (
@@ -37,7 +32,7 @@ object BlockProfileID : SwitchFeature (
     configKey = "block_profile_id",
     subcategory = "Chat Blockers",
 ) {
-    init { ChatBlocker.register({ enabled }, Regex("^Profile ID: .+$")) }
+    init { blockChat(Regex("^Profile ID: .+$")) }
 }
 
 object BlockProfileProduce : SwitchFeature (
@@ -47,9 +42,7 @@ object BlockProfileProduce : SwitchFeature (
     configKey = "block_profile_produce",
     subcategory = "Chat Blockers",
 ) {
-    init {
-        ChatBlocker.register({ enabled }, Regex("You are playing on profile: *|You are playing on profile: * \\(Co-op\\)"))
-    }
+    init { blockChat(Regex("You are playing on profile: *|You are playing on profile: * \\(Co-op\\)")) }
 }
 
 object BlockHOTFM : SwitchFeature (
@@ -59,7 +52,7 @@ object BlockHOTFM : SwitchFeature (
     configKey = "block_hotfm",
     subcategory = "Chat Blockers",
 ) {
-    init { ChatBlocker.register({ enabled }, Regex("^You can disable this messaging by toggling (Lottery|Sky Mall) in your (/hotf!|/hotm!)$")) }
+    init { blockChat(Regex("^You can disable this messaging by toggling (Lottery|Sky Mall) in your (/hotf!|/hotm!)$")) }
 }
 
 object BlockDiscord : SwitchFeature (
@@ -72,13 +65,13 @@ object BlockDiscord : SwitchFeature (
     private const val WARNING = "Please be mindful of Discord links in chat as they may pose a security risk"
 
     init {
-        ClientReceiveMessageEvents.ALLOW_GAME.register { message, _ ->
-            if (!enabled || WARNING !in message.string) return@register true
+        blockChatRaw { message ->
+            if (WARNING !in message.string) return@blockChatRaw false
             val cleaned = stripWarning(message)
             if (cleaned != null && cleaned.string.isNotBlank()) {
                 Meridian.mc.gui.chat.addClientSystemMessage(cleaned)
             }
-            false
+            true
         }
     }
 
@@ -105,9 +98,9 @@ object BlockWatchdog : SwitchFeature (
     subcategory = "Chat Blockers",
 ) {
     init {
-        ChatBlocker.register( { enabled }, Regex("^\\[WATCHDOG ANNOUNCEMENT\\]$"))
-        ChatBlocker.register( { enabled }, Regex("^Watchdog has banned .* players in the last 7 days\\.$"))
-        ChatBlocker.register( { enabled }, Regex("^Staff have banned an additional .* in the last 7 days\\.$"))
-        ChatBlocker.register( { enabled }, Regex("^Blacklisted modifications are a bannable offense!$"))
+        blockChat(Regex("^\\[WATCHDOG ANNOUNCEMENT\\]$"))
+        blockChat(Regex("^Watchdog has banned .* players in the last 7 days\\.$"))
+        blockChat(Regex("^Staff have banned an additional .* in the last 7 days\\.$"))
+        blockChat(Regex("^Blacklisted modifications are a bannable offense!$"))
     }
 }

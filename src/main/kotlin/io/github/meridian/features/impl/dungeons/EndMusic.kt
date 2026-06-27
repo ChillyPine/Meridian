@@ -45,9 +45,9 @@ object DungeonEndMusic : SwitchFeature(
     private var lastLevel: ClientLevel? = null
 
     init {
-        onChatMessage { text, _, _ ->
-            if (!enabled || soundtrackPlayed) return@onChatMessage
-            if (!TEAM_SCORE.matches(text)) return@onChatMessage
+        onChat { text, _, _ ->
+            if (soundtrackPlayed) return@onChat
+            if (!TEAM_SCORE.matches(text)) return@onChat
 
             val (name, sound) = DISCS[Random.nextInt(DISCS.size)]
             val instance = SimpleSoundInstance(

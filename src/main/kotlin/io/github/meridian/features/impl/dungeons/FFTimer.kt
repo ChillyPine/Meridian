@@ -4,7 +4,6 @@ import io.github.meridian.Meridian.mc
 import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.TickScheduler
 import io.github.meridian.utils.TickTask
-import io.github.meridian.utils.onChatMessage
 import net.minecraft.network.chat.Component
 
 private val ffTitles = listOf(
@@ -25,9 +24,8 @@ object FFTimer : SwitchFeature(
     private val pending = mutableListOf<TickTask>()
 
     init {
-        onChatMessage { text, _, _ ->
-            if (!enabled) return@onChatMessage
-            if (!text.startsWith("[BOSS] The Professor: Oh? You found my Guardians' one weakness?")) return@onChatMessage
+        onChat { text, _, _ ->
+            if (!text.startsWith("[BOSS] The Professor: Oh? You found my Guardians' one weakness?")) return@onChat
             cancelPending()
             ffTitles.forEach { (delay, title) ->
                 pending += TickScheduler.schedule(delay) {

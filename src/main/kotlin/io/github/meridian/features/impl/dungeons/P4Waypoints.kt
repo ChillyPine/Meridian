@@ -4,9 +4,7 @@ import io.github.meridian.Meridian
 import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.DungeonState
 import io.github.meridian.utils.ESP
-import io.github.meridian.utils.onChatMessage
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
-import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents
 import net.minecraft.client.multiplayer.ClientLevel
 import net.minecraft.core.BlockPos
 
@@ -34,12 +32,13 @@ object P4Platform : SwitchFeature(
     }
 
     init {
-        onChatMessage { text, _, _ ->
-            if (!enabled || !DungeonState.inDungeon) return@onChatMessage
+        onChat { text, _, _ ->
+            if (!DungeonState.inDungeon) return@onChat
             if (text.startsWith("The Core entrance is opening!")) active = true
             else if (text.startsWith("[BOSS] Necron: Goodbye.")) active = false
         }
 
+        // Always-on world-change reset so `active` clears across worlds even while disabled.
         ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick {
             val level = Meridian.mc.level
             if (level !== lastLevel) {
@@ -48,10 +47,10 @@ object P4Platform : SwitchFeature(
             }
         })
 
-        LevelRenderEvents.AFTER_SOLID_FEATURES.register { ctx ->
-            if (!enabled || !active) return@register
-            val level = Meridian.mc.level ?: return@register
-            if (!anyBlockPresent(level)) return@register
+        onRender { ctx ->
+            if (!active) return@onRender
+            val level = Meridian.mc.level ?: return@onRender
+            if (!anyBlockPresent(level)) return@onRender
             ESP.drawWorldBox(ctx, X0, Y0, Z0, X1, Y1, Z1, COLOR, depth = true)
         }
     }

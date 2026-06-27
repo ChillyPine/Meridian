@@ -3,7 +3,6 @@ package io.github.meridian.features.impl.mining
 import io.github.meridian.Meridian
 import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.ESP
-import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents
 import net.minecraft.world.entity.decoration.ArmorStand
 
 // Butterfly, Corleone, Golden Goblin, Diamond Goblin, Key Guardian
@@ -15,9 +14,8 @@ object BoxButterflies : SwitchFeature(
     subcategory = "Boxes",
 ) {
     init {
-        LevelRenderEvents.AFTER_SOLID_FEATURES.register { ctx ->
-            if (!enabled) return@register
-            val level = Meridian.mc.level ?: return@register
+        onRender { ctx ->
+            val level = Meridian.mc.level ?: return@onRender
             for (ent in level.entitiesForRendering()) {
                 if (ent !is ArmorStand) continue
                 val name = ent.customName?.string ?: continue
@@ -37,9 +35,8 @@ object ButterflyTracer : SwitchFeature(
     dependsOn = BoxButterflies,
 ) {
     init {
-        LevelRenderEvents.AFTER_SOLID_FEATURES.register { ctx ->
-            if (!isActive()) return@register
-            val level = Meridian.mc.level ?: return@register
+        onRender { ctx ->
+            val level = Meridian.mc.level ?: return@onRender
             val pt = Meridian.mc.deltaTracker.getGameTimeDeltaPartialTick(true)
             for (ent in level.entitiesForRendering()) {
                 if (ent !is ArmorStand) continue
@@ -60,9 +57,8 @@ object BoxCorleone : SwitchFeature(
     subcategory = "Boxes",
 ) {
     init {
-        LevelRenderEvents.AFTER_SOLID_FEATURES.register { ctx ->
-            if (!enabled) return@register
-            val level = Meridian.mc.level ?: return@register
+        onRender { ctx ->
+            val level = Meridian.mc.level ?: return@onRender
             for (ent in level.entitiesForRendering()) {
                 if (ent !is ArmorStand) continue
                 val name = ent.customName?.string ?: continue
@@ -81,9 +77,8 @@ object BoxGoldenGoblins : SwitchFeature(
     subcategory = "Boxes",
 ) {
     init {
-        LevelRenderEvents.AFTER_SOLID_FEATURES.register { ctx ->
-            if (!enabled) return@register
-            val level = Meridian.mc.level ?: return@register
+        onRender { ctx ->
+            val level = Meridian.mc.level ?: return@onRender
             for (ent in level.entitiesForRendering()) {
                 if (ent !is ArmorStand) continue
                 val name = ent.customName?.string ?: continue
@@ -102,9 +97,8 @@ object BoxDiamondGoblins : SwitchFeature(
     subcategory = "Boxes",
 ) {
     init {
-        LevelRenderEvents.AFTER_SOLID_FEATURES.register { ctx ->
-            if (!enabled) return@register
-            val level = Meridian.mc.level ?: return@register
+        onRender { ctx ->
+            val level = Meridian.mc.level ?: return@onRender
             for (ent in level.entitiesForRendering()) {
                 if (ent !is ArmorStand) continue
                 val name = ent.customName?.string ?: continue
@@ -123,9 +117,8 @@ object BoxKeyGuardians : SwitchFeature(
     subcategory = "Boxes",
 ) {
     init {
-        LevelRenderEvents.AFTER_SOLID_FEATURES.register { ctx ->
-            if (!enabled) return@register
-            val level = Meridian.mc.level ?: return@register
+        onRender { ctx ->
+            val level = Meridian.mc.level ?: return@onRender
             for (ent in level.entitiesForRendering()) {
                 if (ent !is ArmorStand) continue
                 val name = ent.customName?.string ?: continue

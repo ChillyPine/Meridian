@@ -1,10 +1,8 @@
 package io.github.meridian.features.impl.dungeons
 
 import io.github.meridian.features.types.SwitchFeature
-import io.github.meridian.utils.ChatBlocker
 import io.github.meridian.utils.sendClientMessage
 import io.github.meridian.utils.simulateGameMessage
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 
 object ShortPFMessage : SwitchFeature(
     name = "Short Party Finder Message",
@@ -24,25 +22,24 @@ object ShortPFMessage : SwitchFeature(
     )
 
     init {
-        ChatBlocker.register({ enabled }, "Queueing your party...")
-        ChatBlocker.register({ enabled }, "De-listing your group...")
-        ChatBlocker.register({ enabled }, "You are already queued with a party!")
-        ChatBlocker.register({ enabled }, "Refreshing...")
-        ChatBlocker.register({ enabled }, "Attempting to add you to the party...")
-        ClientReceiveMessageEvents.ALLOW_GAME.register { message, overlay ->
-            if (overlay || !enabled) return@register true
+        blockChat("Queueing your party...")
+        blockChat("De-listing your group...")
+        blockChat("You are already queued with a party!")
+        blockChat("Refreshing...")
+        blockChat("Attempting to add you to the party...")
+        blockChatRaw { message ->
             val plain = message.string
 
             joinRegex.find(plain)?.let { m ->
                 val (ign, cls, lvl) = m.destructured
                 simulateGameMessage("§dPF §f> §b$ign §ajoined §7(§e$cls $lvl§7)")
-                return@register false
+                return@blockChatRaw true
             }
 
             replacements.firstOrNull { plain.startsWith(it.first) }
-                ?.let { sendClientMessage(it.second); return@register false }
+                ?.let { sendClientMessage(it.second); return@blockChatRaw true }
 
-            true
+            false
         }
     }
 }

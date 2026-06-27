@@ -5,7 +5,6 @@ import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.TickScheduler
 import io.github.meridian.utils.hasItem
 import io.github.meridian.utils.modMessage
-import io.github.meridian.utils.onChatMessage
 import net.minecraft.client.resources.sounds.SimpleSoundInstance
 import net.minecraft.sounds.SoundEvents
 
@@ -19,9 +18,8 @@ object BottleFull : SwitchFeature(
     private val TEAM_SCORE = Regex("^ *Team Score: (\\d+) \\(([\\w+]{1,2})\\)$")
 
     init {
-        onChatMessage { text, _, _ ->
-            if (!enabled) return@onChatMessage
-            if (!TEAM_SCORE.matches(text)) return@onChatMessage
+        onChat { text, _, _ ->
+            if (!TEAM_SCORE.matches(text)) return@onChat
 
             val bottles = mapOf(
                 "Thunder in a Bottle" to "Your Thunder Bottle is §aFull! §eNice!",

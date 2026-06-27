@@ -5,7 +5,6 @@ import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.DungeonState
 import io.github.meridian.utils.P5State
 import io.github.meridian.utils.hasItem
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.minecraft.network.chat.Component
 
 // Holding crystal in p1, holding relic
@@ -17,14 +16,14 @@ object HoldingCrystal : SwitchFeature(
     subcategory = "P1",
 ) {
     init {
-        ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick {
-            if (!enabled || !DungeonState.inDungeon) return@EndTick
+        onTick {
+            if (!DungeonState.inDungeon) return@onTick
             if (hasItem("Energy Crystal")) {
                 mc.gui.setTimes(0, 5, 0)
                 mc.gui.setTitle(Component.literal("§cHolding Crystal"))
                 mc.gui.setSubtitle(Component.empty())
             }
-        })
+        }
     }
 }
 
@@ -36,13 +35,13 @@ object HoldingRelic : SwitchFeature(
     subcategory = "P5",
 ) {
     init {
-        ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick {
-            if (!enabled || !P5State.inP5) return@EndTick
+        onTick {
+            if (!P5State.inP5) return@onTick
             if (hasItem("Relic")) {
                 mc.gui.setTimes(0, 5, 0)
                 mc.gui.setTitle(Component.empty())
                 mc.gui.setSubtitle(Component.literal("§cHolding Relic"))
             }
-        })
+        }
     }
 }

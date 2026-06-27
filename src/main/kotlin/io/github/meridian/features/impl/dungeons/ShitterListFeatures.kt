@@ -6,7 +6,6 @@ import io.github.meridian.features.impl.dungeons.AnnounceShitter.partyJoinRegex
 import io.github.meridian.features.impl.dungeons.AnnounceShitter.pfJoinRegex
 import io.github.meridian.features.impl.dungeons.AnnounceShitter.shortPfJoinRegex
 import io.github.meridian.utils.modMessage
-import io.github.meridian.utils.onChatMessage
 import io.github.meridian.utils.sendCommand
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
@@ -28,12 +27,11 @@ object AutoKickShitter : SwitchFeature(
         Regex("^PF > (\\S+) joined \\(.+\\)$")
 
     init {
-        onChatMessage { text, _, _ ->
-            if (!isActive()) return@onChatMessage
+        onChat { text, _, _ ->
             val player = joinRegex.find(text)?.groupValues?.get(1)
                 ?: shortJoinRegex.find(text)?.groupValues?.get(1)
-                ?: return@onChatMessage
-            if (!ShitterList.contains(player)) return@onChatMessage
+                ?: return@onChat
+            if (!ShitterList.contains(player)) return@onChat
 
             CompletableFuture.delayedExecutor(350, TimeUnit.MILLISECONDS)
                 .execute { sendCommand("p kick $player") }
@@ -56,16 +54,15 @@ object AnnounceShitter : SwitchFeature(
         Regex("^(?:\\[.+?] )?(\\w+) joined the party\\.$")
 
     init {
-        onChatMessage { text, _, _ ->
-            if (!isActive()) return@onChatMessage
+        onChat { text, _, _ ->
             val player = pfJoinRegex.find(text)?.groupValues?.get(1)
                 ?: shortPfJoinRegex.find(text)?.groupValues?.get(1)
                 ?: partyJoinRegex.find(text)?.groupValues?.get(1)
-                ?: return@onChatMessage
-            if (!ShitterList.contains(player)) return@onChatMessage
+                ?: return@onChat
+            if (!ShitterList.contains(player)) return@onChat
 
             val message = CustomShitterMessage.value.trim()
-            if (message.isEmpty()) return@onChatMessage
+            if (message.isEmpty()) return@onChat
             CompletableFuture.delayedExecutor(200, TimeUnit.MILLISECONDS)
                 .execute { sendCommand("pc ${message.replace("{player}", player)}") }
         }
@@ -89,13 +86,12 @@ object SendShitterReason : SwitchFeature(
     subcategory = "Miscellaneous",
 ) {
     init {
-        onChatMessage { text, _, _ ->
-            if (!isActive()) return@onChatMessage
+        onChat { text, _, _ ->
             val player = pfJoinRegex.find(text)?.groupValues?.get(1)
                 ?: shortPfJoinRegex.find(text)?.groupValues?.get(1)
                 ?: partyJoinRegex.find(text)?.groupValues?.get(1)
-                ?: return@onChatMessage
-            if (!ShitterList.contains(player)) return@onChatMessage
+                ?: return@onChat
+            if (!ShitterList.contains(player)) return@onChat
 
             val reason = ShitterList.reasonFor(player) ?: "No reason set"
             CompletableFuture.delayedExecutor(150, TimeUnit.MILLISECONDS)

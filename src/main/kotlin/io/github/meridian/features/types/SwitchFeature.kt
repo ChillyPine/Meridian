@@ -2,17 +2,21 @@ package io.github.meridian.features.types
 
 import com.google.gson.JsonObject
 import io.github.meridian.events.BusListener
+import io.github.meridian.events.ChatMessage
 import io.github.meridian.events.MeridianEvents
 import io.github.meridian.features.Feature
 import io.github.meridian.features.FeatureManager
 import io.github.meridian.gui.ACCENT_COLOR
 import io.github.meridian.utils.BasicState
+import io.github.meridian.utils.ChatBlockListener
+import io.github.meridian.utils.ChatBlocker
 import io.github.meridian.utils.State
 import io.github.meridian.utils.Toggleable
 import io.github.meridian.utils.playClickSound
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphicsExtractor
+import net.minecraft.network.chat.Component
 
 open class SwitchFeature(
     name: String,
@@ -50,6 +54,33 @@ open class SwitchFeature(
     protected fun onTick(cb: () -> Unit) {
         children += BusListener<Unit>(MeridianEvents.tick) { cb() }.bind(activeState)
     }
+
+    /** Registers an incoming-game-chat callback, attached only while this feature is active. */
+    protected fun onChat(
+        includeOverlay: Boolean = false,
+        cb: (text: String, component: Component, overlay: Boolean) -> Unit
+    ) {
+        val listener = BusListener(MeridianEvents.chat) { m: ChatMessage ->
+            if (!m.overlay || includeOverlay) cb(m.text, m.component, m.overlay)
+        }
+        children += listener.bind(activeState)
+    }
+
+    private fun addBlockRule(rule: ChatBlocker.Rule) {
+        children += ChatBlockListener(rule).bind(activeState)
+    }
+
+    /** Blocks incoming game messages matching [pattern], only while this feature is active. */
+    protected fun blockChat(pattern: Regex) = addBlockRule { pattern.containsMatchIn(it.string) }
+
+    /** Blocks incoming game messages containing [substring], only while this feature is active. */
+    protected fun blockChat(substring: String) = addBlockRule { it.string.contains(substring) }
+
+    /** Blocks incoming game messages whose plain text matches [predicate], while active. */
+    protected fun blockChatIf(predicate: (String) -> Boolean) = addBlockRule { predicate(it.string) }
+
+    /** Blocks (or transforms) incoming game messages via a raw [Component] rule, while active. */
+    protected fun blockChatRaw(rule: (Component) -> Boolean) = addBlockRule { rule(it) }
 
     /** Called when the feature becomes active (enabled + dependencies satisfied). */
     open fun onActivate() {}

@@ -4,7 +4,6 @@ import io.github.meridian.Meridian.mc
 import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.TickScheduler
 import io.github.meridian.utils.TickTask
-import io.github.meridian.utils.onChatMessage
 import net.minecraft.network.chat.Component
 
 object LockedChestNotif : SwitchFeature(
@@ -15,9 +14,8 @@ object LockedChestNotif : SwitchFeature(
     subcategory = "Clear"
 ) {
     init {
-        onChatMessage { text, _, _ ->
-            if (!enabled) return@onChatMessage
-            if (!text.startsWith("That chest is locked!")) return@onChatMessage
+        onChat { text, _, _ ->
+            if (!text.startsWith("That chest is locked!")) return@onChat
             // mc.gui.setTimes(fadeIn, stay, fadeOut)
             mc.gui.setTimes(0, 30, 0)
             mc.gui.setTitle(Component.empty())

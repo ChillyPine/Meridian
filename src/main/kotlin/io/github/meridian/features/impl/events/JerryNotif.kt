@@ -3,7 +3,6 @@ package io.github.meridian.features.impl.events
 import io.github.meridian.Meridian.mc
 import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.TickScheduler
-import io.github.meridian.utils.onChatMessage
 import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
 
@@ -23,15 +22,14 @@ object JerryNotif : SwitchFeature(
     )
 
     init {
-        onChatMessage { text, _, _ ->
-            if (!enabled) return@onChatMessage
+        onChat { text, _, _ ->
             // The real message is " ☺ You located a hidden Golden Jerry!" — note
             // the leading space, so startsWith("☺") never matched. contains is safe.
-            if (!text.contains("☺")) return@onChatMessage
+            if (!text.contains("☺")) return@onChat
 
             val color = jerryColors.entries
                 .firstOrNull { (name, _) -> text.contains("$name Jerry") }
-                ?: return@onChatMessage
+                ?: return@onChat
 
             // Delay a few ticks in case Hypixel pushes its own title here too.
             TickScheduler.schedule(3) {

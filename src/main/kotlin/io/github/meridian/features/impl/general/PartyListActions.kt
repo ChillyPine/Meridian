@@ -1,7 +1,6 @@
 package io.github.meridian.features.impl.general
 
 import io.github.meridian.features.types.SwitchFeature
-import io.github.meridian.utils.onChatMessage
 import io.github.meridian.utils.sendClientMessage
 import net.minecraft.network.chat.ClickEvent
 import net.minecraft.network.chat.Component
@@ -21,12 +20,10 @@ object PLActions : SwitchFeature (
     private val leaderRegex = Regex("^Party Leader: (?:\\[.*?] )?(\\w+) ●$")
 
     init {
-        onChatMessage { text, _, _ ->
-            if (!isActive()) return@onChatMessage
-
+        onChat { text, _, _ ->
             leaderRegex.find(text)?.let {
                 emitActions(it.groupValues[1])
-                return@onChatMessage
+                return@onChat
             }
 
             when {
