@@ -6,7 +6,6 @@ import com.google.gson.JsonParser
 import io.github.meridian.Meridian
 import io.github.meridian.features.impl.dungeons.ShitterList
 import io.github.meridian.hud.HudManager
-import io.github.meridian.utils.ESP
 import net.fabricmc.loader.api.FabricLoader
 import java.nio.file.Files
 import java.nio.file.Path
@@ -56,9 +55,6 @@ object FeatureManager {
                 subObj.add(feat.configKey, featJson)
             }
             root.add("features", featuresJson)
-            val espJson = JsonObject()
-            ESP.saveTo(espJson)
-            root.add("esp", espJson)
             val hudJson = JsonObject()
             HudManager.saveTo(hudJson)
             root.add("hud", hudJson)
@@ -90,7 +86,6 @@ object FeatureManager {
             if (!configFile.exists()) return
             val root = JsonParser.parseString(configFile.readText()).asJsonObject
             root.getAsJsonObject("features")?.let { loadFeaturesNode(it, features.associateBy { f -> f.configKey }) }
-            root.getAsJsonObject("esp")?.let { ESP.loadFrom(it) }
             root.getAsJsonObject("hud")?.let { HudManager.loadFrom(it) }
             root.getAsJsonObject("shitter")?.let { ShitterList.loadFrom(it) }
         } catch (e: Exception) {

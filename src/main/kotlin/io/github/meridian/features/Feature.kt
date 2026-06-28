@@ -3,6 +3,7 @@ package io.github.meridian.features
 import com.google.gson.JsonObject
 import io.github.meridian.gui.DESC_COLOR
 import io.github.meridian.gui.DESC_RIGHT_GAP
+import io.github.meridian.gui.EXTERNAL_BORDER_COLOR
 import io.github.meridian.gui.NAME_COLOR
 import io.github.meridian.gui.ROW_BG_COLOR
 import io.github.meridian.gui.ROW_HEIGHT
@@ -22,6 +23,9 @@ abstract class Feature(
     val subcategory: String = "", // optional grouping inside a category
     val dependsOn: Feature? = null
 ) {
+    /** Set true by addon mods so their features get a gold border in the GUI. */
+    var external: Boolean = false
+
     private var visibilityCondition: (() -> Boolean)? = null
 
     protected fun showWhen(condition: () -> Boolean) {
@@ -86,6 +90,13 @@ abstract class Feature(
         val rowHeight = maxOf(ROW_HEIGHT, contentH)
 
         g.fill(x, y, x + width, y + rowHeight, ROW_BG_COLOR)
+        if (external) {
+            val c = EXTERNAL_BORDER_COLOR
+            g.fill(x, y, x + width, y + 1, c)                      // top
+            g.fill(x, y + rowHeight - 1, x + width, y + rowHeight, c) // bottom
+            g.fill(x, y, x + 1, y + rowHeight, c)                  // left
+            g.fill(x + width - 1, y, x + width, y + rowHeight, c)  // right
+        }
         g.text(font, name, x + ROW_PADDING_X, y + ROW_PADDING_Y, NAME_COLOR, false)
         var dy = y + ROW_PADDING_Y + font.lineHeight + 2
         for (line in lines) {

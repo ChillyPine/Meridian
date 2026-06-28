@@ -25,16 +25,24 @@ import kotlin.math.sqrt
  * world renders at framerate).
  *
  * Depth:
- *   ESP.depth, toggled by `/md depth`. When true (default) vanilla LINES /
- *   debugFilledBox render types are used (LEQUAL depth → LOS-gated). When
- *   false, the custom no-depth pipelines in [CustomRenderPipelines] are used,
- *   so boxes and tracers render through walls.
+ *   ESP.depth. When true (default) vanilla LINES / debugFilledBox render types
+ *   are used (LEQUAL depth → LOS-gated). When false, the custom no-depth
+ *   pipelines in [CustomRenderPipelines] are used, so boxes and tracers render
+ *   through walls. The base mod ships no way to set it false (legit-only); an
+ *   addon may install a provider via [setSeeThroughProvider].
  */
 object ESP {
 
     enum class Style { BOX, FILLED_BOX }
 
-    @Volatile var depth: Boolean = true
+    // Legit by default. An addon may install a provider that returns true to
+    // enable see-through-walls; the base ships no provider, so depth is always
+    // true (line-of-sight) here. This is the only switch for "cheat" rendering.
+    @Volatile private var seeThroughProvider: (() -> Boolean)? = null
+
+    fun setSeeThroughProvider(p: (() -> Boolean)?) { seeThroughProvider = p }
+
+    val depth: Boolean get() = seeThroughProvider?.invoke() != true
 
     private fun partialTick(): Float =
         Meridian.mc.deltaTracker.getGameTimeDeltaPartialTick(true)
@@ -389,15 +397,5 @@ object ESP {
     private fun halfAlpha(argb: Int): Int {
         val a = ((argb ushr 24) and 0xFF) / 2
         return (a shl 24) or (argb and 0x00FFFFFF)
-    }
-
-    // ---- Persistence ------------------------------------------------------
-
-    fun loadFrom(json: com.google.gson.JsonObject) {
-        if (json.has("depth")) depth = json.get("depth").asBoolean
-    }
-
-    fun saveTo(json: com.google.gson.JsonObject) {
-        json.addProperty("depth", depth)
     }
 }

@@ -6,9 +6,7 @@ import io.github.meridian.Meridian
 import io.github.meridian.gui.HudEditScreen
 import io.github.meridian.gui.MeridianScreen
 import io.github.meridian.gui.ShitterListScreen
-import io.github.meridian.features.FeatureManager
 import io.github.meridian.features.impl.dungeons.ShitterList
-import io.github.meridian.utils.ESP
 import io.github.meridian.utils.modMessage
 import io.github.meridian.utils.sendClientMessage
 import io.github.meridian.utils.simulateGameMessage
@@ -42,15 +40,6 @@ object MeridianCommand {
                             // Defer: the chat screen is still closing as this lambda
                             // runs and would wipe a synchronously-set screen.
                             Meridian.mc.execute { Meridian.mc.setScreen(HudEditScreen()) }
-                            1
-                        }
-                    )
-                    .then(
-                        literal("depth").executes { _ ->
-                            ESP.depth = !ESP.depth
-                            FeatureManager.save()
-                            val state = if (ESP.depth) "§cOFF" else "§aON"
-                            modMessage("ESP see-through-walls: $state§r")
                             1
                         }
                     )
@@ -163,10 +152,6 @@ object MeridianCommand {
         sendClientMessage("§6/meridian hud§f: Opens the HUD editor.")
         sendClientMessage("§6/meridian calc§f: Opens an in-game calculator.")
         sendClientMessage("§6/md§f: Alias")
-        sendClientMessage("§r§5§m                                                                              §r")
-        sendClientMessage("§r§6§lESP Commands")
-        sendClientMessage("§r§5§m                                                                              §r")
-        sendClientMessage("§6/meridian depth§f: Changes all ESPs depth check boolean (changes whether they're \'legit\' or not). ")
         sendClientMessage("§r§5§m                                                                              §r")
         sendClientMessage("§r§6§lShitter List Commands")
         sendClientMessage("§r§5§m                                                                              §r")
