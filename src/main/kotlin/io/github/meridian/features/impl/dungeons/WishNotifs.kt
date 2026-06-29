@@ -3,6 +3,7 @@ package io.github.meridian.features.impl.dungeons
 import io.github.meridian.Meridian.mc
 import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.F5State
+import io.github.meridian.utils.F6State
 import io.github.meridian.utils.TickScheduler
 import net.minecraft.client.Minecraft
 import net.minecraft.network.chat.Component
@@ -19,6 +20,28 @@ object M5WishNotif : SwitchFeature(
     init {
         onChat(F5State.state) { text, _, _ ->
             if (!text.startsWith("[BOSS] Livid: I respect you for making it to here, but I'll be your undoing.")) return@onChat
+            // mc.gui.setTimes(fadeIn, stay, fadeOut)
+            mc.gui.setTimes(0, 60, 0)
+            mc.gui.setTitle(Component.literal("§4WISH"))
+            mc.gui.setSubtitle(Component.empty())
+            // forUI(sound, pitch, volume): zombie "remedy" cure sound
+            Minecraft.getInstance().soundManager.play(
+                SimpleSoundInstance.forUI(SoundEvents.ZOMBIE_VILLAGER_CURE, 0.5f, 0.9f)
+            )
+        }
+    }
+}
+
+object M6WishNotif : SwitchFeature(
+    name = "M6 Wish Reminder",
+    description = "Reminds you to Wish in M6.",
+    category = "Dungeons",
+    configKey = "m6_wish_notif",
+    subcategory = "M6"
+) {
+    init {
+        onChat(F6State.state) { text, _, _ ->
+            if (!text.startsWith("[BOSS] Sadan: ENOUGH!")) return@onChat
             // mc.gui.setTimes(fadeIn, stay, fadeOut)
             mc.gui.setTimes(0, 60, 0)
             mc.gui.setTitle(Component.literal("§4WISH"))

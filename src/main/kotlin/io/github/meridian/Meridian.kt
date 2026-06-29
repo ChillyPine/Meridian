@@ -10,6 +10,7 @@ import io.github.meridian.utils.DungeonState
 import io.github.meridian.utils.NameGradients
 import io.github.meridian.utils.F4State
 import io.github.meridian.utils.F5State
+import io.github.meridian.utils.F6State
 import io.github.meridian.utils.P2State
 import io.github.meridian.utils.P5State
 import io.github.meridian.utils.TickScheduler
@@ -32,6 +33,7 @@ object Meridian : ClientModInitializer {
         DungeonState.init()
         F4State.init()
         F5State.init()
+        F6State.init()
         P2State.init()
         P5State.init()
         MeridianEvents.init()

@@ -74,6 +74,27 @@ object F5State {
     }
 }
 
+object F6State {
+    private val _state = BasicState(false)
+    val state: State<Boolean> = _state
+    val inF6Boss: Boolean get() = _state.value
+
+    private var lastLevel: ClientLevel? = null
+
+    fun init() {
+        onChatMessage { text, _, _ ->
+            if (text.startsWith("[BOSS] Sadan: So you made it all the way here... Now you wish to defy me? Sadan?!")) _state.value = true
+        }
+        ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick {
+            val level = mc.level
+            if (level !== lastLevel) {
+                lastLevel = level
+                _state.value = false
+            }
+        })
+    }
+}
+
 object P2State {
     private val _state = BasicState(false)
     val state: State<Boolean> = _state
