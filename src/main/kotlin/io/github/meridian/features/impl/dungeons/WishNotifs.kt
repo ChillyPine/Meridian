@@ -41,7 +41,7 @@ object M6WishNotif : SwitchFeature(
 ) {
     init {
         onChat(F6State.state) { text, _, _ ->
-            if (!text.startsWith("[BOSS] Sadan: ENOUGH!")) return@onChat
+            if (!text.startsWith("[BOSS] Sadan: My giants! Unleashed!")) return@onChat
             // mc.gui.setTimes(fadeIn, stay, fadeOut)
             mc.gui.setTimes(0, 60, 0)
             mc.gui.setTitle(Component.literal("§4WISH"))
