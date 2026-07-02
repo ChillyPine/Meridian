@@ -35,7 +35,7 @@ object StackHelper : SwitchFeature(
     )
 
     private val aimBoxes = listOf(
-        AimBox(56.0, 21.3, 129.0, MAGENTA),
+        AimBox(56.5, 21.3, 129.0, MAGENTA),
         AimBox(89.0, 22.0, 96.0, BLUE),
         AimBox(23.0, 23.0, 93.4, GREEN),
         AimBox(32.0, 22.0, 60.0, RED),

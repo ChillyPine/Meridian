@@ -129,7 +129,7 @@ object P5State {
 
     fun init() {
         onChatMessage { text, _, _ ->
-            if (text == "[BOSS] Wither King: Ohhh?" || text == "[BOSS] Wither King: You... again?") _state.value = true
+            if (text == "[BOSS] Necron: All this, for nothing...") _state.value = true
         }
         ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick {
             val level = mc.level
