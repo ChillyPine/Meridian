@@ -320,6 +320,74 @@ object ESP {
         consumers.endBatch(rt)
     }
 
+    /**
+     * Closed loop of line segments through arbitrary 3D world points. Unlike
+     * [drawWorldFlatLoop] the points aren't constrained to one Y plane, so this
+     * can outline a square lying on a vertical block face. [pts] are absolute
+     * world coords; the loop closes back to the first point.
+     */
+    fun drawWorldLineLoop(
+        ctx: LevelRenderContext,
+        pts: List<Vec3>,
+        argb: Int,
+        depth: Boolean = ESP.depth,
+        lineWidth: Float = 2f,
+    ) {
+        if (pts.size < 2) return
+        val pose = ctx.poseStack()
+        val consumers = ctx.bufferSource()
+        val cam = Meridian.mc.gameRenderer.mainCamera.position()
+        pose.pushPose()
+        pose.translate(-cam.x, -cam.y, -cam.z)
+        val rt = linesType(depth)
+        val buf = consumers.getBuffer(rt)
+        val last = pose.last()
+        val m = last.pose()
+        for (i in pts.indices) {
+            val a = pts[i]
+            val b = pts[(i + 1) % pts.size]
+            var nx = (b.x - a.x).toFloat()
+            var ny = (b.y - a.y).toFloat()
+            var nz = (b.z - a.z).toFloat()
+            val len = sqrt(nx * nx + ny * ny + nz * nz).coerceAtLeast(1e-4f)
+            nx /= len; ny /= len; nz /= len
+            buf.addVertex(m, a.x.toFloat(), a.y.toFloat(), a.z.toFloat())
+                .setColor(argb).setNormal(last, nx, ny, nz).setLineWidth(lineWidth)
+            buf.addVertex(m, b.x.toFloat(), b.y.toFloat(), b.z.toFloat())
+                .setColor(argb).setNormal(last, nx, ny, nz).setLineWidth(lineWidth)
+        }
+        pose.popPose()
+        consumers.endBatch(rt)
+    }
+
+    /**
+     * Fills an arbitrary quad given its four corners in order (winding-agnostic:
+     * emitted both ways so it shows from either side). Unlike [drawWorldFlatFill]
+     * the corners aren't constrained to one Y plane, so this fills a square lying
+     * on a vertical block face. Alpha is used as given.
+     */
+    fun drawWorldQuadFill(
+        ctx: LevelRenderContext,
+        pts: List<Vec3>,
+        argb: Int,
+        depth: Boolean = ESP.depth,
+    ) {
+        if (pts.size < 4) return
+        val pose = ctx.poseStack()
+        val consumers = ctx.bufferSource()
+        val cam = Meridian.mc.gameRenderer.mainCamera.position()
+        pose.pushPose()
+        pose.translate(-cam.x, -cam.y, -cam.z)
+        val rt = filledBoxType(depth)
+        val buf = consumers.getBuffer(rt)
+        val m = pose.last().pose()
+        fun v(p: Vec3) { buf.addVertex(m, p.x.toFloat(), p.y.toFloat(), p.z.toFloat()).setColor(argb) }
+        v(pts[0]); v(pts[1]); v(pts[2]); v(pts[3])
+        v(pts[3]); v(pts[2]); v(pts[1]); v(pts[0])
+        pose.popPose()
+        consumers.endBatch(rt)
+    }
+
     private fun drawBoxAt(
         ctx: LevelRenderContext,
         x0: Double, y0: Double, z0: Double,

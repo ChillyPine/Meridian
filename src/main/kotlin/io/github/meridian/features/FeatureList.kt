@@ -51,6 +51,7 @@ import io.github.meridian.features.impl.dungeons.CustomLeapMessage
 import io.github.meridian.features.impl.dungeons.HoldingCrystal
 import io.github.meridian.features.impl.dungeons.HoldingRelic
 import io.github.meridian.features.impl.dungeons.M6WishNotif
+import io.github.meridian.features.impl.dungeons.RelicHelper
 import io.github.meridian.features.impl.dungeons.SendShitterReason
 import io.github.meridian.features.impl.dungeons.StackHelper
 import io.github.meridian.features.impl.dungeons.WatcherYapHider
@@ -193,6 +194,7 @@ object FeatureList {
         P4Platform,
 
         // --- P5 ---
+        RelicHelper,
         HoldingRelic,
         StackHelper,
 
