@@ -98,6 +98,7 @@ import io.github.meridian.features.impl.mining.BoxCorleone
 import io.github.meridian.features.impl.mining.BoxDiamondGoblins
 import io.github.meridian.features.impl.mining.BoxGoldenGoblins
 import io.github.meridian.features.impl.mining.BoxKeyGuardians
+import io.github.meridian.features.impl.vanilla.ChatEraser
 import net.minecraft.network.chat.ClickEvent
 
 // Manifest of every feature in the mod — the only place that needs updating
@@ -264,6 +265,9 @@ object FeatureList {
         RemoveNausea,
         RemoveChatBar,
         PlayerNametag,
+
+        // --- Miscellaneous ---
+        ChatEraser,
     )
 
     fun registerAll() {

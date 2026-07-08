@@ -10,6 +10,8 @@
 		"MixinChatTagBackground",
 		"MixinChatTagFocused",
 		"MixinChatIndent",
+		"MixinChatScreen",
+		"accessor.ChatComponentAccessor",
 		"MixinEntityRenderer",
 		"MixinLivingEntityRenderer",
 		"MixinPlayerTabOverlay",
