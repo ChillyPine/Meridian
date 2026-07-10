@@ -19,7 +19,7 @@ object MaskUsed : SwitchFeature(
     init {
         onChat { text, _, _ ->
             when {
-                text.startsWith("Your ⚚ Bonzo's Mask saved your life!") -> {
+                text.startsWith("Your \uE068 Bonzo's Mask saved your life!") -> {
                     mc.gui.setTimes(0, 50, 0)
                     mc.gui.setTitle(Component.empty())
                     mc.gui.setSubtitle(Component.literal("§cBonzo Mask Used!"))
