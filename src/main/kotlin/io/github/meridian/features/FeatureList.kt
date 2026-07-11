@@ -45,6 +45,7 @@ import io.github.meridian.features.impl.dungeons.StarMobColor
 import io.github.meridian.features.impl.dungeons.BoxStarMobs
 import io.github.meridian.features.impl.dungeons.StormColor
 import io.github.meridian.features.impl.dungeons.BoxStorm
+import io.github.meridian.features.impl.dungeons.CarryManagerButton
 import io.github.meridian.features.impl.dungeons.CooldownTimerHUD
 import io.github.meridian.features.impl.dungeons.CustomLeapMessageTXT
 import io.github.meridian.features.impl.dungeons.CustomLeapMessage
@@ -59,6 +60,7 @@ import io.github.meridian.features.impl.events.BoxPrimalFears
 import io.github.meridian.features.impl.events.JerryNotif
 import io.github.meridian.features.impl.events.QuickMathsSolver
 import io.github.meridian.features.impl.farming.BoxTrapperMobs
+import io.github.meridian.features.impl.general.AutoTrackClientProgress
 import io.github.meridian.features.impl.general.BlockBlocksInWay
 import io.github.meridian.features.impl.general.BlockDiscord
 import io.github.meridian.features.impl.general.BlockGEXP
@@ -66,6 +68,7 @@ import io.github.meridian.features.impl.general.BlockHOTFM
 import io.github.meridian.features.impl.general.BlockProfileID
 import io.github.meridian.features.impl.general.BlockProfileProduce
 import io.github.meridian.features.impl.general.BlockWatchdog
+import io.github.meridian.features.impl.general.BoxClientsBosses
 import io.github.meridian.features.impl.general.CoordsCommand
 import io.github.meridian.features.impl.general.IRLClockColor
 import io.github.meridian.features.impl.general.IRLTime
@@ -142,6 +145,11 @@ object FeatureList {
         // --- Party ---
         PLActions,
         PLMoreActions,
+
+        // --- Carry ---
+        CarryManagerButton,
+        BoxClientsBosses,
+        AutoTrackClientProgress,
 
         // --- Miscellaneous ---
         IRLTime,

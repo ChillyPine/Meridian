@@ -3,6 +3,7 @@ package io.github.meridian.commands
 import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.arguments.StringArgumentType
 import io.github.meridian.Meridian
+import io.github.meridian.features.impl.dungeons.CarryManager
 import io.github.meridian.gui.HudEditScreen
 import io.github.meridian.gui.MeridianScreen
 import io.github.meridian.gui.ShitterListScreen
@@ -11,6 +12,7 @@ import io.github.meridian.utils.modMessage
 import io.github.meridian.utils.sendClientMessage
 import io.github.meridian.utils.simulateGameMessage
 import io.github.meridian.gui.CalculatorScreen
+import io.github.meridian.gui.CarryScreen
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
@@ -112,6 +114,70 @@ object MeridianCommand {
                                         0
                                     }
                             )
+
+                    )
+                    .then(
+                        literal("carry")
+                            .executes { ctx ->
+                                sendCarryHelp(ctx.source)
+                                1
+                            }
+                            .then(
+                                literal("add_player").then(
+                                    argument("players", StringArgumentType.greedyString())
+                                        .executes { ctx ->
+                                            CarryManager.addCommand(StringArgumentType.getString(ctx, "players"))
+                                            1
+                                        }
+                                )
+                            )
+                            .then(
+                                literal("remove_player").then(
+                                    argument("players", StringArgumentType.greedyString())
+                                        .executes { ctx ->
+                                            CarryManager.removeCommand(StringArgumentType.getString(ctx, "players"))
+                                            1
+                                        }
+                                )
+                            )
+                            .then(
+                                literal("add_carry").then(
+                                    argument("player", StringArgumentType.word())
+                                        .executes { ctx ->
+                                            CarryManager.addCarryCommand(StringArgumentType.getString(ctx, "player"))
+                                            1
+                                        }
+                                )
+                            )
+                            .then(
+                                literal("remove_carry").then(
+                                    argument("player", StringArgumentType.word())
+                                        .executes { ctx ->
+                                            CarryManager.removeCarryCommand(StringArgumentType.getString(ctx, "player"))
+                                            1
+                                        }
+                                )
+                            )
+                            .then(
+                                literal("reset").executes { _ ->
+                                    CarryManager.resetCommand()
+                                    1
+                                }
+                            )
+                            .then(
+                                literal("gui").executes { _ ->
+                                    Meridian.mc.execute { Meridian.mc.setScreen(CarryScreen()) }
+                                    1
+                                }
+                            )
+                            .then(
+                                argument("argument", StringArgumentType.greedyString())
+                                    .executes { ctx ->
+                                        val arg = StringArgumentType.getString(ctx, "argument")
+                                        modMessage("Unknown argument: '$arg'. Try /meridian help")
+                                        0
+                                    }
+                            )
                     )
                     .then(
                         literal("calc").executes { _ ->
@@ -172,6 +238,17 @@ object MeridianCommand {
         sendClientMessage("§6/md shitter list [#]§f: Displays the shitter list. Optionally jump to a page.")
         sendClientMessage("§6/md shitter reset§f: Clears the whole shitter list (asks for confirmation).")
         sendClientMessage("§6/md shitter gui§f: Opens the shitter list editor GUI.")
+        sendClientMessage("§r§5§m                                                                              §r")
+    }
+
+    private fun sendCarryHelp(source: FabricClientCommandSource) {
+        sendClientMessage("§r§5§m                                                                              §r")
+        sendClientMessage("§r§6§lCarry List Commands")
+        sendClientMessage("§r§5§m                                                                              §r")
+        sendClientMessage("§6/md Carry add {IGN}§f: Adds player(s) to the Carry list. Separate multiple IGNs with spaces.")
+        sendClientMessage("§6/md Carry remove {IGN}§f: Removes player(s) from the Carry list.")
+        sendClientMessage("§6/md Carry reset§f: Clears the whole Carry list (asks for confirmation).")
+        sendClientMessage("§6/md Carry gui§f: Opens the Carry list editor GUI.")
         sendClientMessage("§r§5§m                                                                              §r")
     }
 }
