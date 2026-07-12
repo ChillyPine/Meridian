@@ -57,13 +57,29 @@ object CarryManager {
         val idx = players.indexOfFirst { it.equals(name.trim(), ignoreCase = true) }
         if (idx == -1) return false
         val removed = players.removeAt(idx)
-        orderedCounts.remove(removed.lowercase())
+        val key = removed.lowercase()
+        orderedCounts.remove(key)
+        carryCounts.remove(key)
+        FeatureManager.save()
+        return true
+    }
+
+    // removes player from list and wipes both counters (used when an order is fully completed,
+    // so a future re-add via /md carry add starts fresh instead of resuming an old completed count)
+    fun completeCarry(name: String): Boolean {
+        val idx = players.indexOfFirst { it.equals(name.trim(), ignoreCase = true) }
+        if (idx == -1) return false
+        val removed = players.removeAt(idx)
+        val key = removed.lowercase()
+        orderedCounts.remove(key)
+        carryCounts.remove(key)
         FeatureManager.save()
         return true
     }
 
     fun reset() {
         players.clear()
+        carryCounts.clear()
         orderedCounts.clear()
         FeatureManager.save()
     }
@@ -78,6 +94,16 @@ object CarryManager {
         FeatureManager.save()
     }
 
+    // nudges the ordered count by delta (used by shift+click in the GUI), floored at 0
+    fun incrementOrdered(name: String, delta: Int): Int? {
+        val trimmed = name.trim()
+        if (!contains(trimmed)) return null
+        val key = trimmed.lowercase()
+        val newVal = ((orderedCounts[key] ?: 0) + delta).coerceAtLeast(0)
+        orderedCounts[key] = newVal
+        FeatureManager.save()
+        return newVal
+    }
 
     // button to manually add a completed carry
     fun addCarry(name: String): Int? {
@@ -100,6 +126,13 @@ object CarryManager {
         FeatureManager.save()
         return count
     }
+
+    // finds which tracked client a boss's display name belongs to, using word-boundary matching
+    // so "Notch" doesn't incorrectly match inside "Notch2"
+    fun matchClient(bossName: String): String? =
+        players.firstOrNull { c ->
+            Regex("\\b${Regex.escape(c)}\\b", RegexOption.IGNORE_CASE).containsMatchIn(bossName)
+        }
 
     fun addCommand(raw: String) {
         val entries = parseAddArgs(raw)
@@ -161,58 +194,6 @@ object CarryManager {
         modMessage("§b$name §fnow has §6$total §fcompleted carr${if (total == 1) "y" else "ies"}.", PREFIX)
     }
 
-
-    fun countCommand(raw: String) {
-        val arg = raw.trim()
-        if (arg.isEmpty()) {
-            countListCommand(1)
-            return
-        }
-        val pageArg = arg.toIntOrNull()
-        if (pageArg != null) {
-            countListCommand(pageArg)
-            return
-        }
-        val name = splitNames(arg).firstOrNull() ?: return
-        val display = players.firstOrNull { it.equals(name, ignoreCase = true) } ?: name
-        val completed = carriesFor(display)
-        val ordered = orderedFor(display)
-        modMessage("§b$display §f: §6$completed §fcompleted §7/§e $ordered §fordered.", PREFIX)
-    }
-
-    private fun countListCommand(pageArg: Int) {
-        if (players.isEmpty()) {
-            modMessage("§fThe carry list is empty.", PREFIX)
-            return
-        }
-        val totalPages = (players.size + PAGE_SIZE - 1) / PAGE_SIZE
-        if (pageArg !in 1..totalPages) {
-            modMessage("§cInvalid page. Valid pages: 1-$totalPages.", PREFIX)
-            return
-        }
-        val start = (pageArg - 1) * PAGE_SIZE
-        val pageItems = players.subList(start, minOf(start + PAGE_SIZE, players.size))
-
-        sendClientMessage("§r§5§m                                                            §r")
-
-        val prev =
-            if (pageArg > 1) link("§e§l<< ", "/md carry count ${pageArg - 1}", "§eGo to page ${pageArg - 1}")
-            else Component.literal("§8§l<< ")
-        val next =
-            if (pageArg < totalPages) link(" §e§l>>", "/md carry count ${pageArg + 1}", "§eGo to page ${pageArg + 1}")
-            else Component.literal(" §8§l>>")
-        val header = Component.literal("            ")
-            .append(prev)
-            .append(Component.literal("§6Carry Counts §7(Page $pageArg/$totalPages)"))
-            .append(next)
-        sendClientMessage(header)
-
-        for (player in pageItems) {
-            sendClientMessage("§7 - §b$player §f: §6${carriesFor(player)} §7/§e ${orderedFor(player)}")
-        }
-
-        sendClientMessage("§r§5§m                                                            §r")
-    }
 
     fun resetCommand() {
         if (players.isEmpty()) {

@@ -60,7 +60,10 @@ import io.github.meridian.features.impl.events.BoxPrimalFears
 import io.github.meridian.features.impl.events.JerryNotif
 import io.github.meridian.features.impl.events.QuickMathsSolver
 import io.github.meridian.features.impl.farming.BoxTrapperMobs
+import io.github.meridian.features.impl.general.AnnounceProgressClient
+import io.github.meridian.features.impl.general.AutoDetectTrade
 import io.github.meridian.features.impl.general.AutoTrackClientProgress
+import io.github.meridian.features.impl.general.AutoTrackDungeonProgress
 import io.github.meridian.features.impl.general.BlockBlocksInWay
 import io.github.meridian.features.impl.general.BlockDiscord
 import io.github.meridian.features.impl.general.BlockGEXP
@@ -150,6 +153,9 @@ object FeatureList {
         CarryManagerButton,
         BoxClientsBosses,
         AutoTrackClientProgress,
+        AutoTrackDungeonProgress,
+        AnnounceProgressClient,
+        AutoDetectTrade,
 
         // --- Miscellaneous ---
         IRLTime,

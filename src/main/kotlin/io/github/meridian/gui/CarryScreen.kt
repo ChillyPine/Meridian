@@ -76,84 +76,126 @@ class CarryScreen : Screen(Component.literal("Carry Manager")) {
         guiGraphics.text(font, "§7${names.size} player${if (names.size == 1) "" else "s"}",
             panelX + PADDING, countY, DESC_COLOR, false)
 
-        // List area geometry.
+        // List area geometry — bounded on the right by the legend column.
         listLeft = panelX + PADDING
         listTop = countY + font.lineHeight + 4
         listBottom = panelY + PANEL_HEIGHT - PADDING
-        val fullRight = panelX + PANEL_WIDTH - PADDING
+        val listAreaRight = panelX + PANEL_WIDTH - PADDING - LEGEND_WIDTH - DIVIDER_GAP
 
         val viewportH = listBottom - listTop
         val contentH = names.size * ROW_H
         maxScroll = maxOf(0, contentH - viewportH)
         scrollOffset = scrollOffset.coerceIn(0, maxScroll)
         scrollbarVisible = contentH > viewportH
-        listRight = if (scrollbarVisible) fullRight - SCROLLBAR_W - 2 else fullRight
+        listRight = if (scrollbarVisible) listAreaRight - SCROLLBAR_W - 2 else listAreaRight
 
         if (names.isEmpty()) {
-            val empty = "§7List is empty — add a player above."
+            val empty = "§7No Current Carries Active"
             guiGraphics.text(font, empty,
                 listLeft + (listRight - listLeft - font.width(empty)) / 2, listTop + 6, DESC_COLOR, false)
-            return
-        }
+        } else {
+            guiGraphics.enableScissor(listLeft, listTop, listRight, listBottom)
+            names.forEachIndexed { i, name ->
+                val rowTop = listTop - scrollOffset + i * ROW_H
+                if (rowTop + ROW_H < listTop || rowTop > listBottom) return@forEachIndexed
 
-        guiGraphics.enableScissor(listLeft, listTop, listRight, listBottom)
-        names.forEachIndexed { i, name ->
-            val rowTop = listTop - scrollOffset + i * ROW_H
-            if (rowTop + ROW_H < listTop || rowTop > listBottom) return@forEachIndexed
+                val rbY = rowTop + (ROW_H - REMOVE_SIZE) / 2
+                val rbX = listRight - REMOVE_SIZE - 4
+                val minusX = rbX - BTN_GAP - REMOVE_SIZE
+                val plusX = minusX - BTN_GAP - REMOVE_SIZE
+                val ordDownX = plusX - GROUP_GAP - REMOVE_SIZE
+                val ordUpX = ordDownX - BTN_GAP - REMOVE_SIZE
 
-            val rbY = rowTop + (ROW_H - REMOVE_SIZE) / 2
-            val rbX = listRight - REMOVE_SIZE - 4
-            val minusX = rbX - BTN_GAP - REMOVE_SIZE
-            val plusX = minusX - BTN_GAP - REMOVE_SIZE
+                val nameHovered = mouseX in listLeft until ordUpX &&
+                        mouseY in rowTop until (rowTop + ROW_H) &&
+                        mouseY in listTop until listBottom
 
-            val nameHovered = mouseX in listLeft until plusX &&
-                    mouseY in rowTop until (rowTop + ROW_H) &&
-                    mouseY in listTop until listBottom
+                guiGraphics.fill(listLeft, rowTop, listRight, rowTop + ROW_H - 1,
+                    if (i % 2 == 0) ROW_BG_COLOR else ROW_BG_COLOR_ALT)
+                if (nameHovered) {
+                    guiGraphics.fill(listLeft, rowTop, listRight, rowTop + ROW_H - 1, HOVER_COLOR)
+                }
+                val completed = CarryManager.carriesFor(name)
+                val ordered = CarryManager.orderedFor(name)
+                val orderedText = if (ordered > 0) "$ordered" else "-"
+                guiGraphics.text(font, "§f$name §7(§6$completed§7/§e$orderedText§7)", listLeft + 6,
+                    rowTop + (ROW_H - font.lineHeight) / 2 + 1, NAME_COLOR, false)
 
-            guiGraphics.fill(listLeft, rowTop, listRight, rowTop + ROW_H - 1,
-                if (i % 2 == 0) ROW_BG_COLOR else ROW_BG_COLOR_ALT)
-            if (nameHovered) {
-                guiGraphics.fill(listLeft, rowTop, listRight, rowTop + ROW_H - 1, HOVER_COLOR)
+                // Ordered-count down button.
+                val ordDownHovered = mouseX in ordDownX until (ordDownX + REMOVE_SIZE) &&
+                        mouseY in rbY until (rbY + REMOVE_SIZE) &&
+                        mouseY in listTop until listBottom
+                guiGraphics.fill(ordDownX, rbY, ordDownX + REMOVE_SIZE, rbY + REMOVE_SIZE,
+                    if (ordDownHovered) ORDERED_COLOR_HOVER else ORDERED_COLOR)
+                guiGraphics.text(font, ORDERED_DOWN_GLYPH,
+                    ordDownX + (REMOVE_SIZE - font.width(ORDERED_DOWN_GLYPH)) / 2 + 1,
+                    rbY + (REMOVE_SIZE - font.lineHeight) / 2 + 1, NAME_COLOR, false)
+
+                // Ordered-count up button.
+                val ordUpHovered = mouseX in ordUpX until (ordUpX + REMOVE_SIZE) &&
+                        mouseY in rbY until (rbY + REMOVE_SIZE) &&
+                        mouseY in listTop until listBottom
+                guiGraphics.fill(ordUpX, rbY, ordUpX + REMOVE_SIZE, rbY + REMOVE_SIZE,
+                    if (ordUpHovered) ORDERED_COLOR_HOVER else ORDERED_COLOR)
+                guiGraphics.text(font, ORDERED_UP_GLYPH,
+                    ordUpX + (REMOVE_SIZE - font.width(ORDERED_UP_GLYPH)) / 2 + 1,
+                    rbY + (REMOVE_SIZE - font.lineHeight) / 2 + 1, NAME_COLOR, false)
+
+                // Minus (remove one completed carry) button.
+                val minusHovered = mouseX in minusX until (minusX + REMOVE_SIZE) &&
+                        mouseY in rbY until (rbY + REMOVE_SIZE) &&
+                        mouseY in listTop until listBottom
+                guiGraphics.fill(minusX, rbY, minusX + REMOVE_SIZE, rbY + REMOVE_SIZE,
+                    if (minusHovered) MINUS_COLOR_HOVER else MINUS_COLOR)
+                guiGraphics.text(font, MINUS_GLYPH,
+                    minusX + (REMOVE_SIZE - font.width(MINUS_GLYPH)) / 2 + 1,
+                    rbY + (REMOVE_SIZE - font.lineHeight) / 2 + 1, NAME_COLOR, false)
+
+                // Plus (add one completed carry) button.
+                val plusHovered = mouseX in plusX until (plusX + REMOVE_SIZE) &&
+                        mouseY in rbY until (rbY + REMOVE_SIZE) &&
+                        mouseY in listTop until listBottom
+                guiGraphics.fill(plusX, rbY, plusX + REMOVE_SIZE, rbY + REMOVE_SIZE,
+                    if (plusHovered) PLUS_COLOR_HOVER else PLUS_COLOR)
+                guiGraphics.text(font, PLUS_GLYPH,
+                    plusX + (REMOVE_SIZE - font.width(PLUS_GLYPH)) / 2 + 1,
+                    rbY + (REMOVE_SIZE - font.lineHeight) / 2 + 1, NAME_COLOR, false)
+
+                // Remove-from-list (x) button.
+                val rbHovered = mouseX in rbX until (rbX + REMOVE_SIZE) &&
+                        mouseY in rbY until (rbY + REMOVE_SIZE) &&
+                        mouseY in listTop until listBottom
+                guiGraphics.fill(rbX, rbY, rbX + REMOVE_SIZE, rbY + REMOVE_SIZE,
+                    if (rbHovered) REMOVE_COLOR_HOVER else REMOVE_COLOR)
+                guiGraphics.text(font, REMOVE_GLYPH,
+                    rbX + (REMOVE_SIZE - font.width(REMOVE_GLYPH)) / 2 + 1,
+                    rbY + (REMOVE_SIZE - font.lineHeight) / 2 + 1, NAME_COLOR, false)
             }
-            val completed = CarryManager.carriesFor(name)
-            val ordered = CarryManager.orderedFor(name)
-            val orderedText = if (ordered > 0) "$ordered" else "-"
-            guiGraphics.text(font, "§f$name §7(§6$completed§7/§e$orderedText§7)", listLeft + 6,
-                rowTop + (ROW_H - font.lineHeight) / 2 + 1, NAME_COLOR, false)
+            guiGraphics.disableScissor()
 
-            // Minus (remove one completed carry) button.
-            val minusHovered = mouseX in minusX until (minusX + REMOVE_SIZE) &&
-                    mouseY in rbY until (rbY + REMOVE_SIZE) &&
-                    mouseY in listTop until listBottom
-            guiGraphics.fill(minusX, rbY, minusX + REMOVE_SIZE, rbY + REMOVE_SIZE,
-                if (minusHovered) MINUS_COLOR_HOVER else MINUS_COLOR)
-            guiGraphics.text(font, MINUS_GLYPH,
-                minusX + (REMOVE_SIZE - font.width(MINUS_GLYPH)) / 2 + 1,
-                rbY + (REMOVE_SIZE - font.lineHeight) / 2 + 1, NAME_COLOR, false)
-
-            // Plus (add one completed carry) button.
-            val plusHovered = mouseX in plusX until (plusX + REMOVE_SIZE) &&
-                    mouseY in rbY until (rbY + REMOVE_SIZE) &&
-                    mouseY in listTop until listBottom
-            guiGraphics.fill(plusX, rbY, plusX + REMOVE_SIZE, rbY + REMOVE_SIZE,
-                if (plusHovered) PLUS_COLOR_HOVER else PLUS_COLOR)
-            guiGraphics.text(font, PLUS_GLYPH,
-                plusX + (REMOVE_SIZE - font.width(PLUS_GLYPH)) / 2 + 1,
-                rbY + (REMOVE_SIZE - font.lineHeight) / 2 + 1, NAME_COLOR, false)
-
-            // Remove-from-list (x) button.
-            val rbHovered = mouseX in rbX until (rbX + REMOVE_SIZE) &&
-                    mouseY in rbY until (rbY + REMOVE_SIZE) &&
-                    mouseY in listTop until listBottom
-            guiGraphics.fill(rbX, rbY, rbX + REMOVE_SIZE, rbY + REMOVE_SIZE,
-                if (rbHovered) REMOVE_COLOR_HOVER else REMOVE_COLOR)
-            guiGraphics.text(font, REMOVE_GLYPH,
-                rbX + (REMOVE_SIZE - font.width(REMOVE_GLYPH)) / 2 + 1,
-                rbY + (REMOVE_SIZE - font.lineHeight) / 2 + 1, NAME_COLOR, false)
+            if (scrollbarVisible) renderScrollbar(guiGraphics, listAreaRight - SCROLLBAR_W, viewportH, contentH, mouseX, mouseY)
         }
-        guiGraphics.disableScissor()
 
-        if (scrollbarVisible) renderScrollbar(guiGraphics, fullRight - SCROLLBAR_W, viewportH, contentH, mouseX, mouseY)
+        // Static legend column — informational only, not scrollable, no click handling.
+        val dividerX = listAreaRight + DIVIDER_GAP / 2
+        guiGraphics.fill(dividerX, listTop, dividerX + 1, listBottom, DIVIDER_COLOR)
+
+        val legendLeft = listAreaRight + DIVIDER_GAP
+        var legendY = listTop
+        guiGraphics.text(font, "§lKey", legendLeft, legendY, DESC_COLOR, false)
+        legendY += font.lineHeight + 4
+
+        drawLegendRow(guiGraphics, legendLeft, legendY, ORDERED_COLOR, "^/v", "Ordered #"); legendY += LEGEND_ROW_H
+        drawLegendRow(guiGraphics, legendLeft, legendY, PLUS_COLOR, "+", "Add carry"); legendY += LEGEND_ROW_H
+        drawLegendRow(guiGraphics, legendLeft, legendY, MINUS_COLOR, "-", "Remove carry"); legendY += LEGEND_ROW_H
+        drawLegendRow(guiGraphics, legendLeft, legendY, REMOVE_COLOR, "x", "Remove player")
+    }
+
+    private fun drawLegendRow(g: GuiGraphicsExtractor, x: Int, y: Int, swatchColor: Int, glyph: String, label: String) {
+        g.fill(x, y, x + LEGEND_SWATCH, y + LEGEND_SWATCH, swatchColor)
+        g.text(font, glyph, x + (LEGEND_SWATCH - font.width(glyph)) / 2 + 1,
+            y + (LEGEND_SWATCH - font.lineHeight) / 2 + 1, NAME_COLOR, false)
+        g.text(font, "§7$label", x + LEGEND_SWATCH + 6, y + (LEGEND_SWATCH - font.lineHeight) / 2 + 1, DESC_COLOR, false)
     }
 
     private fun renderScrollbar(g: GuiGraphicsExtractor, trackX: Int, viewportH: Int, contentH: Int, mouseX: Int, mouseY: Int) {
@@ -207,7 +249,19 @@ class CarryScreen : Screen(Component.literal("Carry Manager")) {
                 val rbX = listRight - REMOVE_SIZE - 4
                 val minusX = rbX - BTN_GAP - REMOVE_SIZE
                 val plusX = minusX - BTN_GAP - REMOVE_SIZE
+                val ordDownX = plusX - GROUP_GAP - REMOVE_SIZE
+                val ordUpX = ordDownX - BTN_GAP - REMOVE_SIZE
 
+                if (mx in ordUpX until (ordUpX + REMOVE_SIZE) && my in rbY until (rbY + REMOVE_SIZE)) {
+                    CarryManager.incrementOrdered(name, 1)
+                    playClickSound()
+                    return true
+                }
+                if (mx in ordDownX until (ordDownX + REMOVE_SIZE) && my in rbY until (rbY + REMOVE_SIZE)) {
+                    CarryManager.incrementOrdered(name, -1)
+                    playClickSound()
+                    return true
+                }
                 if (mx in plusX until (plusX + REMOVE_SIZE) && my in rbY until (rbY + REMOVE_SIZE)) {
                     CarryManager.addCarry(name)
                     playClickSound()
@@ -276,7 +330,7 @@ class CarryScreen : Screen(Component.literal("Carry Manager")) {
     override fun isPauseScreen(): Boolean = false
 
     companion object {
-        private const val PANEL_WIDTH = 260
+        private const val PANEL_WIDTH = 430
         private const val PANEL_HEIGHT = 230
         private const val PADDING = 10
         private const val INPUT_BTN_GAP = 6
@@ -290,6 +344,7 @@ class CarryScreen : Screen(Component.literal("Carry Manager")) {
         private const val ROW_BG_COLOR_ALT = 0x33000000
         private const val ACCENT_HOVER = 0xFFD0A6FF.toInt()
         private const val BTN_GAP = 4
+        private const val GROUP_GAP = 8
         private const val REMOVE_SIZE = 12
         private const val REMOVE_COLOR = 0xFFB04444.toInt()
         private const val REMOVE_COLOR_HOVER = 0xFFE05555.toInt()
@@ -300,6 +355,16 @@ class CarryScreen : Screen(Component.literal("Carry Manager")) {
         private const val MINUS_COLOR = 0xFF7A7A7A.toInt()
         private const val MINUS_COLOR_HOVER = 0xFF9A9A9A.toInt()
         private const val MINUS_GLYPH = "-"
+        private const val ORDERED_COLOR = 0xFF3388CC.toInt()
+        private const val ORDERED_COLOR_HOVER = 0xFF55AAEE.toInt()
+        private const val ORDERED_UP_GLYPH = "^"
+        private const val ORDERED_DOWN_GLYPH = "v"
+
+        private const val LEGEND_WIDTH = 110
+        private const val DIVIDER_GAP = 14
+        private const val DIVIDER_COLOR = 0x40FFFFFF
+        private const val LEGEND_SWATCH = 12
+        private const val LEGEND_ROW_H = 16
 
         private const val SCROLLBAR_W = 4
         private const val SCROLLBAR_TRACK = 0x55000000
