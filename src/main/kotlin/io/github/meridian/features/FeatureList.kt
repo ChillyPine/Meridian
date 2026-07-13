@@ -52,6 +52,7 @@ import io.github.meridian.features.impl.dungeons.CustomLeapMessage
 import io.github.meridian.features.impl.dungeons.HoldingCrystal
 import io.github.meridian.features.impl.dungeons.HoldingRelic
 import io.github.meridian.features.impl.dungeons.M6WishNotif
+import io.github.meridian.features.impl.dungeons.QuizFeatures
 import io.github.meridian.features.impl.dungeons.RelicHelper
 import io.github.meridian.features.impl.dungeons.SendShitterReason
 import io.github.meridian.features.impl.dungeons.StackHelper
@@ -182,6 +183,7 @@ object FeatureList {
         BoxDoorKeys,
         DoorKeyColor,
         PlaySoundOnKeyDrop,
+        QuizFeatures,
         BloodNotifs,
         BloodOpen,
         BloodFull,
