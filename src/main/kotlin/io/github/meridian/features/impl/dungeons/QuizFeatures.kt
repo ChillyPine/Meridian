@@ -72,3 +72,61 @@ object QuizFeatures : SwitchFeature(
         }
     }
 }
+
+object QuizCountdownFeature : SwitchFeature(
+    name = "Quiz Countdown",
+    description = "Shows a countdown until the next quiz question is ready",
+    category = "Dungeons",
+    configKey = "quiz_countdown_hud",
+    subcategory = "Clear",
+) {
+
+    private const val FIRST_QUESTION_DELAY_MS = 12000L
+    private const val READY_DELAY_MS = 7000L
+
+    private var countdownEndAt: Long? = null
+
+    private val startRegex = Regex("^\\[STATUE] Oruo the Omniscient: I am Oruo the Omniscient\\. I have lived many lives\\. I have learned all there is to know\\.$")
+    private val q1AnsweredRegex = Regex("^\\[STATUE] Oruo the Omniscient: .+ answered Question #1 correctly!$")
+    private val q2AnsweredRegex = Regex("^\\[STATUE] Oruo the Omniscient: .+ answered Question #2 correctly!$")
+    private val finalAnsweredRegex = Regex("^\\[STATUE] Oruo the Omniscient: .+ answered the final question correctly!$")
+
+    private val element = object : HudElement(
+        id = "quiz_countdown",
+        name = name,
+        defaultAnchorX = 0.5f,
+        defaultAnchorY = 0.55f,
+    ) {
+        override val shadow = true
+
+        override fun content(): List<String> {
+            val endAt = countdownEndAt ?: return emptyList()
+            val remainingMs = endAt - System.currentTimeMillis()
+
+            if (remainingMs <= 0) {
+                countdownEndAt = null
+                return emptyList()
+            }
+
+            val seconds = remainingMs / 1000
+            val hundredths = (remainingMs % 1000) / 10
+
+            return listOf("§b§lNext Question: §f§l${seconds}.${"%02d".format(hundredths)}s")
+        }
+
+        override fun preview(): List<String> = listOf("§b§lNext Question: §f§l4.00s")
+    }
+
+    init {
+        HudManager.register(element)
+
+        onChat { text, _, _ ->
+            when {
+                startRegex.matches(text) -> countdownEndAt = System.currentTimeMillis() + FIRST_QUESTION_DELAY_MS
+                q1AnsweredRegex.matches(text) -> countdownEndAt = System.currentTimeMillis() + READY_DELAY_MS
+                q2AnsweredRegex.matches(text) -> countdownEndAt = System.currentTimeMillis() + READY_DELAY_MS
+                finalAnsweredRegex.matches(text) -> countdownEndAt = null
+            }
+        }
+    }
+}
