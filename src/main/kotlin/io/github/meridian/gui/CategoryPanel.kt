@@ -28,6 +28,7 @@ class CategoryPanel(
         Category("Farming", "Farming"),
         Category("Mining", "Mining"),
         Category("Events", "Events"),
+        Category("Carry Helper", "Carry Helper"),
         Category("Vanilla", "Vanilla"),
     )
 

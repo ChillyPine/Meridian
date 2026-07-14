@@ -14,10 +14,10 @@ import net.minecraft.network.chat.MutableComponent
 
 object CarryManagerButton : ButtonFeature(
     name = "Open Carry Manager GUI",
-    description = "Manage all on-going carries in this GUI.",
-    category = "General",
+    description = "Manage ongoing carries in a GUI.",
+    category = "Carry Helper",
     configKey = "carry_manager_button",
-    subcategory = "Carry",
+    subcategory = "General",
     buttonLabel = "Open GUI",
     onClick = {
         sendCommand("md carry gui")

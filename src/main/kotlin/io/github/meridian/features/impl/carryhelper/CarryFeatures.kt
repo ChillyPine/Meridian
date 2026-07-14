@@ -1,4 +1,4 @@
-package io.github.meridian.features.impl.general
+package io.github.meridian.features.impl.carryhelper
 
 import io.github.meridian.Meridian
 import io.github.meridian.features.impl.dungeons.CarryManager
@@ -17,10 +17,10 @@ import java.util.concurrent.TimeUnit
 
 object AutoTrackClientProgress : SwitchFeature(
     name = "Track Client Boss Progress",
-    description = "Automatically tracks clients bosses. Completed and Total",
-    category = "General",
+    description = "Automatically tracks clients bosses (completed and total).",
+    category = "Carry Helper",
     configKey = "auto_track_client_progress",
-    subcategory = "Carry",
+    subcategory = "General",
 ) {
     private data class BossState(
         var lastSeen: Long,
@@ -93,10 +93,10 @@ object AutoTrackClientProgress : SwitchFeature(
 
 object AutoTrackDungeonProgress : SwitchFeature(
     name = "Track Client Dungeon Progress",
-    description = "Automatically tracks clients dungeons. Completed and Total",
-    category = "General",
-    configKey = "auto_track_client_progress_dungons",
-    subcategory = "Carry",
+    description = "Automatically tracks clients dungeons carries (completed and total).",
+    category = "Carry Helper",
+    configKey = "auto_track_client_progress_dungeons",
+    subcategory = "General",
 ) {
 
     init {
@@ -128,10 +128,10 @@ object AutoTrackDungeonProgress : SwitchFeature(
 
 object BoxClientsBosses : SwitchFeature(
     name = "Box Clients Boss",
-    description = "Gives each unique client a different color box for their boss. ",
-    category = "General",
+    description = "Boxes the slayer boss of the client.\nEach unique client has a different color for their boss.",
+    category = "Carry Helper",
     configKey = "box_clients_bosses",
-    subcategory = "Carry",
+    subcategory = "General",
 ) {
     // cycles different colors for each unique player being carried. for the love of god if you have more people than this.
     private val palette = intArrayOf(
@@ -167,18 +167,18 @@ object BoxClientsBosses : SwitchFeature(
 object AnnounceProgressClient : SwitchFeature(
     name = "Announce Clients Progress",
     description = "In party chat -> IGN ( completed / total )",
-    category = "General",
+    category = "Carry Helper",
     configKey = "announce_client_progress",
-    subcategory = "Carry",
+    subcategory = "General",
     dependsOn = AutoTrackClientProgress
 )
 
 object AutoDetectTrade : SwitchFeature(
     name = "Detect Trade",
     description = "Detects Trades and prompts asking if you want to open the carry manager gui.",
-    category = "General",
+    category = "Carry Helper",
     configKey = "detect_trade_carry",
-    subcategory = "Carry",
+    subcategory = "General",
 ) {
     private val traderegex =
         Regex("^Trade completed with (?:(.+) )?(\\w+)!\$")
