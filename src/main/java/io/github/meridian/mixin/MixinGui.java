@@ -1,6 +1,6 @@
 package io.github.meridian.mixin;
 
-import io.github.meridian.features.impl.general.RemoveNausea;
+import io.github.meridian.features.impl.vanilla.RemoveNausea;
 import io.github.meridian.gui.MeridianScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;

@@ -1,6 +1,6 @@
 package io.github.meridian.mixin;
 
-import io.github.meridian.features.impl.general.RemoveChatBar;
+import io.github.meridian.features.impl.vanilla.RemoveChatBar;
 import net.minecraft.client.multiplayer.chat.GuiMessageTag;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

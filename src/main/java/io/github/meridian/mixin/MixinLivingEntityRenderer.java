@@ -1,6 +1,6 @@
 package io.github.meridian.mixin;
 
-import io.github.meridian.features.impl.general.PlayerNametag;
+import io.github.meridian.features.impl.vanilla.PlayerNametag;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.world.entity.LivingEntity;

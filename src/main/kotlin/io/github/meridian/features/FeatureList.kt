@@ -84,19 +84,19 @@ import io.github.meridian.features.impl.general.MatchoColor
 import io.github.meridian.features.impl.general.NonRemover
 import io.github.meridian.features.impl.general.BoxOldWolves
 import io.github.meridian.features.impl.general.OldWolfColor
-import io.github.meridian.features.impl.general.PlayerNametag
+import io.github.meridian.features.impl.vanilla.PlayerNametag
 import io.github.meridian.features.impl.general.PLActions
 import io.github.meridian.features.impl.general.PLMoreActions
 import io.github.meridian.features.impl.general.BoxPlayers
 import io.github.meridian.features.impl.general.PlayerBoxMode
 import io.github.meridian.features.impl.general.BoxSpecificPlayer
 import io.github.meridian.features.impl.general.BoxRats
-import io.github.meridian.features.impl.general.RemoveNausea
-import io.github.meridian.features.impl.general.RemoveRealms
+import io.github.meridian.features.impl.vanilla.RemoveNausea
+import io.github.meridian.features.impl.vanilla.RemoveRealms
 import io.github.meridian.features.impl.general.RunicMobColor
 import io.github.meridian.features.impl.general.BoxRunicMobs
 import io.github.meridian.features.impl.general.LatestGHAction
-import io.github.meridian.features.impl.general.RemoveChatBar
+import io.github.meridian.features.impl.vanilla.RemoveChatBar
 import io.github.meridian.features.impl.general.RunicMobTracer
 import io.github.meridian.features.impl.general.SoundListButton
 import io.github.meridian.features.impl.general.UpdateChecker
@@ -107,7 +107,6 @@ import io.github.meridian.features.impl.mining.BoxDiamondGoblins
 import io.github.meridian.features.impl.mining.BoxGoldenGoblins
 import io.github.meridian.features.impl.mining.BoxKeyGuardians
 import io.github.meridian.features.impl.vanilla.ChatEraser
-import net.minecraft.network.chat.ClickEvent
 
 // Manifest of every feature in the mod — the only place that needs updating
 // when a new feature file is added. Similar in spirit to ChatTriggers' index.js.

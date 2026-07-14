@@ -1,4 +1,4 @@
-package io.github.meridian.features.impl.general
+package io.github.meridian.features.impl.vanilla
 
 import io.github.meridian.features.types.SwitchFeature
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
