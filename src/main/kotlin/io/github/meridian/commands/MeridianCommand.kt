@@ -19,7 +19,6 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.network.chat.Component
 
-
 object MeridianCommand {
     fun register() {
         Meridian.logger.info("Registering /meridian command callback")
@@ -62,6 +61,13 @@ object MeridianCommand {
                                 sendShitterHelp(ctx.source)
                                 1
                             }
+                            .then(
+                                literal("help")
+                                    .executes { ctx ->
+                                    sendShitterHelp(ctx.source)
+                                    1
+                                }
+                            )
                             .then(
                                 literal("add").then(
                                     argument("players", StringArgumentType.greedyString())
@@ -110,7 +116,7 @@ object MeridianCommand {
                                 argument("argument", StringArgumentType.greedyString())
                                     .executes { ctx ->
                                         val arg = StringArgumentType.getString(ctx, "argument")
-                                        modMessage("Unknown argument: '$arg'. Try /meridian help")
+                                        modMessage("Unknown argument: '$arg'. Try /meridian shitter help")
                                         0
                                     }
                             )
@@ -122,6 +128,13 @@ object MeridianCommand {
                                 sendCarryHelp(ctx.source)
                                 1
                             }
+                            .then(
+                                literal("help")
+                                    .executes { ctx ->
+                                        sendCarryHelp(ctx.source)
+                                        1
+                                    }
+                            )
                             .then(
                                 literal("add_player").then(
                                     argument("players", StringArgumentType.greedyString())
@@ -174,7 +187,7 @@ object MeridianCommand {
                                 argument("argument", StringArgumentType.greedyString())
                                     .executes { ctx ->
                                         val arg = StringArgumentType.getString(ctx, "argument")
-                                        modMessage("Unknown argument: '$arg'. Try /meridian help")
+                                        modMessage("Unknown argument: '$arg'. Try /meridian carry help")
                                         0
                                     }
                             )
@@ -227,6 +240,13 @@ object MeridianCommand {
         sendClientMessage("§6/md shitter reset§f: Clears the whole shitter list (asks for confirmation).")
         sendClientMessage("§6/md shitter gui§f: Opens the shitter list editor GUI.")
         sendClientMessage("§r§5§m                                                                              §r")
+        sendClientMessage("§r§6§lCarry List Commands")
+        sendClientMessage("§r§5§m                                                                              §r")
+        sendClientMessage("§6/md carry add {IGN}§f: Adds player(s) to the carry list. Separate multiple IGNs with spaces.")
+        sendClientMessage("§6/md carry remove {IGN}§f: Removes player(s) from the carry list.")
+        sendClientMessage("§6/md carry reset§f: Clears the whole carry list (asks for confirmation).")
+        sendClientMessage("§6/md carry gui§f: Opens the carry list editor GUI.")
+        sendClientMessage("§r§5§m                                                                              §r")
     }
 
     private fun sendShitterHelp(source: FabricClientCommandSource) {
@@ -245,10 +265,10 @@ object MeridianCommand {
         sendClientMessage("§r§5§m                                                                              §r")
         sendClientMessage("§r§6§lCarry List Commands")
         sendClientMessage("§r§5§m                                                                              §r")
-        sendClientMessage("§6/md Carry add {IGN}§f: Adds player(s) to the Carry list. Separate multiple IGNs with spaces.")
-        sendClientMessage("§6/md Carry remove {IGN}§f: Removes player(s) from the Carry list.")
-        sendClientMessage("§6/md Carry reset§f: Clears the whole Carry list (asks for confirmation).")
-        sendClientMessage("§6/md Carry gui§f: Opens the Carry list editor GUI.")
+        sendClientMessage("§6/md carry add {IGN}§f: Adds player(s) to the carry list. Separate multiple IGNs with spaces.")
+        sendClientMessage("§6/md carry remove {IGN}§f: Removes player(s) from the carry list.")
+        sendClientMessage("§6/md carry reset§f: Clears the carry list after confirmation.")
+        sendClientMessage("§6/md carry gui§f: Opens the carry list editor GUI.")
         sendClientMessage("§r§5§m                                                                              §r")
     }
 }
