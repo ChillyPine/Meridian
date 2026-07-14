@@ -273,8 +273,8 @@ object FeatureList {
         CarryManagerButton,
         BoxClientsBosses,
         AutoTrackClientProgress,
-        AutoTrackDungeonProgress,
         AnnounceProgressClient,
+        AutoTrackDungeonProgress,
         AutoDetectTrade,
 
         // ================================================== //

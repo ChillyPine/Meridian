@@ -15,6 +15,15 @@ import net.minecraft.world.entity.decoration.ArmorStand
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
 
+// TODO: Change behavior after trade detection
+// TODO: Add Count Client Deaths as Kill
+// TODO: Add Draw Line to Clients Boss
+// TODO: Add Track Client Spawn Time
+// TODO: Add Track Client Kill Time
+// TODO: Add Get Session Time (maybe)
+// TODO: Add Warn if Healer (after we add class detection)
+// TODO: Add Price Checker
+
 object AutoTrackClientProgress : SwitchFeature(
     name = "Track Client Boss Progress",
     description = "Automatically tracks clients bosses (completed and total).",
@@ -175,7 +184,7 @@ object AnnounceProgressClient : SwitchFeature(
 
 object AutoDetectTrade : SwitchFeature(
     name = "Detect Trade",
-    description = "Detects Trades and prompts asking if you want to open the carry manager gui.",
+    description = "Detects trades and prompts you to open the carry manager GUI.",
     category = "Carry Helper",
     configKey = "detect_trade_carry",
     subcategory = "General",
