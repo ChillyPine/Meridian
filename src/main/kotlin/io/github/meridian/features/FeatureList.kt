@@ -74,6 +74,8 @@ import io.github.meridian.features.impl.general.BlockProfileID
 import io.github.meridian.features.impl.general.BlockProfileProduce
 import io.github.meridian.features.impl.general.BlockWatchdog
 import io.github.meridian.features.impl.carryhelper.BoxClientsBosses
+import io.github.meridian.features.impl.carryhelper.DrawLineToClientBoss
+import io.github.meridian.features.impl.carryhelper.HighlightClients
 import io.github.meridian.features.impl.general.CoordsCommand
 import io.github.meridian.features.impl.general.IRLClockColor
 import io.github.meridian.features.impl.general.IRLTime
@@ -271,7 +273,9 @@ object FeatureList {
 
         // --- General ---
         CarryManagerButton,
+        HighlightClients,
         BoxClientsBosses,
+        DrawLineToClientBoss,
         AutoTrackClientProgress,
         AnnounceProgressClient,
         AutoTrackDungeonProgress,

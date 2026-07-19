@@ -1,8 +1,6 @@
 package io.github.meridian.features.impl.carryhelper
 
-import com.mojang.blaze3d.systems.RenderPass
 import io.github.meridian.Meridian
-import io.github.meridian.features.impl.dungeons.BoxBatsColor
 import io.github.meridian.features.impl.dungeons.CarryManager
 import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.ESP
@@ -13,7 +11,9 @@ import net.minecraft.network.chat.ClickEvent
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.HoverEvent
 import net.minecraft.network.chat.MutableComponent
+import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.decoration.ArmorStand
+import net.minecraft.world.entity.player.Player
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
 
@@ -135,6 +135,41 @@ object AutoTrackDungeonProgress : SwitchFeature(
     }
 }
 
+object HighlightClients : SwitchFeature(
+    name = "Highlight Client(s)",
+    description = "Highlights the client(s) using the default vanilla glow.\nDistinct from other box features.",
+    category = "Carry Helper",
+    configKey = "highlight_clients",
+    subcategory = "General",
+) {
+    /**
+     * Whether [entity] should glow: the feature is on and it's a player on the
+     * carry list. Client-side `setGlowingTag` is a no-op (it sets the synced flag
+     * to the current — false — value), so glow is driven by MixinEntity forcing
+     * `isCurrentlyGlowing` to return this instead.
+     */
+    fun shouldGlow(entity: Entity): Boolean {
+        if (!enabled) return false
+        if (entity !is Player) return false
+        val ign = entity.gameProfile.name ?: return false
+        return CarryManager.all().any { it.equals(ign, ignoreCase = true) }
+    }
+
+    /**
+     * RGB glow color for [entity] (matching its boss box color from
+     * [BoxClientsBosses]), or null if it's not a tracked client / the feature is
+     * off. Called from MixinEntityRenderer's outline-color redirect; masked to
+     * RGB since team color carries no alpha.
+     */
+    fun glowColorFor(entity: Entity): Int? {
+        if (entity !is Player) return null
+        if (!shouldGlow(entity)) return null
+        val ign = entity.gameProfile.name ?: return null
+        val idx = CarryManager.all().indexOfFirst { it.equals(ign, ignoreCase = true) }
+        if (idx < 0) return null
+        return BoxClientsBosses.colorFor(idx) and 0xFFFFFF
+    }
+}
 
 object BoxClientsBosses : SwitchFeature(
     name = "Box Clients Boss",
@@ -148,7 +183,7 @@ object BoxClientsBosses : SwitchFeature(
         0x8000A2FF.toInt(), 0x80FF3333.toInt(), 0x8033FF57.toInt(), 0x80C300FF.toInt(), 0x80FFC300.toInt(), 0x8000FFF7.toInt(),
     )
 
-    private fun colorFor(index: Int): Int = palette[index % palette.size]
+    internal fun colorFor(index: Int): Int = palette[index % palette.size]
 
     init {
         onRender { ctx ->

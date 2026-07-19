@@ -12,6 +12,7 @@
 		"MixinChatIndent",
 		"MixinChatScreen",
 		"accessor.ChatComponentAccessor",
+		"MixinEntity",
 		"MixinEntityRenderer",
 		"MixinLivingEntityRenderer",
 		"MixinPlayerTabOverlay",

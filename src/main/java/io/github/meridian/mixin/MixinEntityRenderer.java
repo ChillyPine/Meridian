@@ -1,11 +1,14 @@
 package io.github.meridian.mixin;
 
+import io.github.meridian.features.impl.carryhelper.HighlightClients;
 import io.github.meridian.utils.NameGradients;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(EntityRenderer.class)
@@ -22,5 +25,18 @@ public abstract class MixinEntityRenderer {
         if (name == null) return;
         Component gradient = NameGradients.applyToNameTag(name);
         if (gradient != name) cir.setReturnValue(gradient);
+    }
+
+    // extractRenderState feeds getTeamColor() into EntityRenderState.outlineColor,
+    // which is the vanilla glow color. Redirect only this call site (not
+    // getTeamColor globally) so tracked carry clients glow in their boss box
+    // color while nametag/team coloring elsewhere stays vanilla.
+    @Redirect(
+        method = "extractRenderState(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/client/renderer/entity/state/EntityRenderState;F)V",
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;getTeamColor()I")
+    )
+    private int meridian$carryGlowColor(Entity entity) {
+        Integer color = HighlightClients.INSTANCE.glowColorFor(entity);
+        return color != null ? color : entity.getTeamColor();
     }
 }
