@@ -63,6 +63,7 @@ import io.github.meridian.features.impl.events.JerryNotif
 import io.github.meridian.features.impl.events.QuickMathsSolver
 import io.github.meridian.features.impl.farming.BoxTrapperMobs
 import io.github.meridian.features.impl.carryhelper.AnnounceProgressClient
+import io.github.meridian.features.impl.carryhelper.DontCountDeaths
 import io.github.meridian.features.impl.carryhelper.AutoDetectTrade
 import io.github.meridian.features.impl.carryhelper.AutoTrackClientProgress
 import io.github.meridian.features.impl.carryhelper.AutoTrackDungeonProgress
@@ -280,10 +281,11 @@ object FeatureList {
         BoxClientsBosses,
         DrawLineToClientBoss,
         AutoTrackClientProgress,
+        AnnounceProgressClient,
+        DontCountDeaths,
         TrackClientSpawnTime,
         TrackClientKillTime,
         TrackSessionTime,
-        AnnounceProgressClient,
         AutoTrackDungeonProgress,
         AutoDetectTrade,
 
