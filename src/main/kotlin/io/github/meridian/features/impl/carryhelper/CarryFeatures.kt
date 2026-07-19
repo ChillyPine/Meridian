@@ -1,6 +1,8 @@
 package io.github.meridian.features.impl.carryhelper
 
+import com.mojang.blaze3d.systems.RenderPass
 import io.github.meridian.Meridian
+import io.github.meridian.features.impl.dungeons.BoxBatsColor
 import io.github.meridian.features.impl.dungeons.CarryManager
 import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.ESP
@@ -17,7 +19,6 @@ import java.util.concurrent.TimeUnit
 
 // TODO: Change behavior after trade detection
 // TODO: Add Count Client Deaths as Kill
-// TODO: Add Draw Line to Clients Boss
 // TODO: Add Track Client Spawn Time
 // TODO: Add Track Client Kill Time
 // TODO: Add Get Session Time (maybe)
@@ -168,6 +169,11 @@ object BoxClientsBosses : SwitchFeature(
                 val index = list.indexOf(match)
 
                 ESP.drawBox(ctx, ent, w = 0.75, h = 2.0, wz = 0.75, yOffset = -2.2, argb = colorFor(index))
+                if (DrawLineToClientBoss.enabled) {
+                    val p = ent.getPosition(Meridian.mc.deltaTracker.getGameTimeDeltaPartialTick(true))
+                    ESP.drawTracer(ctx, p.x, p.y, p.z, colorFor(index))
+                }
+
             }
         }
     }
@@ -180,6 +186,15 @@ object AnnounceProgressClient : SwitchFeature(
     configKey = "announce_client_progress",
     subcategory = "General",
     dependsOn = AutoTrackClientProgress
+)
+
+object DrawLineToClientBoss : SwitchFeature(
+    name = "Boss Tracer",
+    description = "Draws tracer to clients bosses",
+    category = "Carry Helper",
+    configKey = "draw_line_to_client_boss",
+    subcategory = "General",
+    dependsOn = BoxClientsBosses
 )
 
 object AutoDetectTrade : SwitchFeature(
