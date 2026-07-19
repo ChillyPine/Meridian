@@ -14,16 +14,71 @@ import net.minecraft.network.chat.MutableComponent
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.decoration.ArmorStand
 import net.minecraft.world.entity.player.Player
+import java.time.Duration
+import java.time.LocalDateTime
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
 
 // TODO: Change behavior after trade detection
 // TODO: Add Count Client Deaths as Kill
-// TODO: Add Track Client Spawn Time
-// TODO: Add Track Client Kill Time
-// TODO: Add Get Session Time (maybe)
 // TODO: Add Warn if Healer (after we add class detection)
 // TODO: Add Price Checker
+
+
+internal object ClientTimingData {
+
+    // spawn timestamp of a client's *current* boss cycle. Set when the boss is first
+    // detected, consumed (removed) when it dies, to compute that cycle's kill time.
+    val spawnTimes = mutableMapOf<String, Long>()
+
+    // timestamp of a client's last death, used to measure the gap until their next spawn.
+    val lastDeathTimes = mutableMapOf<String, Long>()
+
+    // up to the last 3 valid "gap between death and next spawn" durations (ms), oldest first.
+    private val spawnDurations = mutableMapOf<String, MutableList<Long>>()
+
+    // up to the last 3 valid "spawn to death" kill durations (ms), oldest first.
+    private val killDurations = mutableMapOf<String, MutableList<Long>>()
+
+    private const val HISTORY_SIZE = 3
+
+    fun recordSpawn(client: String, durationMs: Long) = record(spawnDurations, client, durationMs)
+    fun recordKill(client: String, durationMs: Long) = record(killDurations, client, durationMs)
+
+    private fun record(map: MutableMap<String, MutableList<Long>>, client: String, durationMs: Long) {
+        val list = map.getOrPut(client) { mutableListOf() }
+        list.add(durationMs)
+        if (list.size > HISTORY_SIZE) list.removeAt(0)
+    }
+
+    // last 3 vaild spawn and kill times for session timer
+    fun averageCycleDuration(client: String): Long? {
+        val spawns = spawnDurations[client] ?: return null
+        val kills = killDurations[client] ?: return null
+        if (spawns.size < HISTORY_SIZE || kills.size < HISTORY_SIZE) return null
+        return (spawns.sum() + kills.sum()) / HISTORY_SIZE
+    }
+
+    fun clear(client: String) {
+        spawnTimes.remove(client)
+        lastDeathTimes.remove(client)
+        spawnDurations.remove(client)
+        killDurations.remove(client)
+    }
+}
+
+// formats timing messages
+private fun formatDuration(ms: Long): String {
+    val totalSeconds = ms / 1000
+    val h = totalSeconds / 3600
+    val m = (totalSeconds % 3600) / 60
+    val s = totalSeconds % 60
+    return when {
+        h > 0 -> "${h}h ${m}m"
+        m > 0 -> "${m}m ${s}s"
+        else -> "${s}s"
+    }
+}
 
 object AutoTrackClientProgress : SwitchFeature(
     name = "Track Client Boss Progress",
@@ -64,7 +119,10 @@ object AutoTrackClientProgress : SwitchFeature(
                     .firstOrNull { name.contains(it, ignoreCase = true) }
                     ?: continue
 
-                trackedBosses.getOrPut(client.lowercase()) {
+                val key = client.lowercase()
+
+                trackedBosses.getOrPut(key) {
+                    announceSpawnTime(key, client, now)
                     BossState(now)
                 }.apply {
                     lastSeen = now
@@ -81,6 +139,21 @@ object AutoTrackClientProgress : SwitchFeature(
                         val ordered = CarryManager.orderedFor(client)
                         val clientIGN = CarryManager.all().firstOrNull { it.equals(client, ignoreCase = true) } ?: client
 
+                        if (TrackClientKillTime.enabled) {
+                            val spawnTime = ClientTimingData.spawnTimes.remove(client)
+                            if (spawnTime != null) {
+                                val killDuration = now - spawnTime
+                                ClientTimingData.recordKill(client, killDuration)
+                                modMessage("§b$clientIGN §btook §6${formatDuration(killDuration)} §bto kill")
+                            }
+                        }
+
+                        // recorded regardless of kill-time success, so the *next* spawn
+                        // always has a death to measure its gap from
+                        if (TrackClientSpawnTime.enabled) {
+                            ClientTimingData.lastDeathTimes[client] = now
+                        }
+
                         modMessage("§b$clientIGN §f(§6$completed§f/§e$ordered§f)")
 
                         if (AnnounceProgressClient.enabled) {
@@ -88,9 +161,14 @@ object AutoTrackClientProgress : SwitchFeature(
                                 .execute { sendCommand("pc [Meridian] $clientIGN ($completed/$ordered)") }
                         }
 
+                        if (TrackSessionTime.enabled) {
+                            announceSessionTime(client, clientIGN, ordered, completed)
+                        }
+
                         if (ordered > 0 && completed >= ordered) {
                             CarryManager.completeCarry(client)
                             modMessage("§b$clientIGN §ahas completed their order and was removed from the list.")
+                            ClientTimingData.clear(client)
                         }
                     }
                     state.completed = true
@@ -98,6 +176,37 @@ object AutoTrackClientProgress : SwitchFeature(
                 }
             }
         }
+    }
+
+    // clients spawn time
+    private fun announceSpawnTime(key: String, clientIGN: String, now: Long) {
+        if (!TrackClientSpawnTime.enabled) return
+
+        val lastDeath = ClientTimingData.lastDeathTimes[key]
+        ClientTimingData.spawnTimes[key] = now
+
+        if (lastDeath == null) return
+
+        val spawnDuration = now - lastDeath
+        ClientTimingData.recordSpawn(key, spawnDuration)
+        modMessage("§b$clientIGN §btook §6${formatDuration(spawnDuration)} §bto spawn a boss")
+    }
+    // session time dogshit
+    private fun announceSessionTime(client: String, clientIGN: String, ordered: Int, completed: Int) {
+        if (ordered <= 0) return
+        val remaining = ordered - completed
+        if (remaining <= 0) return
+
+        val avgCycleMs = ClientTimingData.averageCycleDuration(client) ?: return
+        val remainingMs = avgCycleMs * remaining
+
+        val hours = remainingMs / 3_600_000.0
+        val eta = LocalDateTime.now().plus(Duration.ofMillis(remainingMs))
+        val hour12 = if (eta.hour % 12 == 0) 12 else eta.hour % 12
+        val ampm = if (eta.hour < 12) "am" else "pm"
+        val timeStr = String.format("%d:%02d%s", hour12, eta.minute, ampm)
+
+        modMessage("§bSession for §f$clientIGN §bis estimated to take §6${String.format("%.2f", hours)} §bhours §f(§e$timeStr§f)")
     }
 }
 
@@ -230,6 +339,33 @@ object DrawLineToClientBoss : SwitchFeature(
     configKey = "draw_line_to_client_boss",
     subcategory = "General",
     dependsOn = BoxClientsBosses
+)
+
+object TrackClientSpawnTime : SwitchFeature(
+    name = "Track Client Spawn Time",
+    description = "Announces how long it took a client's next boss to spawn after their last kill. Starts timing once the first boss has spawned and died.",
+    category = "Carry Helper",
+    configKey = "track_client_spawn_time",
+    subcategory = "General",
+    dependsOn = AutoTrackClientProgress
+)
+
+object TrackClientKillTime : SwitchFeature(
+    name = "Track Client Kill Time",
+    description = "Announces how long a client's boss took to die once it spawned, keeping the last 3 per client.",
+    category = "Carry Helper",
+    configKey = "track_client_kill_time",
+    subcategory = "General",
+    dependsOn = AutoTrackClientProgress
+)
+
+object TrackSessionTime : SwitchFeature(
+    name = "Track Session Time",
+    description = "Once a client has 3 valid spawn times and 3 valid kill times, averages them against their remaining carries and announces an ETA after every kill.",
+    category = "Carry Helper",
+    configKey = "track_session_time",
+    subcategory = "General",
+    dependsOn = AutoTrackClientProgress
 )
 
 object AutoDetectTrade : SwitchFeature(

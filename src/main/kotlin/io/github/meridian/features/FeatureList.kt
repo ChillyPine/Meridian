@@ -76,6 +76,9 @@ import io.github.meridian.features.impl.general.BlockWatchdog
 import io.github.meridian.features.impl.carryhelper.BoxClientsBosses
 import io.github.meridian.features.impl.carryhelper.DrawLineToClientBoss
 import io.github.meridian.features.impl.carryhelper.HighlightClients
+import io.github.meridian.features.impl.carryhelper.TrackClientKillTime
+import io.github.meridian.features.impl.carryhelper.TrackClientSpawnTime
+import io.github.meridian.features.impl.carryhelper.TrackSessionTime
 import io.github.meridian.features.impl.general.CoordsCommand
 import io.github.meridian.features.impl.general.IRLClockColor
 import io.github.meridian.features.impl.general.IRLTime
@@ -277,6 +280,9 @@ object FeatureList {
         BoxClientsBosses,
         DrawLineToClientBoss,
         AutoTrackClientProgress,
+        TrackClientSpawnTime,
+        TrackClientKillTime,
+        TrackSessionTime,
         AnnounceProgressClient,
         AutoTrackDungeonProgress,
         AutoDetectTrade,
