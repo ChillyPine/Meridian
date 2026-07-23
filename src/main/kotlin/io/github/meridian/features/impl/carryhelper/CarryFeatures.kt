@@ -19,10 +19,7 @@ import java.time.LocalDateTime
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
 
-// TODO: Change behavior after trade detection
 // TODO: Add Warn if Healer (after we add class detection)
-// TODO: Add Price Checker
-
 
 internal object ClientTimingData {
     val spawnTimes = mutableMapOf<String, Long>()
@@ -393,17 +390,26 @@ object AutoDetectTrade : SwitchFeature(
     private val traderegex =
         Regex("^Trade completed with (?:(.+) )?(\\w+)!\$")
 
+    private var customerIGN: String = ""
+
     init {
 
         onChat { text, _, _ ->
-            if (!text.matches(traderegex)) return@onChat
+            val match = traderegex.matchEntire(text) ?: return@onChat
+            customerIGN = match.groupValues[2]
             val line = buildButtons()
             CompletableFuture.delayedExecutor(100, TimeUnit.MILLISECONDS)
-                .execute { sendClientMessage(line) }
+                .execute {
+                    sendClientMessage("§6[MD] §f» Detected trade with $customerIGN. Select the amount ordered below to quickly add them to the tracker.")
+                    sendClientMessage(line)
+                }
         }
     }
     private fun buildButtons(): MutableComponent {
         val line = Component.literal("§6[MD] §f» ")
+        line.append(button("§3[1] ", "/md carry add_player $customerIGN 1", "1"))
+        line.append(button("§3[5] ", "/md carry add_player $customerIGN 5", "5"))
+        line.append(button("§3[10] ", "/md carry add_player $customerIGN 10", "10"))
         line.append(button("§a[Open Carry Manager] ", "/md carry gui", "§aOpens the Carry Manager"))
         return line
     }
