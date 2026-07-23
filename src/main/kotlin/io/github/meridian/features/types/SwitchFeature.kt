@@ -75,21 +75,25 @@ open class SwitchFeature(
         children += listener.bind(effective(gate))
     }
 
-    private fun addBlockRule(rule: ChatBlocker.Rule) {
-        children += ChatBlockListener(rule).bind(activeState)
+    private fun addBlockRule(gate: State<Boolean>?, rule: ChatBlocker.Rule) {
+        children += ChatBlockListener(rule).bind(effective(gate))
     }
 
-    /** Blocks incoming game messages matching [pattern], only while this feature is active. */
-    protected fun blockChat(pattern: Regex) = addBlockRule { pattern.containsMatchIn(it.string) }
+    /** Blocks incoming game messages matching [pattern], while active (and the [gate], if given). */
+    protected fun blockChat(pattern: Regex, gate: State<Boolean>? = null) =
+        addBlockRule(gate) { pattern.containsMatchIn(it.string) }
 
-    /** Blocks incoming game messages containing [substring], only while this feature is active. */
-    protected fun blockChat(substring: String) = addBlockRule { it.string.contains(substring) }
+    /** Blocks incoming game messages containing [substring], while active (and the [gate], if given). */
+    protected fun blockChat(substring: String, gate: State<Boolean>? = null) =
+        addBlockRule(gate) { it.string.contains(substring) }
 
-    /** Blocks incoming game messages whose plain text matches [predicate], while active. */
-    protected fun blockChatIf(predicate: (String) -> Boolean) = addBlockRule { predicate(it.string) }
+    /** Blocks incoming game messages whose plain text matches [predicate], while active (and the [gate], if given). */
+    protected fun blockChatIf(gate: State<Boolean>? = null, predicate: (String) -> Boolean) =
+        addBlockRule(gate) { predicate(it.string) }
 
-    /** Blocks (or transforms) incoming game messages via a raw [Component] rule, while active. */
-    protected fun blockChatRaw(rule: (Component) -> Boolean) = addBlockRule { rule(it) }
+    /** Blocks (or transforms) incoming game messages via a raw [Component] rule, while active (and the [gate], if given). */
+    protected fun blockChatRaw(gate: State<Boolean>? = null, rule: (Component) -> Boolean) =
+        addBlockRule(gate) { rule(it) }
 
     /** Called when the feature becomes active (enabled + dependencies satisfied). */
     open fun onActivate() {}

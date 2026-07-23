@@ -80,6 +80,10 @@ import io.github.meridian.features.impl.carryhelper.HighlightClients
 import io.github.meridian.features.impl.carryhelper.TrackClientKillTime
 import io.github.meridian.features.impl.carryhelper.TrackClientSpawnTime
 import io.github.meridian.features.impl.carryhelper.TrackSessionTime
+import io.github.meridian.features.impl.dungeons.BlockBlessings
+import io.github.meridian.features.impl.dungeons.BlockReviveStone
+import io.github.meridian.features.impl.dungeons.BlockSuperboom
+import io.github.meridian.features.impl.dungeons.BlockTrap
 import io.github.meridian.features.impl.general.CoordsCommand
 import io.github.meridian.features.impl.general.IRLClockColor
 import io.github.meridian.features.impl.general.IRLTime
@@ -238,6 +242,10 @@ object FeatureList {
         ShortPFMessage,
         PartyActions,
         BlockPFWarning,
+        BlockBlessings,
+        BlockSuperboom,
+        BlockReviveStone,
+        BlockTrap,
         ShitterListButton,
         AutoKickShitter,
         AnnounceShitter,
