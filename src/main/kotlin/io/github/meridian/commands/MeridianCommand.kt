@@ -222,57 +222,58 @@ object MeridianCommand {
         }
     }
 
+    const val EMPTYLINE = "§r§5§m                                                                              §r"
     private fun sendHelp(source: FabricClientCommandSource) {
-        sendClientMessage("§r§5§m                                                                              §r")
+        sendClientMessage(EMPTYLINE)
         sendClientMessage("§r§6§lGeneral")
-        sendClientMessage("§r§5§m                                                                              §r")
+        sendClientMessage(EMPTYLINE)
         sendClientMessage("§6/meridian§f: Opens the GUI")
         sendClientMessage("§6/meridian help§f: Sends this dialogue")
         sendClientMessage("§6/meridian hud§f: Opens the HUD editor.")
         sendClientMessage("§6/meridian calc§f: Opens an in-game calculator.")
         sendClientMessage("§6/md§f: Alias")
-        sendClientMessage("§r§5§m                                                                              §r")
+        sendClientMessage(EMPTYLINE)
         sendClientMessage("§r§6§lShitter List Commands")
-        sendClientMessage("§r§5§m                                                                              §r")
-        sendClientMessage("§6/md shitter add {IGN}§f: Adds player(s) to the shitter list. Separate multiple IGNs with spaces. Add a quoted reason: §7add Notch \"He cheated\"§f.")
+        sendClientMessage(EMPTYLINE)
+        sendClientMessage("§6/md shitter add {IGN}§f: Adds player(s) to the shitter list. Separate multiple IGNs with spaces and include the reason in quotes: §7add Notch \"He sucks.\"§f.")
         sendClientMessage("§6/md shitter remove {IGN}§f: Removes player(s) from the shitter list.")
         sendClientMessage("§6/md shitter list [#]§f: Displays the shitter list. Optionally jump to a page.")
         sendClientMessage("§6/md shitter reset§f: Clears the whole shitter list (asks for confirmation).")
         sendClientMessage("§6/md shitter gui§f: Opens the shitter list editor GUI.")
-        sendClientMessage("§r§5§m                                                                              §r")
+        sendClientMessage(EMPTYLINE)
         sendClientMessage("§r§6§lCarry List Commands")
-        sendClientMessage("§r§5§m                                                                              §r")
+        sendClientMessage(EMPTYLINE)
         sendClientMessage("§6/md add_player {IGN}§f: Adds player(s) to the carry list. Separate multiple IGNs with spaces.")
         sendClientMessage("§6/md remove_player {IGN}§f: Removes player(s) from the carry list.")
         sendClientMessage("§6/md add_carry {IGN} {#}§f: Adds # completed carries.")
         sendClientMessage("§6/md remove_carry {IGN} {#}§f: Removes # completed carries.")
         sendClientMessage("§6/md carry reset§f: Clears the carry list after confirmation.")
         sendClientMessage("§6/md carry gui§f: Opens the carry list editor GUI.")
-        sendClientMessage("§r§5§m                                                                              §r")
+        sendClientMessage(EMPTYLINE)
     }
 
     private fun sendShitterHelp(source: FabricClientCommandSource) {
-        sendClientMessage("§r§5§m                                                                              §r")
+        sendClientMessage(EMPTYLINE)
         sendClientMessage("§r§6§lShitter List Commands")
-        sendClientMessage("§r§5§m                                                                              §r")
-        sendClientMessage("§6/md shitter add {IGN}§f: Adds player(s) to the shitter list. Separate multiple IGNs with spaces. Add a quoted reason: §7add Notch \"He cheated\"§f.")
+        sendClientMessage(EMPTYLINE)
+        sendClientMessage("§6/md shitter add {IGN}§f: Adds player(s) to the shitter list. Separate multiple IGNs with spaces and include the reason in quotes: §7add Notch \"He sucks.\"§f.")
         sendClientMessage("§6/md shitter remove {IGN}§f: Removes player(s) from the shitter list.")
         sendClientMessage("§6/md shitter list [#]§f: Displays the shitter list. Optionally jump to a page.")
         sendClientMessage("§6/md shitter reset§f: Clears the whole shitter list (asks for confirmation).")
         sendClientMessage("§6/md shitter gui§f: Opens the shitter list editor GUI.")
-        sendClientMessage("§r§5§m                                                                              §r")
+        sendClientMessage(EMPTYLINE)
     }
 
     private fun sendCarryHelp(source: FabricClientCommandSource) {
-        sendClientMessage("§r§5§m                                                                              §r")
+        sendClientMessage(EMPTYLINE)
         sendClientMessage("§r§6§lCarry List Commands")
-        sendClientMessage("§r§5§m                                                                              §r")
+        sendClientMessage(EMPTYLINE)
         sendClientMessage("§6/md add_player {IGN}§f: Adds player(s) to the carry list. Separate multiple IGNs with spaces.")
         sendClientMessage("§6/md remove_player {IGN}§f: Removes player(s) from the carry list.")
         sendClientMessage("§6/md add_carry {IGN} {#}§f: Adds # of carries as completed.")
         sendClientMessage("§6/md remove_carry {IGN} {#}§f: Removes # of carries as completed.")
         sendClientMessage("§6/md carry reset§f: Clears the carry list after confirmation.")
         sendClientMessage("§6/md carry gui§f: Opens the carry list editor GUI.")
-        sendClientMessage("§r§5§m                                                                              §r")
+        sendClientMessage(EMPTYLINE)
     }
 }
