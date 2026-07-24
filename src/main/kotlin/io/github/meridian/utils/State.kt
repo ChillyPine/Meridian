@@ -1,7 +1,22 @@
 package io.github.meridian.utils
 
+import io.github.meridian.Meridian
+import java.util.UUID
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicReference
+
+val userIGN: String? get() = Meridian.mc.user?.name
+val userUUID: UUID? get() = Meridian.mc.user?.profileId
+/**
+ * Alternatively, we can use the below one-liner to get both values.
+ * val gameProfile: com.mojang.authlib.GameProfile? get() = Meridian.mc.gameProfile
+ * // gameProfile?.name  and  gameProfile?.id
+*/
+val DEV_UUIDS = setOf(
+    UUID.fromString("e6d1d332-8c7c-4bcc-9a22-69f369a16fc8"), // Dawn
+    UUID.fromString("3575d27b-2197-4a55-b6ae-60ebf17842bf") // Chilly
+)
+val isDeveloper: Boolean get() = userUUID in DEV_UUIDS
 
 interface State<T> {
     var value: T
