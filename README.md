@@ -1,4 +1,4 @@
-# Feature List (v1.0.3)
+# Feature List (v1.0.6)
 ## General
 ### Boxes
 - ***Box Runic Mobs***
@@ -25,6 +25,7 @@
 - ***IRL Time***
 - ***Latest Version Sound List Button***
 - ***Check for Updates***
+- ***Download Latest Build***
 ## Dungeons
 ### Clear
 - ***Box Star Mob***
@@ -35,6 +36,8 @@
 - ***Locked Chest Notification***
 - ***Box Door Keys***
 - ***Play Sound on Key Drop***
+- ***Quiz Progress HUD***
+- ***Quiz Countdown***
 - ***Blood Open***
 - ***Blood Full***
 - ***Blood Cleared***
@@ -52,11 +55,17 @@
 - ***Healer Wish Notif***
 ### P4
 - ***Highlight Platform Blocks to Mine***
+### P5
+- ***Relic Helper***
+- ***Holding Relic***
+- ***Arrow Stack Helper***
 ### M3
 - ***Fire Freeze Timer***
 ### M5
 - ***M5 Wish Reminder***
 - ***Livid Health HUD***
+### M6
+- ***M6 Wish Reminder***
 ### Misc
 - ***Bottle Full Notification***
 - ***Mask Used Notification***
@@ -68,6 +77,10 @@
 - ***Play music at end***
 - ***Short PF message***
 - ***Block Party Finder Warning Message***
+- ***Block Blessing Messages***
+- ***Block Superboom Pickup Message***
+- ***Block Revive Stone Pickup Message***
+- ***Block Trap Damage Messages***
 - ***Quick Party Actions***
 - ***Custom Leap Message***
 ## Farming
@@ -86,12 +99,29 @@
 - ***Quick Maths Solver***
 ### Jerrypocalypse
 - ***Jerry Spawn Notifier***
+## Carry Helper
+### Slayers
+- ***Highlight Client(s)***
+- ***Box Client's Slayer Boss***
+- ***Draw Tracer to Client's Slayer Boss***
+- ***Track Client Slayer Boss Progress***
+- ***Announce Clients Progress***
+- ***Don't Count Deaths as Carries***
+- ***Track Client Spawn Time***
+- ***Track Client Kill Time***
+- ***Track Session Time***
+### Dungeons
+- ***Track Client Dungeon Progress***
+### Misc
+- ***Detect Trade***
 ## Vanilla
 ### Tweaks
 - ***Remove Realms***
 - ***Remove Green Nasuea Effect***
 - ***Remove White Chat Bar***
 - ***Show Own Nametag in Third-Person***
+### Misc
+- ***Chat Eraser***
 - - - 
 # Dependencies
 ### Fabric Language Kotlin
