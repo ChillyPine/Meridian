@@ -93,8 +93,8 @@ object HighlightClients : SwitchFeature(
 }
 
 object BoxClientsBosses : SwitchFeature(
-    name = "Box Clients Boss",
-    description = "Boxes the slayer boss of the client.\nEach unique client has a different color for their boss.",
+    name = "Box Client's Slayer Boss",
+    description = "Boxes the slayer boss of the client.\nEach unique client is assigned a different boss color.",
     category = "Carry Helper",
     configKey = "box_clients_bosses",
     subcategory = "Slayers",
@@ -136,8 +136,8 @@ object BoxClientsBosses : SwitchFeature(
 }
 
 object DrawLineToClientBoss : SwitchFeature(
-    name = "Boss Tracer",
-    description = "Draws tracer to clients bosses",
+    name = "Draw Tracer to Client's Slayer Boss",
+    description = "",
     category = "Carry Helper",
     configKey = "draw_line_to_client_boss",
     subcategory = "Slayers",
@@ -145,8 +145,8 @@ object DrawLineToClientBoss : SwitchFeature(
 )
 
 object AutoTrackClientProgress : SwitchFeature(
-    name = "Track Client Boss Progress",
-    description = "Automatically tracks clients bosses (completed and total).",
+    name = "Track Client Slayer Boss Progress",
+    description = "Automatically tracks slayer boss carry progress for each client.",
     category = "Carry Helper",
     configKey = "auto_track_client_progress",
     subcategory = "Slayers",
@@ -284,7 +284,7 @@ object AutoTrackClientProgress : SwitchFeature(
 
 object AnnounceProgressClient : SwitchFeature(
     name = "Announce Clients Progress",
-    description = "In party chat -> IGN ( completed/total )",
+    description = "In party chat -> IGN (completed/total)",
     category = "Carry Helper",
     configKey = "announce_client_progress",
     subcategory = "Slayers",
@@ -321,7 +321,7 @@ object DontCountDeaths : SwitchFeature(
 
 object TrackClientSpawnTime : SwitchFeature(
     name = "Track Client Spawn Time",
-    description = "Announces how long it took a client's next boss to spawn after their last kill. Starts timing once the first boss has spawned and died.",
+    description = "Tracks how long it took a client's next boss to spawn after their last kill.\nStarts timing once the first boss has spawned and died.",
     category = "Carry Helper",
     configKey = "track_client_spawn_time",
     subcategory = "Slayers",
@@ -330,7 +330,7 @@ object TrackClientSpawnTime : SwitchFeature(
 
 object TrackClientKillTime : SwitchFeature(
     name = "Track Client Kill Time",
-    description = "Announces how long a client's boss took to die once it spawned, keeping the last 3 per client.",
+    description = "Tracks how long a client's boss took to die.",
     category = "Carry Helper",
     configKey = "track_client_kill_time",
     subcategory = "Slayers",
@@ -339,7 +339,7 @@ object TrackClientKillTime : SwitchFeature(
 
 object TrackSessionTime : SwitchFeature(
     name = "Track Session Time",
-    description = "Once a client has 3 valid spawn times and 3 valid kill times, averages them against their remaining carries and announces an ETA after every kill.",
+    description = "Averages the past 3 spawn & kill times to approximate how long it will take to complete the rest of their order.",
     category = "Carry Helper",
     configKey = "track_session_time",
     subcategory = "Slayers",
@@ -348,7 +348,7 @@ object TrackSessionTime : SwitchFeature(
 
 object AutoTrackDungeonProgress : SwitchFeature(
     name = "Track Client Dungeon Progress",
-    description = "Automatically tracks clients dungeons carries (completed and total).",
+    description = "Automatically tracks client's dungeon carries.",
     category = "Carry Helper",
     configKey = "auto_track_client_progress_dungeons",
     subcategory = "Dungeons",
@@ -356,10 +356,10 @@ object AutoTrackDungeonProgress : SwitchFeature(
 
     init {
 
-        val TEAM_SCORE = Regex("^ *Team Score: (\\d+) \\(([\\w+]{1,2})\\)$")
+        val teamScore = Regex("^ *Team Score: (\\d+) \\(([\\w+]{1,2})\\)$")
 
         onChat { text, _, _ ->
-            if (!text.matches(TEAM_SCORE)) return@onChat
+            if (!text.matches(teamScore)) return@onChat
 
             val clients = CarryManager.all()
             if (clients.isEmpty()) return@onChat
@@ -382,7 +382,7 @@ object AutoTrackDungeonProgress : SwitchFeature(
 
 object AutoDetectTrade : SwitchFeature(
     name = "Detect Trade",
-    description = "Detects trades and prompts you to open the carry manager GUI.",
+    description = "Detects trades and prompts you to add carries to the tracker.",
     category = "Carry Helper",
     configKey = "detect_trade_carry",
     subcategory = "Miscellaneous",
