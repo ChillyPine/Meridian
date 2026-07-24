@@ -16,6 +16,7 @@
 		"MixinEntityRenderer",
 		"MixinLivingEntityRenderer",
 		"MixinPlayerTabOverlay",
+		"MixinTitleScreen",
 		"accessor.RenderPipelinesAccessor",
 		"accessor.RenderTypeInvoker"
 	],

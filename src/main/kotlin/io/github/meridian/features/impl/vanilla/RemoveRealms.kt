@@ -17,8 +17,6 @@ object RemoveRealms : SwitchFeature(
     configKey = "remove_realms",
     subcategory = "Tweaks"
 ) {
-    // Run our pass after everyone else's AFTER_INIT so vanilla (and any other
-    // mod) has finished adding/repositioning the title-screen buttons first.
     private val REALMS_REMOVE_PHASE = Identifier.fromNamespaceAndPath("meridian", "realms_remove")
 
     init {
@@ -31,8 +29,6 @@ object RemoveRealms : SwitchFeature(
             var realmsButton: Button? = null
 
             for (widget in widgets) {
-                // Once the realms button is located, slide every button at or
-                // below it up by its row height to close the gap it leaves.
                 val realms = realmsButton
                 if (realms != null && widget.y >= realms.y && widget !is PlainTextButton && widget.visible) {
                     widget.y -= 24
