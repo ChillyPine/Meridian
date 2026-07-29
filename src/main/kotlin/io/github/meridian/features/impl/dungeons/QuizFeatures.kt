@@ -3,6 +3,7 @@ package io.github.meridian.features.impl.dungeons
 import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.hud.HudElement
 import io.github.meridian.hud.HudManager
+import io.github.meridian.utils.DungeonState
 
 object QuizFeatures : SwitchFeature(
     name = "Quiz Progress Hud",
@@ -55,8 +56,7 @@ object QuizFeatures : SwitchFeature(
 
     init {
         HudManager.register(element)
-
-        onChat { text, _, _ ->
+        onChat(DungeonState.state) { text, _, _ ->
             when {
                 startRegex.matches(text) -> {
                     progress = 0
@@ -120,7 +120,7 @@ object QuizCountdownFeature : SwitchFeature(
     init {
         HudManager.register(element)
 
-        onChat { text, _, _ ->
+        onChat(DungeonState.state) { text, _, _ ->
             when {
                 startRegex.matches(text) -> countdownEndAt = System.currentTimeMillis() + FIRST_QUESTION_DELAY_MS
                 q1AnsweredRegex.matches(text) -> countdownEndAt = System.currentTimeMillis() + READY_DELAY_MS
