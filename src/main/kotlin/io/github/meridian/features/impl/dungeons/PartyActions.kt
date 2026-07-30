@@ -6,8 +6,6 @@ import net.minecraft.network.chat.ClickEvent
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.HoverEvent
 import net.minecraft.network.chat.MutableComponent
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.TimeUnit
 
 // Actions when someone joins a dungeon party via Party Finder.
 object PartyActions : SwitchFeature(
@@ -28,9 +26,7 @@ object PartyActions : SwitchFeature(
                 ?: shortJoinRegex.find(text)?.groupValues?.get(1)
                 ?: return@onChat
 
-            val line = buildButtons(player)
-            CompletableFuture.delayedExecutor(100, TimeUnit.MILLISECONDS)
-                .execute { sendClientMessage(line) }
+            sendClientMessage(buildButtons(player))
         }
     }
 

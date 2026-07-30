@@ -16,8 +16,6 @@ import net.minecraft.world.entity.decoration.ArmorStand
 import net.minecraft.world.entity.player.Player
 import java.time.Duration
 import java.time.LocalDateTime
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.TimeUnit
 
 // TODO: Add Warn if Healer (after we add class detection)
 
@@ -229,8 +227,7 @@ object AutoTrackClientProgress : SwitchFeature(
                         modMessage("§b$clientIGN §f(§6$completed§f/§e$ordered§f)")
 
                         if (AnnounceProgressClient.enabled) {
-                            CompletableFuture.delayedExecutor(200, TimeUnit.MILLISECONDS)
-                                .execute { sendCommand("pc [Meridian] $clientIGN ($completed/$ordered)") }
+                            sendCommand("pc [Meridian] $clientIGN ($completed/$ordered)")
                         }
 
                         if (TrackSessionTime.enabled) {
@@ -398,11 +395,8 @@ object AutoDetectTrade : SwitchFeature(
             val match = traderegex.matchEntire(text) ?: return@onChat
             customerIGN = match.groupValues[2]
             val line = buildButtons()
-            CompletableFuture.delayedExecutor(100, TimeUnit.MILLISECONDS)
-                .execute {
-                    sendClientMessage("§6[MD] §f» Detected trade with $customerIGN. Select the amount ordered below to quickly add them to the tracker.")
-                    sendClientMessage(line)
-                }
+            sendClientMessage("§6[MD] §f» Detected trade with $customerIGN. Select the amount ordered below to quickly add them to the tracker.")
+            sendClientMessage(line)
         }
     }
     private fun buildButtons(): MutableComponent {

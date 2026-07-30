@@ -1,10 +1,7 @@
 package io.github.meridian.features.impl.events
 
-import io.github.meridian.Meridian
 import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.modMessage
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.TimeUnit
 
 object QuickMathsSolver : SwitchFeature(
     name = "QuickMaths",
@@ -23,11 +20,8 @@ object QuickMathsSolver : SwitchFeature(
             val calculation = math.replace("x", "*").replace(sanitize, "")
             val answer = runCatching { Parser(calculation).parse() }.getOrNull()
                 ?: return@onChat
-            CompletableFuture.delayedExecutor(50, TimeUnit.MILLISECONDS).execute {
-                Meridian.mc.execute {
-                    modMessage("§dQuick Maths Answer: §a§l${format(answer)}")
-                }
-            }
+            // Timed event — one tick is enough to land under the server line.
+            modMessage("§dQuick Maths Answer: §a§l${format(answer)}", delayMs = 50)
         }
     }
 

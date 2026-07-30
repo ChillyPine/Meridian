@@ -7,8 +7,6 @@ import io.github.meridian.features.impl.dungeons.AnnounceShitter.pfJoinRegex
 import io.github.meridian.features.impl.dungeons.AnnounceShitter.shortPfJoinRegex
 import io.github.meridian.utils.modMessage
 import io.github.meridian.utils.sendCommand
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.TimeUnit
 
 // Auto kick shitter
 // Announce to party
@@ -33,8 +31,7 @@ object AutoKickShitter : SwitchFeature(
                 ?: return@onChat
             if (!ShitterList.contains(player)) return@onChat
 
-            CompletableFuture.delayedExecutor(350, TimeUnit.MILLISECONDS)
-                .execute { sendCommand("p kick $player") }
+            sendCommand("p kick $player", delayMs = 350)
         }
     }
 }
@@ -63,8 +60,7 @@ object AnnounceShitter : SwitchFeature(
 
             val message = CustomShitterMessage.value.trim()
             if (message.isEmpty()) return@onChat
-            CompletableFuture.delayedExecutor(200, TimeUnit.MILLISECONDS)
-                .execute { sendCommand("pc ${message.replace("{player}", player)}") }
+            sendCommand("pc ${message.replace("{player}", player)}")
         }
     }
 }
@@ -94,8 +90,7 @@ object SendShitterReason : SwitchFeature(
             if (!ShitterList.contains(player)) return@onChat
 
             val reason = ShitterList.reasonFor(player) ?: "No reason set"
-            CompletableFuture.delayedExecutor(150, TimeUnit.MILLISECONDS)
-                .execute { modMessage("§r§fShitter §r§b$player§r§f joined (§7$reason§r§f)") }
+            modMessage("§r§fShitter §r§b$player§r§f joined (§7$reason§r§f)")
         }
     }
 }

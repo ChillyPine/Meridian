@@ -3,8 +3,6 @@ package io.github.meridian.features.impl.dungeons
 import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.features.types.TextFeature
 import io.github.meridian.utils.sendCommand
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.TimeUnit
 
 object CustomLeapMessage : SwitchFeature(
     name = "Custom Leap Message",
@@ -22,8 +20,7 @@ object CustomLeapMessage : SwitchFeature(
 
             val message = CustomLeapMessageTXT.value.trim()
             if (message.isEmpty()) return@onChat
-            CompletableFuture.delayedExecutor(200, TimeUnit.MILLISECONDS)
-                .execute { sendCommand("pc ${message.replace("{player}", player)}") }
+            sendCommand("pc ${message.replace("{player}", player)}")
         }
     }
 }

@@ -6,8 +6,6 @@ import net.minecraft.network.chat.ClickEvent
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.HoverEvent
 import net.minecraft.network.chat.MutableComponent
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.TimeUnit
 
 // Party list quick actions, extra party list quick actions
 object PLActions : SwitchFeature (
@@ -42,9 +40,7 @@ object PLActions : SwitchFeature (
             .map { it.split(" ").last() }
 
     private fun emitActions(player: String) {
-        val line = buildButtons(player)
-        CompletableFuture.delayedExecutor(100, TimeUnit.MILLISECONDS)
-            .execute { sendClientMessage(line) }
+        sendClientMessage(buildButtons(player))
     }
 
     private fun buildButtons(player: String): MutableComponent {

@@ -1,27 +1,38 @@
 package io.github.meridian.utils
 
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.Style
 import net.minecraft.client.gui.components.ChatComponent
 import io.github.meridian.Meridian.mc
+import kotlin.math.ceil
+
+const val CHAT_ORDER_DELAY_MS = 250L
+
+private fun dispatch(delayMs: Long, task: () -> Unit) {
+    if (delayMs <= 0L) {
+        mc.execute(task)
+        return
+    }
+    val ticks = ceil(delayMs / 50.0).toInt().coerceAtLeast(1)
+    TickScheduler.schedule(ticks, serverTick = false, task = task)
+}
 
 // Sends a chat message in chat
-fun sendChatMessage(message: Any) {
-    mc.execute { mc.player?.connection?.sendChat(message.toString()) }
+fun sendChatMessage(message: Any, delayMs: Long = CHAT_ORDER_DELAY_MS) {
+    dispatch(delayMs) { mc.player?.connection?.sendChat(message.toString()) }
 }
 
-fun sendCommand(command: String) {
-    mc.execute { mc.player?.connection?.sendCommand(command) }
+fun sendCommand(command: String, delayMs: Long = CHAT_ORDER_DELAY_MS) {
+    dispatch(delayMs) { mc.player?.connection?.sendCommand(command) }
 }
 
-fun sendClientMessage(message: Component) {
-    mc.execute { mc.gui.chat.addClientSystemMessage(message) }
+fun sendClientMessage(message: Component, delayMs: Long = CHAT_ORDER_DELAY_MS) {
+    dispatch(delayMs) { mc.gui.chat.addClientSystemMessage(message) }
 }
 
-fun sendClientMessage(message: String) {
-    mc.execute { mc.gui.chat.addClientSystemMessage(Component.literal(message)) }
+fun sendClientMessage(message: String, delayMs: Long = CHAT_ORDER_DELAY_MS) {
+    dispatch(delayMs) { mc.gui.chat.addClientSystemMessage(Component.literal(message)) }
 }
 
 // Simulates a game message as if the server sent it — runs the full receive
@@ -42,17 +53,27 @@ fun simulateGameMessage(message: String) {
 }
 
 // Used for just plain strings. Anything passed to this function will end up being a string. Should not be used for anything where formatting is required.
-fun modMessage(message: Any?, prefix: String = "§6Meridian §5»§r ", chatStyle: Style? = null) {
+fun modMessage(
+    message: Any?,
+    prefix: String = "§6Meridian §5»§r ",
+    chatStyle: Style? = null,
+    delayMs: Long = CHAT_ORDER_DELAY_MS,
+) {
     val text = Component.literal("$prefix$message")
     chatStyle?.let { text.setStyle(chatStyle) }
-    mc.execute { mc.gui.chat.addClientSystemMessage(text) }
+    dispatch(delayMs) { mc.gui.chat.addClientSystemMessage(text) }
 }
 
 // Used for rich messages, meaning hover-able text, clickable links, etc
-fun modMessage(message: Component, prefix: String = "§6Meridian §5»§r ", chatStyle: Style? = null) {
+fun modMessage(
+    message: Component,
+    prefix: String = "§6Meridian §5»§r ",
+    chatStyle: Style? = null,
+    delayMs: Long = CHAT_ORDER_DELAY_MS,
+) {
     val text = Component.literal(prefix).append(message)
     chatStyle?.let { text.setStyle(chatStyle) }
-    mc.execute { mc.gui.chat.addClientSystemMessage(text) }
+    dispatch(delayMs) { mc.gui.chat.addClientSystemMessage(text) }
 }
 
 //fun devMessage(message: Any?) {

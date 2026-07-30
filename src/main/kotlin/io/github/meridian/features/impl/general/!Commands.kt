@@ -5,8 +5,6 @@ import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.sendChatMessage
 import io.github.meridian.utils.sendCommand
 import kotlin.math.floor
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.TimeUnit
 
 private const val DT_ART =
     "゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜ ゛゜゛███゛゜█████゛゜█゛゜█゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜ ゜゛゜█゜゛█゛゜゛█゜゛゜゛█゜゛█゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛ ゛゜゛█゛゜█゜゛゜█゛゜゛゜█゛゜█゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜ ゜゛゜█゜゛█゛゜゛█゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛゜゛ ゛゜゛███゛゜゛゜█゛゜゛゜█゛゜█゜゛゜゛゜"
@@ -26,11 +24,7 @@ object DTCommand : SwitchFeature(
     init {
         onChat { text, _, _ ->
             if (!dtRegex.matches(text)) return@onChat
-            CompletableFuture.delayedExecutor(30, TimeUnit.MILLISECONDS).execute {
-                Meridian.mc.execute {
-                    sendChatMessage("/pc $DT_ART")
-                }
-            }
+            sendChatMessage("/pc $DT_ART")
         }
     }
 }

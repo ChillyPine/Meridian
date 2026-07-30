@@ -20,7 +20,7 @@ object ShitterListButton : ButtonFeature(
     subcategory = "Miscellaneous",
     buttonLabel = "Open GUI",
     onClick = {
-        sendCommand("md shitter gui")
+        sendCommand("md shitter gui", delayMs = 0)
     }
 )
 

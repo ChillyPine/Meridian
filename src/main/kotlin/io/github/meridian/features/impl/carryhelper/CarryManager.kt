@@ -20,7 +20,7 @@ object CarryManagerButton : ButtonFeature(
     subcategory = "General",
     buttonLabel = "Open GUI",
     onClick = {
-        sendCommand("md carry gui")
+        sendCommand("md carry gui", delayMs = 0)
     }
 )
 
