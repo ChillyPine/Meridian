@@ -114,6 +114,20 @@
 - ***Track Client Dungeon Progress***
 ### Misc
 - ***Detect Trade***
+## Carry Helper
+### Slayers
+- ***Highlight Clients***
+- ***Box Client's Slayer Boss***
+- ***Draw Tracer to Client's Slayer Boss***
+- ***Announce Client Progress***
+- ***Don't Count Deaths as Carries***
+- ***Track Client Spawn Time***
+- ***Track Client Kill Time***
+- ***Track Session Time***
+### Dungeons
+- ***Track Dungeon Carries***
+### Miscellaneous
+- ***Detect Trades***
 ## Vanilla
 ### Tweaks
 - ***Remove Realms***
