@@ -29,7 +29,6 @@ object IRLTime : SwitchFeature(
         override val shadow = false
         override fun color(): Int = IRLClockColor.color
         override fun content(): List<String> = if (isActive()) listOf(now()) else emptyList()
-        // The editor previews the live clock so its size/position are accurate.
         override fun preview(): List<String> = listOf(now())
     }
 

@@ -22,6 +22,7 @@ object LoadoutHudFeature : SwitchFeature(
         override val shadow = true
 
         override fun content(): List<String> {
+            if (!isActive()) return emptyList()
             val loadout = currentLoadout ?: "NULL"
             return listOf("§b§lCurrent loadout: §f§l$loadout")
         }
