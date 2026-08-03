@@ -106,6 +106,7 @@ import io.github.meridian.features.impl.vanilla.RemoveRealms
 import io.github.meridian.features.impl.general.RunicMobColor
 import io.github.meridian.features.impl.general.BoxRunicMobs
 import io.github.meridian.features.impl.general.LatestGHAction
+import io.github.meridian.features.impl.general.LoadoutHudFeature
 import io.github.meridian.features.impl.vanilla.RemoveChatBar
 import io.github.meridian.features.impl.general.RunicMobTracer
 import io.github.meridian.features.impl.general.SoundListButton
@@ -163,6 +164,7 @@ object FeatureList {
         // --- Miscellaneous ---
         IRLTime,
         IRLClockColor,
+        LoadoutHudFeature,
         NonRemover,
         SoundListButton,
         UpdateChecker,
