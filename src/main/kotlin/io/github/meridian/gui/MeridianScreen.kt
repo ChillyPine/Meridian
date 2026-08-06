@@ -54,6 +54,12 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
 
         private const val SEARCH_TOP_GAP = 6
         private const val SEARCH_WIDTH = 266
+
+        private const val SUBCAT_LINE_HEIGHT = 1
+        private const val SUBCAT_LINE_GAP = 2
+        // Horizontal inset per side, so the divider stops short of the content edges.
+        private const val SUBCAT_LINE_INSET = 12
+        private val SUBCAT_HEADER_EXTRA = SUBCAT_LINE_GAP + SUBCAT_LINE_HEIGHT
     }
 
     private lateinit var categoryPanel: CategoryPanel
@@ -151,7 +157,7 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
         fun measureTotalH(rowsWidth: Int): Int {
             var t = 0
             for ((subcat, feats) in grouped) {
-                if (subcat.isNotEmpty()) t += font.lineHeight + 4
+                if (subcat.isNotEmpty()) t += font.lineHeight + SUBCAT_HEADER_EXTRA + 4
                 for (f in feats) {
                     val indent = f.depth() * CHILD_INDENT_PX
                     t += f.measureRowHeight(font, rowsWidth - indent) + 4
@@ -187,7 +193,11 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
         for ((subcat, feats) in grouped) {
             if (subcat.isNotEmpty()) {
                 g.text(font, subcat, contentLeft + (contentW - font.width(subcat)) / 2, currentY, BAR_COLOR, false)
-                currentY += font.lineHeight + 4
+                val lineY = currentY + font.lineHeight + SUBCAT_LINE_GAP
+                g.fill(contentLeft + SUBCAT_LINE_INSET, lineY,
+                       contentRight - SUBCAT_LINE_INSET, lineY + SUBCAT_LINE_HEIGHT,
+                       BAR_COLOR)
+                currentY += font.lineHeight + SUBCAT_HEADER_EXTRA + 4
             }
             for (feat in feats) {
                 val indent = feat.depth() * CHILD_INDENT_PX
