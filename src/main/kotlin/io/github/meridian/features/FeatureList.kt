@@ -249,11 +249,11 @@ object FeatureList {
         //                      FORAGING                      //
         // ================================================== //
 
-        BoxShinyCritters,
-        ShinyCritterColor,
         BoxShulkers,
         ShulkerColor,
         HoneyhiveWaypoints,
+        BoxShinyCritters,
+        ShinyCritterColor,
 
         // ================================================== //
         //                      MINING                        //
