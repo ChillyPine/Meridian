@@ -11,7 +11,7 @@ object BoxShulkers : SwitchFeature(
     description = "",
     category = "Foraging",
     configKey = "box_shulkers",
-    subcategory = "Boxes",
+    subcategory = "General",
 ) {
     init {
         onRender { ctx ->
@@ -29,6 +29,6 @@ object ShulkerColor : ColorFeature(
     description = "",
     category = "Foraging",
     configKey = "shulker_color",
-    subcategory = "Boxes",
+    subcategory = "General",
     dependsOn = BoxShulkers,
 )

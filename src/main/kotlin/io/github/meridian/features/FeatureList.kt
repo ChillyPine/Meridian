@@ -80,13 +80,15 @@ import io.github.meridian.features.impl.carryhelper.HighlightClients
 import io.github.meridian.features.impl.carryhelper.TrackClientKillTime
 import io.github.meridian.features.impl.carryhelper.TrackClientSpawnTime
 import io.github.meridian.features.impl.carryhelper.TrackSessionTime
+import io.github.meridian.features.impl.dungeons.BlockBeatingHeart
 import io.github.meridian.features.impl.dungeons.BlockBlessings
 import io.github.meridian.features.impl.dungeons.BlockReviveStone
 import io.github.meridian.features.impl.dungeons.BlockSuperboom
 import io.github.meridian.features.impl.dungeons.BlockTrap
+import io.github.meridian.features.impl.foraging.HoneyhiveWaypoints
 import io.github.meridian.features.impl.foraging.BoxShinyCritters
 import io.github.meridian.features.impl.foraging.BoxShulkers
-import io.github.meridian.features.impl.foraging.Shinycrittercolor
+import io.github.meridian.features.impl.foraging.ShinyCritterColor
 import io.github.meridian.features.impl.foraging.ShulkerColor
 import io.github.meridian.features.impl.general.CoordsCommand
 import io.github.meridian.features.impl.general.IRLClockColor
@@ -251,6 +253,7 @@ object FeatureList {
         BlockBlessings,
         BlockSuperboom,
         BlockReviveStone,
+        BlockBeatingHeart,
         BlockTrap,
         ShitterListButton,
         AutoKickShitter,
@@ -271,9 +274,10 @@ object FeatureList {
         // ================================================== //
 
         BoxShinyCritters,
-        Shinycrittercolor,
+        ShinyCritterColor,
         BoxShulkers,
         ShulkerColor,
+        HoneyhiveWaypoints,
 
         // ================================================== //
         //                      MINING                        //
