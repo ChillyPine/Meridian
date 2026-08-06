@@ -9,26 +9,19 @@ import net.minecraft.client.multiplayer.ClientLevel
 // relevant phase, instead of polling the flag every frame. [inX] stays as a plain read for
 // always-on trackers and non-feature callers.
 
-// TODO: Make this scoreboard based. This is more reliable and protects against edge cases where people are reconnected.
+// Derived from [SkyblockLocation], so it survives reconnects and mid-run joins — the old
+// "Starting in 1 second." chat sniff missed both. The scoreboard is OR'd in because it repopulates
+// within a few ticks of the world loading while /locraw takes about a second to answer; erring
+// toward "in dungeon" is the harmless direction for every consumer (waypoints, chat blockers).
 object DungeonState {
-    private val _state = BasicState(false)
-    val state: State<Boolean> = _state
-    val inDungeon: Boolean get() = _state.value
+    private const val CATACOMBS = "The Catacombs"
 
-    private var lastLevel: ClientLevel? = null
-
-    fun init() {
-        onChatMessage { text, _, _ ->
-            if (text == "Starting in 1 second.") _state.value = true
+    val state: State<Boolean> =
+        SkyblockLocation.islandState.zip(SkyblockLocation.areaState) { island, area ->
+            island == Island.DUNGEON || area.startsWith(CATACOMBS)
         }
-        ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick {
-            val level = mc.level
-            if (level !== lastLevel) {
-                lastLevel = level
-                _state.value = false
-            }
-        })
-    }
+
+    val inDungeon: Boolean get() = state.value
 }
 
 object F4State {
