@@ -4,6 +4,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.arguments.StringArgumentType
 import io.github.meridian.Meridian
 import io.github.meridian.features.impl.dungeons.CarryManager
+import io.github.meridian.gui.ChatBlockerScreen
 import io.github.meridian.gui.HudEditScreen
 import io.github.meridian.gui.MeridianScreen
 import io.github.meridian.gui.ShitterListScreen
@@ -41,6 +42,12 @@ object MeridianCommand {
                             // Defer: the chat screen is still closing as this lambda
                             // runs and would wipe a synchronously-set screen.
                             Meridian.mc.execute { Meridian.mc.setScreen(HudEditScreen()) }
+                            1
+                        }
+                    )
+                    .then(
+                        literal("blockers").executes { _ ->
+                            Meridian.mc.execute { Meridian.mc.setScreen(ChatBlockerScreen()) }
                             1
                         }
                     )
@@ -231,6 +238,7 @@ object MeridianCommand {
         sendClientMessage("§6/meridian help§f: Sends this dialogue")
         sendClientMessage("§6/meridian hud§f: Opens the HUD editor.")
         sendClientMessage("§6/meridian calc§f: Opens an in-game calculator.")
+        sendClientMessage("§6/meridian blockers§f: Opens the chat blocker list.")
         sendClientMessage("§6/md§f: Alias")
         sendClientMessage(EMPTYLINE)
         sendClientMessage("§r§6§lShitter List Commands")

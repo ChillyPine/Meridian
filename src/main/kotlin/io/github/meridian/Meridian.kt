@@ -5,6 +5,7 @@ import io.github.meridian.events.MeridianEvents
 import io.github.meridian.features.FeatureList
 import io.github.meridian.features.FeatureManager
 import io.github.meridian.hud.HudManager
+import io.github.meridian.features.impl.general.ChatBlockerRegistry
 import io.github.meridian.utils.ChatBlocker
 import io.github.meridian.utils.NameGradients
 import io.github.meridian.utils.F4State
@@ -38,6 +39,7 @@ object Meridian : ClientModInitializer {
         P5State.init()
         MeridianEvents.init()
         FeatureList.registerAll()
+        ChatBlockerRegistry.init()
         FeatureManager.load()
         HudManager.init()
         logger.info("Meridian loaded")

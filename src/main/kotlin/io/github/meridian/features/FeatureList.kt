@@ -5,7 +5,6 @@ import io.github.meridian.features.impl.dungeons.AutoKickShitter
 import io.github.meridian.features.impl.dungeons.BoxBats
 import io.github.meridian.features.impl.dungeons.BoxBatsColor
 import io.github.meridian.features.impl.dungeons.BatTracer
-import io.github.meridian.features.impl.dungeons.BlockPFWarning
 import io.github.meridian.features.impl.dungeons.BloodCleared
 import io.github.meridian.features.impl.dungeons.BloodFull
 import io.github.meridian.features.impl.dungeons.BloodNotifs
@@ -57,7 +56,6 @@ import io.github.meridian.features.impl.dungeons.QuizFeatures
 import io.github.meridian.features.impl.dungeons.RelicHelper
 import io.github.meridian.features.impl.dungeons.SendShitterReason
 import io.github.meridian.features.impl.dungeons.StackHelper
-import io.github.meridian.features.impl.dungeons.WatcherYapHider
 import io.github.meridian.features.impl.events.BoxPrimalFears
 import io.github.meridian.features.impl.events.JerryNotif
 import io.github.meridian.features.impl.events.QuickMathsSolver
@@ -67,24 +65,12 @@ import io.github.meridian.features.impl.carryhelper.DontCountDeaths
 import io.github.meridian.features.impl.carryhelper.AutoDetectTrade
 import io.github.meridian.features.impl.carryhelper.AutoTrackClientProgress
 import io.github.meridian.features.impl.carryhelper.AutoTrackDungeonProgress
-import io.github.meridian.features.impl.general.BlockBlocksInWay
-import io.github.meridian.features.impl.general.BlockDiscord
-import io.github.meridian.features.impl.general.BlockGEXP
-import io.github.meridian.features.impl.general.BlockHOTFM
-import io.github.meridian.features.impl.general.BlockProfileID
-import io.github.meridian.features.impl.general.BlockProfileProduce
-import io.github.meridian.features.impl.general.BlockWatchdog
 import io.github.meridian.features.impl.carryhelper.BoxClientsBosses
 import io.github.meridian.features.impl.carryhelper.DrawLineToClientBoss
 import io.github.meridian.features.impl.carryhelper.HighlightClients
 import io.github.meridian.features.impl.carryhelper.TrackClientKillTime
 import io.github.meridian.features.impl.carryhelper.TrackClientSpawnTime
 import io.github.meridian.features.impl.carryhelper.TrackSessionTime
-import io.github.meridian.features.impl.dungeons.BlockBeatingHeart
-import io.github.meridian.features.impl.dungeons.BlockBlessings
-import io.github.meridian.features.impl.dungeons.BlockReviveStone
-import io.github.meridian.features.impl.dungeons.BlockSuperboom
-import io.github.meridian.features.impl.dungeons.BlockTrap
 import io.github.meridian.features.impl.foraging.HoneyhiveWaypoints
 import io.github.meridian.features.impl.foraging.BoxShinyCritters
 import io.github.meridian.features.impl.foraging.BoxShulkers
@@ -95,6 +81,7 @@ import io.github.meridian.features.impl.general.IRLClockColor
 import io.github.meridian.features.impl.general.IRLTime
 import io.github.meridian.features.impl.general.DTCommand
 import io.github.meridian.features.impl.general.BoxFemboys
+import io.github.meridian.features.impl.general.ChatBlockerButton
 import io.github.meridian.features.impl.general.BoxMatchos
 import io.github.meridian.features.impl.general.MatchoColor
 import io.github.meridian.features.impl.general.NonRemover
@@ -155,13 +142,9 @@ object FeatureList {
         // PTCommand, <- NOT IMPLEMENTED
 
         // --- Chat Blockers ---
-        BlockBlocksInWay,
-        BlockGEXP,
-        BlockProfileID,
-        BlockProfileProduce,
-        BlockHOTFM,
-        BlockDiscord,
-        BlockWatchdog,
+        // Individual blockers live in the ENTRIES table in impl/general/ChatBlockers.kt,
+        // not here — this button opens their GUI.
+        ChatBlockerButton,
 
         // --- Party ---
         PLActions,
@@ -200,7 +183,6 @@ object FeatureList {
         BloodFull,
         BloodCleared,
         SendBloodToParty,
-        WatcherYapHider,
 
         // --- P1 ---
         HoldingCrystal,
@@ -249,12 +231,6 @@ object FeatureList {
         CooldownTimerHUD,
         ShortPFMessage,
         PartyActions,
-        BlockPFWarning,
-        BlockBlessings,
-        BlockSuperboom,
-        BlockReviveStone,
-        BlockBeatingHeart,
-        BlockTrap,
         ShitterListButton,
         AutoKickShitter,
         AnnounceShitter,

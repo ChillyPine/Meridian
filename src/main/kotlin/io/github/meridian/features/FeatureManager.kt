@@ -5,6 +5,7 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import io.github.meridian.Meridian
 import io.github.meridian.features.impl.dungeons.ShitterList
+import io.github.meridian.features.impl.general.ChatBlockerRegistry
 import io.github.meridian.hud.HudManager
 import net.fabricmc.loader.api.FabricLoader
 import java.nio.file.Files
@@ -61,6 +62,9 @@ object FeatureManager {
             val shitterJson = JsonObject()
             ShitterList.saveTo(shitterJson)
             root.add("shitter", shitterJson)
+            val blockerJson = JsonObject()
+            ChatBlockerRegistry.saveTo(blockerJson)
+            root.add("chatBlockers", blockerJson)
             configFile.writeText(gson.toJson(root))
         } catch (e: Exception) {
             Meridian.logger.error("Failed to save Meridian config", e)
@@ -85,9 +89,15 @@ object FeatureManager {
         try {
             if (!configFile.exists()) return
             val root = JsonParser.parseString(configFile.readText()).asJsonObject
-            root.getAsJsonObject("features")?.let { loadFeaturesNode(it, features.associateBy { f -> f.configKey }) }
+            val featuresNode = root.getAsJsonObject("features")
+            featuresNode?.let { loadFeaturesNode(it, features.associateBy { f -> f.configKey }) }
             root.getAsJsonObject("hud")?.let { HudManager.loadFrom(it) }
             root.getAsJsonObject("shitter")?.let { ShitterList.loadFrom(it) }
+            // Absent node = config predates the unified chat blockers; pull the old
+            // per-feature toggles out of "features" so nobody's settings reset.
+            val blockerNode = root.getAsJsonObject("chatBlockers")
+            if (blockerNode != null) ChatBlockerRegistry.loadFrom(blockerNode)
+            else featuresNode?.let { ChatBlockerRegistry.migrateLegacy(it) }
         } catch (e: Exception) {
             Meridian.logger.error("Failed to load Meridian config — falling back to defaults", e)
         }
