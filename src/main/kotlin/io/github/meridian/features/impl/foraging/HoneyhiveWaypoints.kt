@@ -30,7 +30,9 @@ object HoneyhiveWaypoints : SwitchFeature(
         BlockPos(-572, 101, 206),
         BlockPos(-577, 102, 205),
         BlockPos(-665, 97, 167),
-        BlockPos(-665, 96, 170),
+        BlockPos(-664, 96, 170),
+        BlockPos(-707, 92, 220),
+        BlockPos(-705, 92, 225),
     )
 
     init {

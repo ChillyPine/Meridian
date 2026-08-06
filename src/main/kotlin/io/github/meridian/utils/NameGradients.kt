@@ -6,10 +6,18 @@ import net.minecraft.network.chat.Style
 import kotlin.math.roundToInt
 
 object NameGradients {
-    private val GRADIENTS: Map<String, List<Int>> = mapOf(
+    /** Colour stops plus any formatting to stack on top of the gradient. */
+    private class Gradient(
+        val stops: List<Int>,
+        val bold: Boolean = false,
+        val italic: Boolean = false,
+        val underlined: Boolean = false,
+    )
+
+    private val GRADIENTS: Map<String, Gradient> = mapOf(
         // 0x1F4FA8, 0x2BD4C4 | 0x0BADF5 | 0x9bafd9, 0x103783
-        "ChillyPine" to listOf(0x6274e7, 0x133a94),
-        "DwnInFraggleRock" to listOf(0x6A0DAD, 0x9B30FF, 0xC77DFF, 0xE0AAFF),
+        "ChillyPine" to Gradient(listOf(0x6274e7, 0x133a94), bold = true),
+        "DwnInFraggleRock" to Gradient(listOf(0x6A0DAD, 0x9B30FF, 0xC77DFF, 0xE0AAFF)),
     )
 
     fun init() {
@@ -68,12 +76,18 @@ object NameGradients {
 
     private fun Char.isNameChar(): Boolean = isLetterOrDigit() || this == '_'
 
-    private fun gradient(name: String, stops: List<Int>): Component {
+    private fun gradient(name: String, g: Gradient): Component {
         val out = Component.empty()
+        // Absolute base style — the gradient replaces the name run entirely, so nothing
+        // is inherited from the surrounding component (rank colour, etc.).
+        val base = Style.EMPTY
+            .withBold(g.bold)
+            .withItalic(g.italic)
+            .withUnderlined(g.underlined)
         val last = name.length - 1
         for (i in name.indices) {
             val t = if (last <= 0) 0f else i.toFloat() / last
-            out.append(Component.literal(name[i].toString()).setStyle(Style.EMPTY.withColor(sample(stops, t))))
+            out.append(Component.literal(name[i].toString()).setStyle(base.withColor(sample(g.stops, t))))
         }
         return out
     }
