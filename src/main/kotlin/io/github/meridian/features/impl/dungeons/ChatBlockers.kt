@@ -56,6 +56,18 @@ object BlockReviveStone : SwitchFeature (
     }
 }
 
+object BlockBeatingHeart : SwitchFeature (
+    name = "Block Beating Heart Pickup Message",
+    description = "",
+    category = "Dungeons",
+    configKey = "block_beating_heart",
+    subcategory = "Miscellaneous",
+) {
+    init {
+        blockChat(Regex("(\\S+) has obtained Beating Heart!"), DungeonState.state)
+    }
+}
+
 object BlockTrap : SwitchFeature (
     name = "Block Trap Damage Messages",
     description = "",
