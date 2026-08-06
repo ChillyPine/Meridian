@@ -11,6 +11,8 @@
 		"MixinChatTagFocused",
 		"MixinChatIndent",
 		"MixinChatScreen",
+		"MixinAbstractContainerScreen",
+		"MixinKeyboardHandler",
 		"accessor.ChatComponentAccessor",
 		"MixinEntity",
 		"MixinEntityRenderer",

@@ -11,7 +11,10 @@ import net.minecraft.client.input.KeyEvent
 // Standalone search input rendered below the main panel. Mirrors TextFeature's
 // editing semantics (selection, shift+arrow, double-click select-all,
 // Ctrl+A/C/V/X) but renders centered text and isn't persisted to config.
-class SearchBar(private val placeholderText: String = "Search") {
+class SearchBar(
+    private val placeholderText: String = "Search",
+    private val maxLength: Int = DEFAULT_MAX_LENGTH
+) {
 
     var query: String = ""
         private set
@@ -45,7 +48,7 @@ class SearchBar(private val placeholderText: String = "Search") {
     }
 
     fun setText(text: String) {
-        query = text.take(MAX_LENGTH)
+        query = text.take(maxLength)
         cursorPos = query.length
         selectionAnchor = cursorPos
     }
@@ -188,7 +191,7 @@ class SearchBar(private val placeholderText: String = "Search") {
     private fun insertText(text: String) {
         if (text.isEmpty()) return
         if (hasSelection) { replaceSelection(text); return }
-        val room = MAX_LENGTH - query.length
+        val room = maxLength - query.length
         if (room <= 0) return
         val toInsert = if (text.length > room) text.substring(0, room) else text
         query = query.substring(0, cursorPos) + toInsert + query.substring(cursorPos)
@@ -198,7 +201,7 @@ class SearchBar(private val placeholderText: String = "Search") {
 
     private fun replaceSelection(replacement: String) {
         val start = selStart; val end = selEnd
-        val room = MAX_LENGTH - (query.length - (end - start))
+        val room = maxLength - (query.length - (end - start))
         val toInsert = if (replacement.length > room) replacement.substring(0, maxOf(0, room)) else replacement
         query = query.substring(0, start) + toInsert + query.substring(end)
         cursorPos = start + toInsert.length
@@ -212,7 +215,7 @@ class SearchBar(private val placeholderText: String = "Search") {
 
     companion object {
         const val HEIGHT = 16
-        private const val MAX_LENGTH = 64
+        private const val DEFAULT_MAX_LENGTH = 64
         private const val DOUBLE_CLICK_MS = 400L
 
         private fun hasShift(): Boolean {
