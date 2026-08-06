@@ -182,6 +182,13 @@ private val ENTRIES: List<ChatBlockerEntry> = listOf(
             "^Blacklisted modifications are a bannable offense!$",
         ),
     ),
+    blocker(
+        id = "block_radio_strong",
+        group = GENERAL,
+        label = "Your radio signal is strong!",
+        note = "",
+        regex = listOf("^Your radio signal is strong!$"),
+    ),
 
     // ------------------------------- Dungeons ------------------------------- //
 
