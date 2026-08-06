@@ -9,7 +9,7 @@ import io.github.meridian.utils.ESP
 object BoxShulkers : SwitchFeature(
     name = "Box Shulkers",
     description = "",
-    category = "General",
+    category = "Foraging",
     configKey = "box_shulkers",
     subcategory = "Boxes",
 ) {
@@ -27,7 +27,7 @@ object BoxShulkers : SwitchFeature(
 object ShulkerColor : ColorFeature(
     name = "Shulker Color",
     description = "",
-    category = "General",
+    category = "Foraging",
     configKey = "shulker_color",
     subcategory = "Boxes",
     dependsOn = BoxShulkers,

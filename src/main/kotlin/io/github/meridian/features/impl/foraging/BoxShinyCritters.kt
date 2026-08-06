@@ -9,7 +9,7 @@ import net.minecraft.world.entity.decoration.ArmorStand
 object BoxShinyCritters : SwitchFeature(
     name = "Box Shiny Critters",
     description = "",
-    category = "General",
+    category = "Foraging",
     configKey = "box_shiny_critters",
     subcategory = "Boxes",
 ) {
@@ -30,7 +30,7 @@ object BoxShinyCritters : SwitchFeature(
 object Shinycrittercolor : ColorFeature(
     name = "Shinny Critter Color",
     description = "",
-    category = "General",
+    category = "Foraging",
     configKey = "shiny_critter_color",
     subcategory = "Boxes",
     dependsOn = BoxShinyCritters,
