@@ -84,6 +84,10 @@ import io.github.meridian.features.impl.dungeons.BlockBlessings
 import io.github.meridian.features.impl.dungeons.BlockReviveStone
 import io.github.meridian.features.impl.dungeons.BlockSuperboom
 import io.github.meridian.features.impl.dungeons.BlockTrap
+import io.github.meridian.features.impl.foraging.BoxShinyCritters
+import io.github.meridian.features.impl.foraging.BoxShulkers
+import io.github.meridian.features.impl.foraging.Shinycrittercolor
+import io.github.meridian.features.impl.foraging.ShulkerColor
 import io.github.meridian.features.impl.general.CoordsCommand
 import io.github.meridian.features.impl.general.IRLClockColor
 import io.github.meridian.features.impl.general.IRLTime
@@ -105,14 +109,12 @@ import io.github.meridian.features.impl.vanilla.RemoveNausea
 import io.github.meridian.features.impl.vanilla.RemoveRealms
 import io.github.meridian.features.impl.general.RunicMobColor
 import io.github.meridian.features.impl.general.BoxRunicMobs
-import io.github.meridian.features.impl.general.BoxShinyCritters
 import io.github.meridian.features.impl.general.LatestGHAction
 import io.github.meridian.features.impl.general.LoadoutHudFeature
 import io.github.meridian.features.impl.vanilla.RemoveChatBar
 import io.github.meridian.features.impl.general.RunicMobTracer
 import io.github.meridian.features.impl.general.SoundListButton
 import io.github.meridian.features.impl.general.UpdateChecker
-import io.github.meridian.features.impl.general.Shinycrittercolor
 import io.github.meridian.features.impl.mining.BoxButterflies
 import io.github.meridian.features.impl.mining.ButterflyTracer
 import io.github.meridian.features.impl.mining.BoxCorleone
@@ -140,8 +142,6 @@ object FeatureList {
         BoxOldWolves,
         OldWolfColor,
         BoxRats,
-        BoxShinyCritters,
-        Shinycrittercolor,
         BoxPlayers,
         PlayerBoxMode,
         BoxSpecificPlayer,
@@ -265,6 +265,15 @@ object FeatureList {
         // ================================================== //
 
         BoxTrapperMobs,
+
+        // ================================================== //
+        //                      FORAGING                      //
+        // ================================================== //
+
+        BoxShinyCritters,
+        Shinycrittercolor,
+        BoxShulkers,
+        ShulkerColor,
 
         // ================================================== //
         //                      MINING                        //
