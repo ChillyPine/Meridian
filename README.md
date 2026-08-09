@@ -5,7 +5,6 @@
 </div>
 Meridian is a client side Minecraft mod for Hypixel Skyblock primarily focused on dungeon features with additional miscellaneous features for other aspects of Skyblock. Designed to assist in teaching dungeon floors, such as M7, to newer players while also adding many features to help veteran dungeon players.
 
----
 <div align="center">
 
 ![Fabric](https://img.shields.io/badge/Fabric-26.1.2-blue?style=flat-square)
@@ -43,7 +42,7 @@ Meridian is a client side Minecraft mod for Hypixel Skyblock primarily focused o
 - **Block Annoying HOTF Perk Disable Message** — Hides the recurring HOTF perk-disabled warning message.
 - **Block Discord Warning Message** — Hides the Discord warning attached to messages.
 - **Block Watchdog Message** — Hides Watchdog-related chat messages.
-- **Block Radio Messages** — Hides messages related to the radio.
+- **Block Radio Messages** — Hides messages related to the Blazetekk radio.
 - **Block Beating Heart** — Hides beating heart messages in dungeons. 
 - **Block Party Finder Warning Message** — Hides the party finder's warning message.
 - **Block Blessing Messages** — Hides Blessing chat messages.
