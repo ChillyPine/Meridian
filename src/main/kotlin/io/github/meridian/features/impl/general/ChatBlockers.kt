@@ -189,6 +189,20 @@ private val ENTRIES: List<ChatBlockerEntry> = listOf(
         note = "",
         regex = listOf("^Your radio signal is strong!$"),
     ),
+    blocker(
+        id = "block_radio_weak",
+        group = GENERAL,
+        label = "Your radio is weak. Find another enjoyer to boost it.",
+        note = "",
+        regex = listOf("^Your radio is weak. Find another enjoyer to boost it.$"),
+    ),
+    blocker(
+        id = "block_radio_lost",
+        group = GENERAL,
+        label = "Your radio lost signal. There's too many enjoyers on this channel.",
+        note = "",
+        regex = listOf("^Your radio lost signal. There's too many enjoyers on this channel.$"),
+    ),
 
     // ------------------------------- Dungeons ------------------------------- //
 
