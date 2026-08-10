@@ -71,6 +71,9 @@ import io.github.meridian.features.impl.carryhelper.HighlightClients
 import io.github.meridian.features.impl.carryhelper.TrackClientKillTime
 import io.github.meridian.features.impl.carryhelper.TrackClientSpawnTime
 import io.github.meridian.features.impl.carryhelper.TrackSessionTime
+import io.github.meridian.features.impl.foraging.BeeheemothQuickWarp
+import io.github.meridian.features.impl.foraging.BeeheemothWaypoints
+import io.github.meridian.features.impl.foraging.BoxPangolins
 import io.github.meridian.features.impl.foraging.HoneyhiveWaypoints
 import io.github.meridian.features.impl.foraging.BoxShinyCritters
 import io.github.meridian.features.impl.foraging.BoxShulkers
@@ -251,6 +254,7 @@ object FeatureList {
 
         BoxShulkers,
         ShulkerColor,
+        BoxPangolins,
         HoneyhiveWaypoints,
         BoxShinyCritters,
         ShinyCritterColor,
