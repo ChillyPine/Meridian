@@ -19,7 +19,7 @@ object BoxPangolins : SwitchFeature(
             val level = Meridian.mc.level ?: return@onRender
             for (ent in level.entitiesForRendering()) {
                 if (ent !is Armadillo) continue
-                ESP.drawBox(ctx, ent, w = 1.0, h = 0.5, wz = 1.0, argb = 0xFFAD716D.toInt())
+                ESP.drawBox(ctx, ent, w = 0.8, h = 0.8, wz = 0.8, argb = 0xFFAD716D.toInt())
             }
         }
     }
