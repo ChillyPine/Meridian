@@ -71,6 +71,7 @@ import io.github.meridian.features.impl.carryhelper.HighlightClients
 import io.github.meridian.features.impl.carryhelper.TrackClientKillTime
 import io.github.meridian.features.impl.carryhelper.TrackClientSpawnTime
 import io.github.meridian.features.impl.carryhelper.TrackSessionTime
+import io.github.meridian.features.impl.dungeons.SuperBounceHUD
 import io.github.meridian.features.impl.foraging.BeeheemothQuickWarp
 import io.github.meridian.features.impl.foraging.BeeheemothWaypoints
 import io.github.meridian.features.impl.foraging.BoxBloodbat
@@ -198,6 +199,7 @@ object FeatureList {
         PadHelper,
 
         // --- P3 ---
+        SuperBounceHUD,
         P3WishNotif,
         BoxGoldor,
         GoldorColor,
