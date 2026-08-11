@@ -8,12 +8,13 @@ import io.github.meridian.utils.SkyblockLocation
 import net.minecraft.world.entity.ambient.Bat
 
 object BoxBloodbat : SwitchFeature(
-    name = "BoxBloodbat",
+    name = "Box Bloodbats",
     description = "",
     category = "Foraging",
     configKey = "box_bloodbat",
     subcategory = "Safari"
 ) {
+    // uhhh so this currently also boxes Flitters or whatever in the safari so we gotta fix that at some point but fuhhhh that rn, good luck future me or dawn
     init {
         onRender(SkyblockLocation.on(Island.SAFARI)) { ctx ->
             val level = Meridian.mc.level ?: return@onRender
