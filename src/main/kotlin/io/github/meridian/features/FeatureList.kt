@@ -71,6 +71,7 @@ import io.github.meridian.features.impl.carryhelper.HighlightClients
 import io.github.meridian.features.impl.carryhelper.TrackClientKillTime
 import io.github.meridian.features.impl.carryhelper.TrackClientSpawnTime
 import io.github.meridian.features.impl.carryhelper.TrackSessionTime
+import io.github.meridian.features.impl.dungeons.ArchCritChecker
 import io.github.meridian.features.impl.dungeons.SuperBounceHUD
 import io.github.meridian.features.impl.foraging.BeeheemothQuickWarp
 import io.github.meridian.features.impl.foraging.BeeheemothWaypoints
@@ -116,6 +117,7 @@ import io.github.meridian.features.impl.mining.BoxDiamondGoblins
 import io.github.meridian.features.impl.mining.BoxGoldenGoblins
 import io.github.meridian.features.impl.mining.BoxKeyGuardians
 import io.github.meridian.features.impl.vanilla.ChatEraser
+import org.apache.commons.lang3.arch.Processor
 
 // Manifest of every feature in the mod — the only place that needs updating
 // when a new feature file is added. Similar in spirit to ChatTriggers' index.js.
@@ -197,6 +199,7 @@ object FeatureList {
         BoxStorm,
         StormColor,
         PadHelper,
+        ArchCritChecker,
 
         // --- P3 ---
         SuperBounceHUD,

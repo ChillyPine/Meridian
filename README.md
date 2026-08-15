@@ -90,6 +90,7 @@ Meridian is a client side Minecraft mod for Hypixel Skyblock primarily focused o
 **P2**
 - **Box Storm** — Boxes Storms vaild hitbox.
 - **PY Pad Helper** — Highlights the correct crush hight for PY.
+- **High Crit Display** — Calculates high crit in storm for archer and displays it. 
 
 **P3**
 - **Simon Says Time & Party Notification** — Time SS, Send it in party chat.
