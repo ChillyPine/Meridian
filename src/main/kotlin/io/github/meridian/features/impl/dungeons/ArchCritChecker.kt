@@ -13,7 +13,7 @@ object ArchCritChecker : SwitchFeature(
     configKey = "arch_high_crit_checker",
     subcategory = "P2",
 ) {
-    private val damageRegex = Regex("""Your Explosive Shot hit (\d+) enemies for ([\d,]+\.?\d*) damage\.""")
+    private val damageRegex = Regex("""Your Explosive Shot hit (\d+) enem(?:y|ies) for ([\d,]+\.?\d*) damage\.""")
     private var highestCrit: Double = 0.0
     private var missedShot: Boolean = false
     private var wasInP2: Boolean = false
