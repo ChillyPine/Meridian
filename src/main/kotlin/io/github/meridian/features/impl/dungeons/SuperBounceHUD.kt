@@ -12,7 +12,7 @@ import net.minecraft.client.multiplayer.ClientLevel
 
 object SuperBounceHUD : SwitchFeature(
     name = "Super Bounce Display",
-    description = "Shows an on-screen HUD element with the current status of whether you will or won't superbounce based on your current pitch.\nEdit the element position with /md hud.",
+    description = "Shows an on-screen HUD element with the current status of whether you will or won't superbounce based on your current pitch.",
     category = "Dungeons",
     configKey = "super_bounce_hud",
     subcategory = "P3",
