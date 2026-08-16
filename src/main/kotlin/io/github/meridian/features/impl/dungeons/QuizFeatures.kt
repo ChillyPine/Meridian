@@ -56,6 +56,10 @@ object QuizFeatures : SwitchFeature(
 
     init {
         HudManager.register(element)
+
+        // The gate only detaches the chat listener — it doesn't clear what's already on screen.
+        DungeonState.state.listen { inDungeon -> if (!inDungeon) reset() }
+
         onChat(DungeonState.state) { text, _, _ ->
             when {
                 startRegex.matches(text) -> {
@@ -71,6 +75,13 @@ object QuizFeatures : SwitchFeature(
             }
         }
     }
+
+    private fun reset() {
+        progress = -1
+        completedAt = null
+    }
+
+    override fun onDeactivate() = reset()
 }
 
 object QuizCountdownFeature : SwitchFeature(
@@ -120,6 +131,8 @@ object QuizCountdownFeature : SwitchFeature(
     init {
         HudManager.register(element)
 
+        DungeonState.state.listen { inDungeon -> if (!inDungeon) countdownEndAt = null }
+
         onChat(DungeonState.state) { text, _, _ ->
             when {
                 startRegex.matches(text) -> countdownEndAt = System.currentTimeMillis() + FIRST_QUESTION_DELAY_MS
@@ -128,5 +141,9 @@ object QuizCountdownFeature : SwitchFeature(
                 finalAnsweredRegex.matches(text) -> countdownEndAt = null
             }
         }
+    }
+
+    override fun onDeactivate() {
+        countdownEndAt = null
     }
 }
