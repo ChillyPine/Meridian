@@ -3,6 +3,8 @@ package io.github.meridian.utils
 import com.mojang.blaze3d.vertex.VertexConsumer
 import io.github.meridian.Meridian
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext
+import net.minecraft.client.gui.Font
+import net.minecraft.client.renderer.blockentity.BeaconRenderer
 import net.minecraft.client.renderer.rendertype.RenderTypes
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.level.ClipContext
@@ -34,6 +36,9 @@ import kotlin.math.sqrt
 object ESP {
 
     enum class Style { BOX, FILLED_BOX }
+
+    // Packed light for "ignore world lighting" draws (full block + sky light).
+    private const val FULL_BRIGHT = 0xF000F0
 
     // Legit by default. An addon may install a provider that returns true to
     // enable see-through-walls; the base ships no provider, so depth is always
@@ -198,6 +203,84 @@ object ESP {
     ) {
         drawFilledAt(ctx, x0, y0, z0, x1, y1, z1, halfAlpha(argb), depth)
         drawBoxAt(ctx, x0, y0, z0, x1, y1, z1, argb, depth)
+    }
+
+    /**
+     * Vanilla beacon beam rising from the given block up to the render limit.
+     * Submits the same geometry the beacon block entity does (bright core plus
+     * translucent glow shell), so it also thickens with distance like vanilla's.
+     * [argb] tints the beam; alpha is respected by the beacon render type.
+     */
+    fun drawBeaconBeam(ctx: LevelRenderContext, x: Int, y: Int, z: Int, argb: Int) {
+        val level = Meridian.mc.level ?: return
+        val cam = Meridian.mc.gameRenderer.mainCamera.position()
+        val dx = x + 0.5 - cam.x
+        val dz = z + 0.5 - cam.z
+        // BeaconRenderer.BEAM_SCALE_THRESHOLD is private; 96 blocks is its value.
+        val scale = maxOf(1.0, sqrt(dx * dx + dz * dz) / 96.0).toFloat()
+        // Texture scroll is a 40-tick loop — mirrors BeaconRenderer.extract.
+        val animationTime = Math.floorMod(level.gameTime, 40).toFloat() + partialTick()
+
+        val pose = ctx.poseStack()
+        pose.pushPose()
+        pose.translate(x - cam.x, y - cam.y, z - cam.z)
+        BeaconRenderer.submitBeaconBeam(
+            pose,
+            ctx.submitNodeCollector(),
+            BeaconRenderer.BEAM_LOCATION,
+            1.0f,
+            animationTime,
+            0,
+            BeaconRenderer.MAX_RENDER_Y,
+            argb,
+            BeaconRenderer.SOLID_BEAM_RADIUS * scale,
+            BeaconRenderer.BEAM_GLOW_RADIUS * scale,
+        )
+        pose.popPose()
+    }
+
+    /**
+     * Camera-facing text at a world position, like a nameplate. Scaled with
+     * distance so it stays legible from far away instead of shrinking to a dot.
+     */
+    fun drawWorldLabel(
+        ctx: LevelRenderContext,
+        text: String,
+        x: Double, y: Double, z: Double,
+        argb: Int = 0xFFFFFFFF.toInt(),
+        seeThrough: Boolean = true,
+    ) {
+        val mc = Meridian.mc
+        val font = mc.font
+        val camera = mc.gameRenderer.mainCamera
+        val cam = camera.position()
+        val dx = x - cam.x
+        val dy = y - cam.y
+        val dz = z - cam.z
+        val dist = sqrt(dx * dx + dy * dy + dz * dz)
+        // 0.025 is vanilla's nameplate scale at arm's length.
+        val scale = 0.025f * maxOf(1.0, dist / 10.0).toFloat()
+
+        val pose = ctx.poseStack()
+        val consumers = ctx.bufferSource()
+        pose.pushPose()
+        pose.translate(dx, dy, dz)
+        pose.mulPose(camera.rotation())
+        pose.scale(scale, -scale, scale)
+        font.drawInBatch(
+            text,
+            -font.width(text) / 2f,
+            0f,
+            argb,
+            false,
+            pose.last().pose(),
+            consumers,
+            if (seeThrough) Font.DisplayMode.SEE_THROUGH else Font.DisplayMode.NORMAL,
+            0,
+            FULL_BRIGHT,
+        )
+        pose.popPose()
+        consumers.endBatch()
     }
 
     /**

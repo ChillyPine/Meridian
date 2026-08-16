@@ -7,6 +7,7 @@ import io.github.meridian.features.FeatureManager
 import io.github.meridian.hud.HudManager
 import io.github.meridian.features.impl.general.ChatBlockerRegistry
 import io.github.meridian.utils.ChatBlocker
+import io.github.meridian.utils.Keybinds
 import io.github.meridian.utils.NameGradients
 import io.github.meridian.utils.F4State
 import io.github.meridian.utils.F5State
@@ -31,6 +32,7 @@ object Meridian : ClientModInitializer {
         ChatBlocker.init()
         NameGradients.init()
         TickScheduler.init()
+        Keybinds.init()
         SkyblockLocation.init()
         F4State.init()
         F5State.init()

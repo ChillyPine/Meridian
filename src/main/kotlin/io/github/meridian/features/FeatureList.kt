@@ -262,6 +262,8 @@ object FeatureList {
         ShulkerColor,
         BoxPangolins,
         HoneyhiveWaypoints,
+        BeeheemothWaypoints,
+        BeeheemothQuickWarp,
         BoxBloodbat,
         BoxShinyCritters,
         ShinyCritterColor,
