@@ -203,6 +203,20 @@ private val ENTRIES: List<ChatBlockerEntry> = listOf(
         note = "",
         regex = listOf("^Your radio lost signal. There's too many enjoyers on this channel.$"),
     ),
+    blocker(
+        id = "block_ironman_trade",
+        group = GENERAL,
+        label = "You can't trade with players while playing on this type of profile!",
+        note = "",
+        regex = listOf("^You can't trade with players while playing on this type of profile!$"),
+    ),
+    blocker(
+        id = "block_trade_disabled",
+        group = GENERAL,
+        label = "The target disabled receiving trade offers!",
+        note = "",
+        regex = listOf("^The target disabled receiving trade offers!$"),
+    ),
 
     // ------------------------------- Dungeons ------------------------------- //
 
