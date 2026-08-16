@@ -7,8 +7,8 @@ import io.github.meridian.utils.P2State
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 
 object ArchCritChecker : SwitchFeature(
-    name = "Archer High Crit Display",
-    description = "Displays your high crit in storm. \nMust use expo arrow IN STORM for math to work",
+    name = "Archer Crit Display",
+    description = "Allows you to check your current crit during P2.\nMust use explosive arrow during P2 for math to work.",
     category = "Dungeons",
     configKey = "arch_high_crit_checker",
     subcategory = "P2",
@@ -34,7 +34,7 @@ object ArchCritChecker : SwitchFeature(
 
             val display = when {
                 missedShot -> "§c§lMissed Shot"
-                highestCrit <= 0.0 -> "§c§lUse Expo Arrow"
+                highestCrit <= 0.0 -> "§c§lUse Explo Arrow"
                 highestCrit < ONE_B -> "§c§l${"%,.1f".format(highestCrit)}"
                 highestCrit < TWO_B -> "§e§l${"%,.1f".format(highestCrit)}"
                 else -> "§a§l${"%,.1f".format(highestCrit)}"
