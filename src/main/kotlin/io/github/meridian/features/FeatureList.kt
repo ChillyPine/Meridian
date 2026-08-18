@@ -72,6 +72,7 @@ import io.github.meridian.features.impl.carryhelper.TrackClientKillTime
 import io.github.meridian.features.impl.carryhelper.TrackClientSpawnTime
 import io.github.meridian.features.impl.carryhelper.TrackSessionTime
 import io.github.meridian.features.impl.dungeons.ArchCritChecker
+import io.github.meridian.features.impl.dungeons.ArchGyroWaypoint
 import io.github.meridian.features.impl.dungeons.SuperBounceHUD
 import io.github.meridian.features.impl.foraging.BeeheemothQuickWarp
 import io.github.meridian.features.impl.foraging.BeeheemothWaypoints
@@ -194,6 +195,7 @@ object FeatureList {
         // --- P1 ---
         HoldingCrystal,
         P1WishNotif,
+        ArchGyroWaypoint,
 
         // --- P2 ---
         BoxStorm,

@@ -86,6 +86,7 @@ Meridian is a client side Minecraft mod for Hypixel Skyblock primarily focused o
 **P1**
 - **Holding Crystal** — On screen warning when holding a crystal in p1.
 - **Healer Wish Notif** — Notifies when the Healer's Wish ability is ready or used.
+- **Archer Gyro Waypoint** — Waypoint for archer high crit gyro.
 
 **P2**
 - **Box Storm** — Boxes Storms vaild hitbox.
