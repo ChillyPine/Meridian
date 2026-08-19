@@ -1,6 +1,7 @@
 package io.github.meridian.gui
 
 import io.github.meridian.Meridian.mc
+import io.github.meridian.features.impl.general.ItemSearchBar
 import io.github.meridian.utils.ItemSearch
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.input.CharacterEvent
@@ -8,8 +9,8 @@ import net.minecraft.client.input.KeyEvent
 import net.minecraft.client.input.MouseButtonEvent
 import net.minecraft.world.inventory.Slot
 
-// Always-on search bar for container screens; not a Feature, so there is no
-// toggle and nothing is persisted. Slots that don't match the query are dimmed.
+// Search bar for container screens, gated on the ItemSearchBar feature. Slots
+// that don't match the query are dimmed. The query itself isn't persisted.
 //
 // The bar is drawn inside a pose scaled to TARGET_SCALE physical px per local
 // unit, so it keeps the same on-screen size at every GUI Scale setting. All of
@@ -32,8 +33,16 @@ object InventorySearch {
     private fun barX(s: Float) = ((mc.window.guiScaledWidth / s).toInt() - BAR_W) / 2
     private fun barY(s: Float) = (mc.window.guiScaledHeight / s).toInt() - SearchBar.HEIGHT - BOTTOM_MARGIN
 
+    private fun active() = ItemSearchBar.enabled
+
     // The query persists between screens; only the focus resets on open.
     fun onScreenOpen() = bar.unfocus()
+
+    /** Drops the query and focus when the feature is turned off mid-session. */
+    fun reset() {
+        bar.unfocus()
+        bar.clear()
+    }
 
     private fun terms(): List<ItemSearch.Term> {
         if (parsedFrom != bar.query) {
@@ -44,6 +53,7 @@ object InventorySearch {
     }
 
     fun render(g: GuiGraphicsExtractor, slots: List<Slot>, leftPos: Int, topPos: Int) {
+        if (!active()) return
         val terms = terms()
         for (slot in slots) {
             if (!slot.isActive || ItemSearch.matches(slot.item, terms)) continue
@@ -61,6 +71,7 @@ object InventorySearch {
     }
 
     fun mouseClicked(event: MouseButtonEvent): Boolean {
+        if (!active()) return false
         val s = scale()
         return bar.mouseClicked((event.x() / s).toInt(), (event.y() / s).toInt(), SearchBar.HEIGHT)
     }
@@ -70,12 +81,12 @@ object InventorySearch {
     // instead of entering text. Escape unfocuses rather than clearing, so the
     // query survives and a second Escape closes the screen as usual.
     fun keyPressed(event: KeyEvent): Boolean {
-        if (!bar.focused) return false
+        if (!active() || !bar.focused) return false
         if (event.key == KEY_ESCAPE) bar.unfocus() else bar.keyPressed(event)
         return true
     }
 
-    fun charTyped(event: CharacterEvent) = bar.charTyped(event)
+    fun charTyped(event: CharacterEvent) = active() && bar.charTyped(event)
 
     private const val SLOT_SIZE = 16
     private const val KEY_ESCAPE = 256

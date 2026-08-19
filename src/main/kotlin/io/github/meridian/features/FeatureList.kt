@@ -86,6 +86,7 @@ import io.github.meridian.features.impl.foraging.ShulkerColor
 import io.github.meridian.features.impl.general.CoordsCommand
 import io.github.meridian.features.impl.general.IRLClockColor
 import io.github.meridian.features.impl.general.IRLTime
+import io.github.meridian.features.impl.general.ItemSearchBar
 import io.github.meridian.features.impl.general.DTCommand
 import io.github.meridian.features.impl.general.BoxFemboys
 import io.github.meridian.features.impl.general.ChatBlockerButton
@@ -161,6 +162,7 @@ object FeatureList {
         // --- Miscellaneous ---
         IRLTime,
         IRLClockColor,
+        ItemSearchBar,
         LoadoutHudFeature,
         NonRemover,
         SoundListButton,
