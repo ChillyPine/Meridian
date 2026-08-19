@@ -20,7 +20,7 @@ object ArchGyroWaypoint : SwitchFeature(
 
     init {
         onChat { text, _, _ ->
-            if (text.startsWith("[BOSS] Maxor: WELL WELL WELL LOOK WHO'S HERE!")) active = true
+            if (text.startsWith("[BOSS] Maxor: WELL! WELL! WELL! LOOK WHO'S HERE!")) active = true
             else if (text.startsWith("[BOSS] Maxor: I'M TOO YOUNG TO DIE AGAIN!")) active = false
         }
         onRender { ctx ->
