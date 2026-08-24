@@ -80,7 +80,7 @@ object BeeheemothWaypoints : SwitchFeature(
 
 object BeeheemothQuickWarp : SwitchFeature(
     name = "Beeheemoth Quick Warp",
-    description = "Shows a keybind prompt to warp to the Beeheemoth's spawn for 10s after it spawns.",
+    description = "Shows a keybind prompt to warp to the Beeheemoth's spawn for 10s after it spawns. \nSet Keybind in Minecraft controls.",
     category = "Foraging",
     configKey = "beeheemoth_quick_warp",
     subcategory = "Torrhus Canyon",
