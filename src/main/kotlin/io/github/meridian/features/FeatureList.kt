@@ -297,10 +297,10 @@ object FeatureList {
 
         // --- General ---
         CarryManagerButton,
+        AutoTrackClientProgress,
         HighlightClients,
         BoxClientsBosses,
         DrawLineToClientBoss,
-        AutoTrackClientProgress,
         AnnounceProgressClient,
         DontCountDeaths,
         TrackClientSpawnTime,
