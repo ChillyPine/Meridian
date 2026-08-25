@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(PlayerTabOverlay.class)
+@Mixin(value = PlayerTabOverlay.class, priority = 2000) // lower prio than skyhanni since they think they are important or something
 public abstract class MixinPlayerTabOverlay {
 
     // getNameForDisplay builds the Component shown for each entry in the
