@@ -22,7 +22,7 @@ object BoxShinyCritters : SwitchFeature(
                 if (ent !is ArmorStand) continue
                 val name = ent.customName?.string ?: continue
                 val p = ent.getPosition(Meridian.mc.deltaTracker.getGameTimeDeltaPartialTick(true))
-                if (!name.contains("Sparkling")) continue
+                if (!name.contains("SPARKLING")) continue
                 ESP.drawBox(ctx, ent, w = 1.3, h = 1.0, wz = 1.0, yOffset = -1.0, argb = ShinyCritterColor.color)
                 ESP.drawTracer(ctx, p.x, p.y, p.z, ShinyCritterColor.color)
             }
