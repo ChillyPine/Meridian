@@ -60,6 +60,7 @@ object UpdateChecker : SwitchFeature(
         val json = JsonParser.parseString(body).asJsonObject
         val tag = json.get("tag_name")?.asString ?: return
         val url = json.get("html_url")?.asString ?: return
+        val modrinthURL = "https://modrinth.com/mod/meridian-sb/changelog"
 
         val latest = try {
             SemanticVersion.parse(tag.removePrefix("v"))
@@ -76,14 +77,19 @@ object UpdateChecker : SwitchFeature(
         if (current >= latest) return
 
         val border = "§5§m                                             "
-        val clickStyle = Style.EMPTY
+        val github = Style.EMPTY
             .withClickEvent(ClickEvent.OpenUrl(URI.create(url)))
             .withHoverEvent(HoverEvent.ShowText(Component.literal("§7Open the release page on GitHub")))
+        val modrinth = Style.EMPTY
+            .withClickEvent(ClickEvent.OpenUrl(URI.create(modrinthURL)))
+            .withHoverEvent(HoverEvent.ShowText(Component.literal("§7Open release page on Modrinth")))
 
         val message = Component.literal("$border\n")
             .append("§6§l✦ §d§lMeridian Update Available §6§l✦\n")
             .append("  §7You're on §cv${current.friendlyString}§7, latest is §a$tag\n")
-            .append(Component.literal("      §d§n» Click here to download «").setStyle(clickStyle))
+            .append(Component.literal("      §d§n» Click here to download on Github «").setStyle(github))
+            .append("\n")
+            .append(Component.literal("      §d§n» Click here to download on Modrinth «").setStyle(modrinth))
             .append("\n$border")
 
         Meridian.mc.execute { sendClientMessage(message) }
