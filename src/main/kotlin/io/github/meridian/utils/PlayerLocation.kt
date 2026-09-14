@@ -112,6 +112,30 @@ object P2State {
     }
 }
 
+object P3State {
+    private val _state = BasicState(false)
+    val state: State<Boolean> = _state
+    val inP3: Boolean get() = _state.value
+
+    private var lastLevel: ClientLevel? = null
+
+    fun init() {
+        onChatMessage { text, _, _ ->
+            when (text) {
+                "[BOSS] Goldor: Who dares trespass into my domain?" -> _state.value = true
+                "[BOSS] Goldor: Necron, forgive me." -> _state.value = false
+            }
+        }
+        ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick {
+            val level = mc.level
+            if (level !== lastLevel) {
+                lastLevel = level
+                _state.value = false
+            }
+        })
+    }
+}
+
 // Add another way to detect if in P5 (check for wither king?? maybe that's retarded)
 object P5State {
     private val _state = BasicState(false)
