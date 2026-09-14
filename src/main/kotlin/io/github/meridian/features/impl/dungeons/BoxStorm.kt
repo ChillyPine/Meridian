@@ -5,9 +5,6 @@ import io.github.meridian.features.types.ColorFeature
 import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.ESP
 import io.github.meridian.utils.P2State
-import io.github.meridian.utils.onChatMessage
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
-import net.minecraft.client.multiplayer.ClientLevel
 import net.minecraft.world.entity.boss.wither.WitherBoss
 
 object BoxStorm : SwitchFeature(
