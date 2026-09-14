@@ -49,7 +49,7 @@ object InRangeColor : ColorFeature(
 )
 
 object OutRangeColor : ColorFeature(
-    name = "Our Of Range Color",
+    name = "Out Of Range Color",
     description = "",
     category = "Dungeons",
     configKey = "out_range_color",
