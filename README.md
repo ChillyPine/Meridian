@@ -9,7 +9,7 @@ Meridian is a client side Minecraft mod for Hypixel Skyblock primarily focused o
 
 ![Fabric](https://img.shields.io/badge/Fabric-26.1.2-blue?style=flat-square)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)
-![Version](https://img.shields.io/badge/Version-1.0.7-orange?style=flat-square)
+![Version](https://img.shields.io/badge/Version-1.0.9-orange?style=flat-square)
 ---
 </div>
 
@@ -97,6 +97,7 @@ Meridian is a client side Minecraft mod for Hypixel Skyblock primarily focused o
 - **Simon Says Time & Party Notification** — Time SS, Send it in party chat.
 - **Box Goldor** — Boxes Goldors vaild hitbox.
 - **Healer Wish Notif** — Notifies when the Healer's Wish ability is ready or used.
+- **Terminal Hitboxes** — Displays the terminals true hits box and if its range.
 
 **P4**
 - **Highlight Platform Blocks to Mine** — Highlights the 3x3 to mine out for no platform drop in p4.
@@ -200,7 +201,7 @@ Meridian is a client side Minecraft mod for Hypixel Skyblock primarily focused o
 **Tweaks**
 - **Remove Realms** — Removes the Realms button from the minecraft main screen.
 - **Remove Green Nausea Effect** — Removes the green screen overlay from the Nausea effect.
-- **Remove White Chat Bar** — Removes the white background in chat. (1.8.9 chat)
+- **Remove White Chat Bar** — Removes the white sidebar in chat. (1.8.9 chat)
 <details>
 <summary>Chat Without Meridian (26.1.2 chat)</summary>
 

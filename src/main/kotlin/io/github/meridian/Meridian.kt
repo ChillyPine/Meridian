@@ -13,6 +13,7 @@ import io.github.meridian.utils.F4State
 import io.github.meridian.utils.F5State
 import io.github.meridian.utils.F6State
 import io.github.meridian.utils.P2State
+import io.github.meridian.utils.P3State
 import io.github.meridian.utils.P5State
 import io.github.meridian.utils.SkyblockLocation
 import io.github.meridian.utils.TickScheduler
@@ -38,6 +39,7 @@ object Meridian : ClientModInitializer {
         F5State.init()
         F6State.init()
         P2State.init()
+        P3State.init()
         P5State.init()
         MeridianEvents.init()
         FeatureList.registerAll()
