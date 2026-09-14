@@ -6,6 +6,10 @@ import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.ESP
 import io.github.meridian.utils.P3State
 import net.minecraft.world.entity.decoration.ArmorStand
+import net.minecraft.world.phys.AABB
+import net.minecraft.world.phys.Vec3
+import kotlin.math.max
+import kotlin.math.sqrt
 
 object TerminalHitboxes : SwitchFeature(
     name = "Terminals True Hitboxes",
@@ -16,6 +20,11 @@ object TerminalHitboxes : SwitchFeature(
 ) {
     private const val REACH = 3.0 // unless you a dirty cheater >:(
 
+    private const val BOX_W = 0.5
+    private const val BOX_H = 1.5
+    private const val BOX_WZ = 0.5
+    private const val Y_OFFSET = 0.5
+
     init {
         onRender { ctx ->
             val level = Meridian.mc.level ?: return@onRender
@@ -24,18 +33,31 @@ object TerminalHitboxes : SwitchFeature(
             for (ent in level.entitiesForRendering()) {
                 if (ent !is ArmorStand) continue
                 val name = ent.customName?.string ?: continue
-                if (!name.contains("CLICK HERE")) continue
+                if (!P3State.inP3 || !name.contains("Inactive Terminal")) continue
 
-                val inRange = player.distanceTo(ent) <= REACH
+                val box = terminalBox(ent)
+                val inRange = distanceToBox(player.eyePosition, box) <= REACH
 
-                if (inRange && P3State.inP3) {
-                    ESP.drawFilled(ctx, ent, w = 0.5, h = 1.0, wz = 0.5, yOffset = 1.0, InRangeColor.color)
-                }
-                if(!inRange && P3State.inP3) {
-                    ESP.drawFilled(ctx, ent, w = 0.5, h = 1.0, wz = 0.5, yOffset = 1.0, OutRangeColor.color)
-                }
+                val color = if (inRange) InRangeColor.color else OutRangeColor.color
+                ESP.drawFilled(ctx, ent, w = BOX_W, h = BOX_H, wz = BOX_WZ, yOffset = Y_OFFSET, color)
             }
         }
+    }
+
+    // math and shit to find true angles for player reach
+    private fun terminalBox(ent: ArmorStand): AABB {
+        val base = ent.position()
+        return AABB(
+            base.x - BOX_W / 2.0, base.y + Y_OFFSET, base.z - BOX_WZ / 2.0,
+            base.x + BOX_W / 2.0, base.y + Y_OFFSET + BOX_H, base.z + BOX_WZ / 2.0
+        )
+    }
+
+    private fun distanceToBox(origin: Vec3, box: AABB): Double {
+        val dx = max(box.minX - origin.x, max(0.0, origin.x - box.maxX))
+        val dy = max(box.minY - origin.y, max(0.0, origin.y - box.maxY))
+        val dz = max(box.minZ - origin.z, max(0.0, origin.z - box.maxZ))
+        return sqrt(dx * dx + dy * dy + dz * dz)
     }
 }
 
