@@ -1,9 +1,9 @@
 package io.github.meridian.features.impl.dungeons
 
 import io.github.meridian.features.types.SwitchFeature
-import io.github.meridian.utils.DungeonState
+import io.github.meridian.utils.BossState
 import io.github.meridian.utils.ESP
-import io.github.meridian.utils.P2State
+
 
 object PadHelper : SwitchFeature(
     name = "Pad Helper (PY)",
@@ -43,7 +43,8 @@ object PadHelper : SwitchFeature(
     )
 
     init {
-        onRender(DungeonState.state.zip(P2State.state, Boolean::and)) { ctx ->
+        onRender { ctx ->
+            if (!BossState.inP2) return@onRender
             for (p in pads) {
                 val y = p.topY.toDouble()
                 val rects = FILL.map {

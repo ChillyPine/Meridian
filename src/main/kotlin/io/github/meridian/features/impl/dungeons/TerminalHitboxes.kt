@@ -3,8 +3,8 @@ package io.github.meridian.features.impl.dungeons
 import io.github.meridian.Meridian
 import io.github.meridian.features.types.ColorFeature
 import io.github.meridian.features.types.SwitchFeature
+import io.github.meridian.utils.BossState
 import io.github.meridian.utils.ESP
-import io.github.meridian.utils.P3State
 import net.minecraft.world.entity.decoration.ArmorStand
 import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.Vec3
@@ -33,7 +33,7 @@ object TerminalHitboxes : SwitchFeature(
             for (ent in level.entitiesForRendering()) {
                 if (ent !is ArmorStand) continue
                 val name = ent.customName?.string ?: continue
-                if (!P3State.inP3 || !name.contains("Inactive Terminal")) continue
+                if (!BossState.inP3 || !name.contains("Inactive Terminal")) continue
 
                 val box = terminalBox(ent)
                 val inRange = distanceToBox(player.eyePosition, box) <= REACH

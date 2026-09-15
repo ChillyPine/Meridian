@@ -3,8 +3,8 @@ package io.github.meridian.features.impl.dungeons
 import io.github.meridian.Meridian
 import io.github.meridian.features.types.ColorFeature
 import io.github.meridian.features.types.SwitchFeature
+import io.github.meridian.utils.BossState
 import io.github.meridian.utils.ESP
-import io.github.meridian.utils.P3State
 import net.minecraft.world.entity.boss.wither.WitherBoss
 
 object BoxGoldor : SwitchFeature(
@@ -18,7 +18,7 @@ object BoxGoldor : SwitchFeature(
 
     init {
         onRender { ctx ->
-            if (!P3State.inP3) return@onRender
+            if (!BossState.inP3) return@onRender
             val level = Meridian.mc.level ?: return@onRender
 
             val storm = level.entitiesForRendering()

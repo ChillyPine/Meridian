@@ -1,8 +1,8 @@
 package io.github.meridian.features.impl.dungeons
 
 import io.github.meridian.features.types.SwitchFeature
+import io.github.meridian.utils.BossState
 import io.github.meridian.utils.ESP
-import io.github.meridian.utils.P5State
 import net.minecraft.world.phys.Vec3
 
 object RelicHelper : SwitchFeature(
@@ -85,7 +85,8 @@ object RelicHelper : SwitchFeature(
     }
 
     init {
-        onRender(P5State.state) { ctx ->
+        onRender { ctx ->
+            if (!BossState.inP5) return@onRender
             for (r in relics) {
                 val pts = corners(r)
                 // depth = true is pinned (not the addon-overridable ESP.depth) so

@@ -3,8 +3,8 @@ package io.github.meridian.features.impl.dungeons
 import io.github.meridian.Meridian
 import io.github.meridian.features.types.ColorFeature
 import io.github.meridian.features.types.SwitchFeature
+import io.github.meridian.utils.BossState
 import io.github.meridian.utils.ESP
-import io.github.meridian.utils.P2State
 import net.minecraft.world.entity.boss.wither.WitherBoss
 
 object BoxStorm : SwitchFeature(
@@ -17,7 +17,7 @@ object BoxStorm : SwitchFeature(
     init {
 
         onRender { ctx ->
-            if (!P2State.inP2) return@onRender
+            if (!BossState.inP2) return@onRender
             val level = Meridian.mc.level ?: return@onRender
 
             // render that invisible dumbfucker

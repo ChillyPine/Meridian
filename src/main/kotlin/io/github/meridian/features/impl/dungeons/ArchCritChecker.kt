@@ -3,7 +3,7 @@ package io.github.meridian.features.impl.dungeons
 import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.hud.HudElement
 import io.github.meridian.hud.HudManager
-import io.github.meridian.utils.P2State
+import io.github.meridian.utils.BossState
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 
 object ArchCritChecker : SwitchFeature(
@@ -30,7 +30,7 @@ object ArchCritChecker : SwitchFeature(
         override val shadow = true
 
         override fun content(): List<String> {
-            if (!isActive() || !P2State.inP2) return emptyList()
+            if (!isActive() || !BossState.inP2) return emptyList()
 
             val display = when {
                 missedShot -> "§c§lMissed Shot"
@@ -49,7 +49,7 @@ object ArchCritChecker : SwitchFeature(
         HudManager.register(element)
         // horrible ass way of reseting the vals
         ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick {
-            val inP2 = P2State.inP2
+            val inP2 = BossState.inP2
             if (inP2 && !wasInP2) {
                 highestCrit = 0.0
                 missedShot = false
@@ -58,7 +58,7 @@ object ArchCritChecker : SwitchFeature(
         })
         // math and shit
         onChat { text, _, _ ->
-            if (!P2State.inP2) return@onChat
+            if (!BossState.inP2) return@onChat
 
             damageRegex.find(text)?.let { match ->
                 val enemies = match.groupValues[1].toIntOrNull() ?: return@let

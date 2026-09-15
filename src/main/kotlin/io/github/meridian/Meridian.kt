@@ -12,9 +12,7 @@ import io.github.meridian.utils.NameGradients
 import io.github.meridian.utils.F4State
 import io.github.meridian.utils.F5State
 import io.github.meridian.utils.F6State
-import io.github.meridian.utils.P2State
-import io.github.meridian.utils.P3State
-import io.github.meridian.utils.P5State
+import io.github.meridian.utils.BossState
 import io.github.meridian.utils.SkyblockLocation
 import io.github.meridian.utils.TickScheduler
 import net.fabricmc.api.ClientModInitializer
@@ -38,9 +36,7 @@ object Meridian : ClientModInitializer {
         F4State.init()
         F5State.init()
         F6State.init()
-        P2State.init()
-        P3State.init()
-        P5State.init()
+        BossState.init()
         MeridianEvents.init()
         FeatureList.registerAll()
         ChatBlockerRegistry.init()

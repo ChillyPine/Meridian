@@ -2,8 +2,7 @@ package io.github.meridian.features.impl.dungeons
 
 import io.github.meridian.Meridian.mc
 import io.github.meridian.features.types.SwitchFeature
-import io.github.meridian.utils.DungeonState
-import io.github.meridian.utils.P5State
+import io.github.meridian.utils.BossState
 import io.github.meridian.utils.hasItem
 import net.minecraft.network.chat.Component
 
@@ -16,8 +15,8 @@ object HoldingCrystal : SwitchFeature(
     subcategory = "P1",
 ) {
     init {
-        onTick(DungeonState.state) {
-            if (hasItem("Energy Crystal")) {
+        onTick {
+            if (hasItem("Energy Crystal") && BossState.inP1) {
                 mc.gui.setTimes(0, 5, 0)
                 mc.gui.setTitle(Component.literal("§cHolding Crystal"))
                 mc.gui.setSubtitle(Component.empty())
@@ -34,8 +33,8 @@ object HoldingRelic : SwitchFeature(
     subcategory = "P5",
 ) {
     init {
-        onTick(P5State.state) {
-            if (hasItem("Relic")) {
+        onTick {
+            if (hasItem("Relic") && BossState.inP5) {
                 mc.gui.setTimes(0, 5, 0)
                 mc.gui.setTitle(Component.empty())
                 mc.gui.setSubtitle(Component.literal("§cHolding Relic"))

@@ -1,8 +1,9 @@
 package io.github.meridian.features.impl.dungeons
 
 import io.github.meridian.features.types.SwitchFeature
+import io.github.meridian.utils.BossState
 import io.github.meridian.utils.ESP
-import io.github.meridian.utils.P5State
+
 
 object StackHelper : SwitchFeature(
     name = "Arrow Stack Helper",
@@ -43,7 +44,8 @@ object StackHelper : SwitchFeature(
     )
 
     init {
-        onRender(P5State.state) { ctx ->
+        onRender { ctx ->
+            if (!BossState.inP5) return@onRender
             for (c in circles) {
                 ESP.drawWorldCircle(ctx, c.x, c.y, c.z, c.r, CIRCLE_ALPHA or c.rgb, depth = true, lineWidth = 4f)
             }

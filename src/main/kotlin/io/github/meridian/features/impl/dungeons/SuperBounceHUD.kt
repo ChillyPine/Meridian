@@ -4,11 +4,8 @@ import io.github.meridian.Meridian.mc
 import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.hud.HudElement
 import io.github.meridian.hud.HudManager
-import io.github.meridian.utils.BasicState
-import io.github.meridian.utils.P2State
-import io.github.meridian.utils.P5State
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
-import net.minecraft.client.multiplayer.ClientLevel
+import io.github.meridian.utils.BossState
+
 
 object SuperBounceHUD : SwitchFeature(
     name = "Super Bounce Display",
@@ -18,10 +15,6 @@ object SuperBounceHUD : SwitchFeature(
     subcategory = "P3",
 ) {
     private const val SUPER_PITCH = -40f
-
-    private val inP3 = BasicState(false)
-    private var lastLevel: ClientLevel? = null
-
     @Volatile private var line: String? = null
 
     private val element = object : HudElement(
@@ -37,19 +30,8 @@ object SuperBounceHUD : SwitchFeature(
     init {
         HudManager.register(element)
 
-        P2State.state.listen { inP2 -> if (!inP2) inP3.value = true }
-        P5State.state.listen { inP5 -> if (inP5) inP3.value = false }
-        inP3.listen { if (!it) line = null }
-
-        ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick {
-            val level = mc.level
-            if (level !== lastLevel) {
-                lastLevel = level
-                inP3.value = false
-            }
-        })
-
-        onTick(inP3) {
+        onTick {
+            if (!BossState.inP3) return@onTick
             val pitch = mc.player?.xRot ?: run { line = null; return@onTick }
             line = if (pitch <= SUPER_PITCH) "§c§lSUPER" else "§a§lNORMAL"
         }
