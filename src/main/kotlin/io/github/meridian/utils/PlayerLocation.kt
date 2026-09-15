@@ -125,11 +125,11 @@ object BossState {
     operator fun get(phase: BossPhase): Boolean = states.getValue(phase).value
 
     // use these vaules, Example : BossState.inP2 will return true when in P2
-    val inP1: Boolean get() = get(BossPhase.P1) // unused rn
+    val inP1: Boolean get() = get(BossPhase.P1)
     val inP2: Boolean get() = get(BossPhase.P2)
     val inP3: Boolean get() = get(BossPhase.P3)
     val inP4: Boolean get() = get(BossPhase.P4) // unused rn
-    val inP5: Boolean get() = get(BossPhase.P5) // unused rn
+    val inP5: Boolean get() = get(BossPhase.P5)
 
     fun init() {
         onChatMessage { text, _, _ ->
