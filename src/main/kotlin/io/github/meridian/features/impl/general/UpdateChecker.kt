@@ -22,7 +22,7 @@ private const val RELEASES_API = "https://api.github.com/repos/ChillyPine/Meridi
 
 object UpdateChecker : SwitchFeature(
     name = "Check for Updates",
-    description = "Checks GitHub for a newer Meridian release on join and notifies you in chat.",
+    description = "Checks GitHub and Modrinth for a newer Meridian release on join and notifies you in chat.",
     category = "General",
     configKey = "update_checker",
     subcategory = "Miscellaneous",
