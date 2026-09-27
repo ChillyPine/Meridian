@@ -121,6 +121,7 @@ import io.github.meridian.features.impl.mining.BoxCorleone
 import io.github.meridian.features.impl.mining.BoxDiamondGoblins
 import io.github.meridian.features.impl.mining.BoxGoldenGoblins
 import io.github.meridian.features.impl.mining.BoxKeyGuardians
+import io.github.meridian.features.impl.mining.BoxLittleFoot
 import io.github.meridian.features.impl.vanilla.ChatEraser
 import org.apache.commons.lang3.arch.Processor
 
@@ -288,6 +289,7 @@ object FeatureList {
         BoxGoldenGoblins,
         BoxDiamondGoblins,
         BoxKeyGuardians,
+        BoxLittleFoot,
 
         // ================================================== //
         //                      EVENTS                        //

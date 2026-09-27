@@ -128,3 +128,23 @@ object BoxKeyGuardians : SwitchFeature(
         }
     }
 }
+
+object BoxLittleFoot : SwitchFeature(
+    name = "Box Littlefoot",
+    description = "",
+    category = "Mining",
+    configKey = "box_little_foot",
+    subcategory = "Boxes",
+) {
+    init {
+        onRender { ctx ->
+            val level = Meridian.mc.level ?: return@onRender
+            for (ent in level.entitiesForRendering()) {
+                if (ent !is ArmorStand) continue
+                val name = ent.customName?.string ?: continue
+                if (!name.contains("Littlefoot")) continue
+                ESP.drawBox(ctx, ent, w = 0.6, h = 2.0, wz = 0.6, yOffset = -2.2, argb = 0xFF00FFFF.toInt())
+            }
+        }
+    }
+}

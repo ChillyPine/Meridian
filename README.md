@@ -159,6 +159,7 @@ Meridian is a client side Minecraft mod for Hypixel Skyblock primarily focused o
 - **Box Diamond Goblins** — Boxes Diamond Goblin mobs.
 - **Box Golden Goblins** — Boxes Golden Goblin mobs.
 - **Box Key Guardians** — Boxes Key Guardian mobs.
+- **Box Littlefoot** — Boxes Littlefoot.
 
 </details>
 
