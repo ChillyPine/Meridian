@@ -49,7 +49,7 @@ object LividHealthHUD : SwitchFeature(
     }
 
     init {
-        HudManager.register(element)
+        HudManager.register(element, this)
 
         onTick {
             if (!F5State.inF5Boss) {

@@ -1,12 +1,15 @@
 package io.github.meridian.hud
 
+import io.github.meridian.features.Feature
+
 // A draggable, scalable on-screen overlay owned by a feature.
 //
 // Content is expressed as a list of pre-formatted lines — legacy §-color codes
 // are honored by Font/GuiGraphicsExtractor, so each line carries its own coloring. An
 // empty live content() list means "nothing to draw right now": the element
 // stays invisible in-game but is still positionable in the HUD editor through
-// its preview() content.
+// its preview() content. Elements whose owning feature is toggled off are
+// hidden everywhere, including the editor.
 //
 // Position is stored as a fraction [0,1] of the gui-scaled screen so the element
 // keeps its relative spot across resolutions and gui-scale changes. The actual
@@ -24,6 +27,11 @@ abstract class HudElement(
     var anchorX: Float = defaultAnchorX
     var anchorY: Float = defaultAnchorY
     var scale: Float = 1f
+
+    // Set by HudManager.register.
+    internal var owner: Feature? = null
+
+    fun isEnabled(): Boolean = owner?.isActive() ?: true
 
     // Screen-space bounds (gui-scaled px) from the most recent draw. Written by
     // HudManager.draw; read by the editor for hit-testing, outlines and tooltips.

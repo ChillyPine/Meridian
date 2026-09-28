@@ -10,9 +10,9 @@ import net.minecraft.client.input.MouseButtonEvent
 import net.minecraft.network.chat.Component
 import org.lwjgl.glfw.GLFW
 
-// Full-screen editor opened with `/md hud`. Every registered HUD element is
-// drawn with its preview content (so even disabled / data-less elements can be
-// placed). Drag to move, scroll to scale, hover to see the owning feature's
+// Full-screen editor opened with `/md hud`. Every HUD element whose feature is
+// toggled on is drawn with its preview content (so data-less elements can still
+// be placed). Drag to move, scroll to scale, hover to see the owning feature's
 // name, R to reset the hovered element. Changes persist on release / scale /
 // close.
 class HudEditScreen : Screen(Component.literal("Meridian HUD Editor")) {
@@ -39,21 +39,23 @@ class HudEditScreen : Screen(Component.literal("Meridian HUD Editor")) {
         val help = "Drag to move  ·  Scroll to scale  ·  R resets hovered  ·  Esc saves & exits"
         guiGraphics.text(font, help, (width - font.width(help)) / 2, 6 + font.lineHeight + 2, HELP_COLOR, true)
 
+        val elements = HudManager.enabledElements()
+
         // Draw each element's preview (also refreshes its on-screen bounds).
-        for (el in HudManager.elements()) {
+        for (el in elements) {
             HudManager.draw(guiGraphics, font, el, el.preview())
         }
 
         // Topmost element under the cursor (later draws sit on top).
         val nowHover = if (dragging != null) hovered
-                       else HudManager.elements().lastOrNull { it.contains(mouseX, mouseY) }
+                       else elements.lastOrNull { it.contains(mouseX, mouseY) }
         if (nowHover !== hovered) {
             hovered = nowHover
             hoverStartMs = System.currentTimeMillis()
         }
 
         // Outlines — highlight the hovered / dragged element.
-        for (el in HudManager.elements()) {
+        for (el in elements) {
             val active = el === dragging || el === hovered
             drawOutline(guiGraphics, el, if (active) ACCENT_COLOR else OUTLINE_COLOR)
         }
@@ -91,7 +93,7 @@ class HudEditScreen : Screen(Component.literal("Meridian HUD Editor")) {
     override fun mouseClicked(event: MouseButtonEvent, bl: Boolean): Boolean {
         val mx = event.x.toInt()
         val my = event.y.toInt()
-        val hit = HudManager.elements().lastOrNull { it.contains(mx, my) }
+        val hit = HudManager.enabledElements().lastOrNull { it.contains(mx, my) }
         if (hit != null) {
             dragging = hit
             dragOffsetX = mx - hit.lastX
@@ -121,7 +123,7 @@ class HudEditScreen : Screen(Component.literal("Meridian HUD Editor")) {
     }
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
-        val el = HudManager.elements().lastOrNull { it.contains(mouseX.toInt(), mouseY.toInt()) }
+        val el = HudManager.enabledElements().lastOrNull { it.contains(mouseX.toInt(), mouseY.toInt()) }
         if (el != null && scrollY != 0.0) {
             val step = if (scrollY > 0) SCALE_STEP else -SCALE_STEP
             el.scale = (el.scale + step).coerceIn(HudElement.MIN_SCALE, HudElement.MAX_SCALE)
