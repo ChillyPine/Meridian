@@ -18,6 +18,7 @@
 		"MixinEntityRenderer",
 		"MixinLivingEntityRenderer",
 		"MixinPlayerTabOverlay",
+		"MixinSkyHanniAdvancedPlayerList",
 		"MixinTitleScreen",
 		"accessor.RenderPipelinesAccessor",
 		"accessor.RenderTypeInvoker"
