@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext
 import net.minecraft.client.gui.Font
 import net.minecraft.client.renderer.blockentity.BeaconRenderer
 import net.minecraft.client.renderer.rendertype.RenderTypes
+import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.level.ClipContext
 import net.minecraft.world.phys.HitResult
@@ -16,7 +17,9 @@ import kotlin.math.sqrt
 
 /**
  * Central ESP utility. Per-feature ESP code calls into here from a
- * LevelRenderEvents.AFTER_SOLID_FEATURES handler.
+ * LevelRenderEvents.COLLECT_SUBMITS handler. Geometry is submitted to the
+ * frame's SubmitNodeCollector (26.3 has no immediate buffer source here), so
+ * each draw callback runs later in the frame against a snapshot of the pose.
  *
  * Two styles:
  *   BOX        - wireframe AABB
@@ -129,19 +132,12 @@ object ESP {
     ) {
         if (depth && !hasLineOfSight(x, y, z)) return
         val pose = ctx.poseStack()
-        val consumers = ctx.bufferSource()
-        val cam = Meridian.mc.gameRenderer.mainCamera
+        val cam = Meridian.mc.gameRenderer.mainCamera()
         val camPos = cam.position()
         val look = cam.forwardVector()
         val sx = camPos.x + look.x() * 0.2
         val sy = camPos.y + look.y() * 0.2
         val sz = camPos.z + look.z() * 0.2
-        pose.pushPose()
-        pose.translate(-camPos.x, -camPos.y, -camPos.z)
-        val rt = CustomRenderPipelines.LINES_NO_DEPTH_TYPE
-        val buf = consumers.getBuffer(rt)
-        val last = pose.last()
-        val m = last.pose()
         val dx = (x - sx).toFloat()
         val dy = (y - sy).toFloat()
         val dz = (z - sz).toFloat()
@@ -150,12 +146,16 @@ object ESP {
         val nx = dx / len
         val ny = dy / len
         val nz = dz / len
-        buf.addVertex(m, sx.toFloat(), sy.toFloat(), sz.toFloat())
-            .setColor(argb).setNormal(last, nx, ny, nz).setLineWidth(2f)
-        buf.addVertex(m, x.toFloat(), y.toFloat(), z.toFloat())
-            .setColor(argb).setNormal(last, nx, ny, nz).setLineWidth(2f)
+        pose.pushPose()
+        pose.translate(-camPos.x, -camPos.y, -camPos.z)
+        ctx.submitNodeCollector().submitCustomGeometry(pose, CustomRenderPipelines.LINES_NO_DEPTH_TYPE) { last, buf ->
+            val m = last.pose()
+            buf.addVertex(m, sx.toFloat(), sy.toFloat(), sz.toFloat())
+                .setColor(argb).setNormal(last, nx, ny, nz).setLineWidth(2f)
+            buf.addVertex(m, x.toFloat(), y.toFloat(), z.toFloat())
+                .setColor(argb).setNormal(last, nx, ny, nz).setLineWidth(2f)
+        }
         pose.popPose()
-        consumers.endBatch(rt)
     }
 
     // ---- Low-level primitives --------------------------------------------
@@ -170,7 +170,7 @@ object ESP {
         val mc = Meridian.mc
         val level = mc.level ?: return true
         val player = mc.player ?: return true
-        val camPos = mc.gameRenderer.mainCamera.position()
+        val camPos = mc.gameRenderer.mainCamera().position()
         val ctx = ClipContext(
             Vec3(camPos.x, camPos.y, camPos.z),
             Vec3(x, y, z),
@@ -213,7 +213,7 @@ object ESP {
      */
     fun drawBeaconBeam(ctx: LevelRenderContext, x: Int, y: Int, z: Int, argb: Int) {
         val level = Meridian.mc.level ?: return
-        val cam = Meridian.mc.gameRenderer.mainCamera.position()
+        val cam = Meridian.mc.gameRenderer.mainCamera().position()
         val dx = x + 0.5 - cam.x
         val dz = z + 0.5 - cam.z
         // BeaconRenderer.BEAM_SCALE_THRESHOLD is private; 96 blocks is its value.
@@ -252,7 +252,7 @@ object ESP {
     ) {
         val mc = Meridian.mc
         val font = mc.font
-        val camera = mc.gameRenderer.mainCamera
+        val camera = mc.gameRenderer.mainCamera()
         val cam = camera.position()
         val dx = x - cam.x
         val dy = y - cam.y
@@ -262,25 +262,24 @@ object ESP {
         val scale = 0.025f * maxOf(1.0, dist / 10.0).toFloat()
 
         val pose = ctx.poseStack()
-        val consumers = ctx.bufferSource()
         pose.pushPose()
         pose.translate(dx, dy, dz)
-        pose.mulPose(camera.rotation())
+        pose.rotate(camera.rotation())
         pose.scale(scale, -scale, scale)
-        font.drawInBatch(
-            text,
+        // submitText(pose, x, y, text, shadow, mode, light, color, backgroundColor, outlineColor)
+        ctx.submitNodeCollector().submitText(
+            pose,
             -font.width(text) / 2f,
             0f,
-            argb,
+            Component.literal(text).visualOrderText,
             false,
-            pose.last().pose(),
-            consumers,
             if (seeThrough) Font.DisplayMode.SEE_THROUGH else Font.DisplayMode.NORMAL,
-            0,
             FULL_BRIGHT,
+            argb,
+            0,
+            0,
         )
         pose.popPose()
-        consumers.endBatch()
     }
 
     /**
@@ -298,31 +297,28 @@ object ESP {
         lineWidth: Float = 2f,
     ) {
         val pose = ctx.poseStack()
-        val consumers = ctx.bufferSource()
-        val cam = Meridian.mc.gameRenderer.mainCamera.position()
+        val cam = Meridian.mc.gameRenderer.mainCamera().position()
         pose.pushPose()
         pose.translate(-cam.x, -cam.y, -cam.z)
-        val rt = linesType(depth)
-        val buf = consumers.getBuffer(rt)
-        val last = pose.last()
-        val m = last.pose()
-        val y = cy.toFloat()
-        for (i in 0 until segments) {
-            val a0 = i.toDouble() / segments * 2.0 * Math.PI
-            val a1 = (i + 1).toDouble() / segments * 2.0 * Math.PI
-            val ax = (cx + radius * cos(a0)).toFloat()
-            val az = (cz + radius * sin(a0)).toFloat()
-            val bx = (cx + radius * cos(a1)).toFloat()
-            val bz = (cz + radius * sin(a1)).toFloat()
-            var nx = bx - ax
-            var nz = bz - az
-            val len = sqrt(nx * nx + nz * nz).coerceAtLeast(1e-4f)
-            nx /= len; nz /= len
-            buf.addVertex(m, ax, y, az).setColor(argb).setNormal(last, nx, 0f, nz).setLineWidth(lineWidth)
-            buf.addVertex(m, bx, y, bz).setColor(argb).setNormal(last, nx, 0f, nz).setLineWidth(lineWidth)
+        ctx.submitNodeCollector().submitCustomGeometry(pose, linesType(depth)) { last, buf ->
+            val m = last.pose()
+            val y = cy.toFloat()
+            for (i in 0 until segments) {
+                val a0 = i.toDouble() / segments * 2.0 * Math.PI
+                val a1 = (i + 1).toDouble() / segments * 2.0 * Math.PI
+                val ax = (cx + radius * cos(a0)).toFloat()
+                val az = (cz + radius * sin(a0)).toFloat()
+                val bx = (cx + radius * cos(a1)).toFloat()
+                val bz = (cz + radius * sin(a1)).toFloat()
+                var nx = bx - ax
+                var nz = bz - az
+                val len = sqrt(nx * nx + nz * nz).coerceAtLeast(1e-4f)
+                nx /= len; nz /= len
+                buf.addVertex(m, ax, y, az).setColor(argb).setNormal(last, nx, 0f, nz).setLineWidth(lineWidth)
+                buf.addVertex(m, bx, y, bz).setColor(argb).setNormal(last, nx, 0f, nz).setLineWidth(lineWidth)
+            }
         }
         pose.popPose()
-        consumers.endBatch(rt)
     }
 
     /**
@@ -340,29 +336,26 @@ object ESP {
     ) {
         if (pts.size < 2) return
         val pose = ctx.poseStack()
-        val consumers = ctx.bufferSource()
-        val cam = Meridian.mc.gameRenderer.mainCamera.position()
+        val cam = Meridian.mc.gameRenderer.mainCamera().position()
         pose.pushPose()
         pose.translate(-cam.x, -cam.y, -cam.z)
-        val rt = linesType(depth)
-        val buf = consumers.getBuffer(rt)
-        val last = pose.last()
-        val m = last.pose()
-        val fy = y.toFloat()
-        for (i in pts.indices) {
-            val a = pts[i]
-            val b = pts[(i + 1) % pts.size]
-            var nx = (b.first - a.first).toFloat()
-            var nz = (b.second - a.second).toFloat()
-            val len = sqrt(nx * nx + nz * nz).coerceAtLeast(1e-4f)
-            nx /= len; nz /= len
-            buf.addVertex(m, a.first.toFloat(), fy, a.second.toFloat())
-                .setColor(argb).setNormal(last, nx, 0f, nz).setLineWidth(lineWidth)
-            buf.addVertex(m, b.first.toFloat(), fy, b.second.toFloat())
-                .setColor(argb).setNormal(last, nx, 0f, nz).setLineWidth(lineWidth)
+        ctx.submitNodeCollector().submitCustomGeometry(pose, linesType(depth)) { last, buf ->
+            val m = last.pose()
+            val fy = y.toFloat()
+            for (i in pts.indices) {
+                val a = pts[i]
+                val b = pts[(i + 1) % pts.size]
+                var nx = (b.first - a.first).toFloat()
+                var nz = (b.second - a.second).toFloat()
+                val len = sqrt(nx * nx + nz * nz).coerceAtLeast(1e-4f)
+                nx /= len; nz /= len
+                buf.addVertex(m, a.first.toFloat(), fy, a.second.toFloat())
+                    .setColor(argb).setNormal(last, nx, 0f, nz).setLineWidth(lineWidth)
+                buf.addVertex(m, b.first.toFloat(), fy, b.second.toFloat())
+                    .setColor(argb).setNormal(last, nx, 0f, nz).setLineWidth(lineWidth)
+            }
         }
         pose.popPose()
-        consumers.endBatch(rt)
     }
 
     /**
@@ -379,28 +372,26 @@ object ESP {
         depth: Boolean = ESP.depth,
     ) {
         val pose = ctx.poseStack()
-        val consumers = ctx.bufferSource()
-        val cam = Meridian.mc.gameRenderer.mainCamera.position()
+        val cam = Meridian.mc.gameRenderer.mainCamera().position()
         pose.pushPose()
         pose.translate(-cam.x, -cam.y, -cam.z)
-        val rt = filledBoxType(depth)
-        val buf = consumers.getBuffer(rt)
-        val m = pose.last().pose()
-        val fy = y.toFloat()
-        for (r in rects) {
-            val x0 = r[0].toFloat(); val z0 = r[1].toFloat()
-            val x1 = r[2].toFloat(); val z1 = r[3].toFloat()
-            buf.addVertex(m, x0, fy, z0).setColor(argb)
-            buf.addVertex(m, x0, fy, z1).setColor(argb)
-            buf.addVertex(m, x1, fy, z1).setColor(argb)
-            buf.addVertex(m, x1, fy, z0).setColor(argb)
-            buf.addVertex(m, x1, fy, z0).setColor(argb)
-            buf.addVertex(m, x1, fy, z1).setColor(argb)
-            buf.addVertex(m, x0, fy, z1).setColor(argb)
-            buf.addVertex(m, x0, fy, z0).setColor(argb)
+        ctx.submitNodeCollector().submitCustomGeometry(pose, filledBoxType(depth)) { last, buf ->
+            val m = last.pose()
+            val fy = y.toFloat()
+            for (r in rects) {
+                val x0 = r[0].toFloat(); val z0 = r[1].toFloat()
+                val x1 = r[2].toFloat(); val z1 = r[3].toFloat()
+                buf.addVertex(m, x0, fy, z0).setColor(argb)
+                buf.addVertex(m, x0, fy, z1).setColor(argb)
+                buf.addVertex(m, x1, fy, z1).setColor(argb)
+                buf.addVertex(m, x1, fy, z0).setColor(argb)
+                buf.addVertex(m, x1, fy, z0).setColor(argb)
+                buf.addVertex(m, x1, fy, z1).setColor(argb)
+                buf.addVertex(m, x0, fy, z1).setColor(argb)
+                buf.addVertex(m, x0, fy, z0).setColor(argb)
+            }
         }
         pose.popPose()
-        consumers.endBatch(rt)
     }
 
     /**
@@ -418,29 +409,26 @@ object ESP {
     ) {
         if (pts.size < 2) return
         val pose = ctx.poseStack()
-        val consumers = ctx.bufferSource()
-        val cam = Meridian.mc.gameRenderer.mainCamera.position()
+        val cam = Meridian.mc.gameRenderer.mainCamera().position()
         pose.pushPose()
         pose.translate(-cam.x, -cam.y, -cam.z)
-        val rt = linesType(depth)
-        val buf = consumers.getBuffer(rt)
-        val last = pose.last()
-        val m = last.pose()
-        for (i in pts.indices) {
-            val a = pts[i]
-            val b = pts[(i + 1) % pts.size]
-            var nx = (b.x - a.x).toFloat()
-            var ny = (b.y - a.y).toFloat()
-            var nz = (b.z - a.z).toFloat()
-            val len = sqrt(nx * nx + ny * ny + nz * nz).coerceAtLeast(1e-4f)
-            nx /= len; ny /= len; nz /= len
-            buf.addVertex(m, a.x.toFloat(), a.y.toFloat(), a.z.toFloat())
-                .setColor(argb).setNormal(last, nx, ny, nz).setLineWidth(lineWidth)
-            buf.addVertex(m, b.x.toFloat(), b.y.toFloat(), b.z.toFloat())
-                .setColor(argb).setNormal(last, nx, ny, nz).setLineWidth(lineWidth)
+        ctx.submitNodeCollector().submitCustomGeometry(pose, linesType(depth)) { last, buf ->
+            val m = last.pose()
+            for (i in pts.indices) {
+                val a = pts[i]
+                val b = pts[(i + 1) % pts.size]
+                var nx = (b.x - a.x).toFloat()
+                var ny = (b.y - a.y).toFloat()
+                var nz = (b.z - a.z).toFloat()
+                val len = sqrt(nx * nx + ny * ny + nz * nz).coerceAtLeast(1e-4f)
+                nx /= len; ny /= len; nz /= len
+                buf.addVertex(m, a.x.toFloat(), a.y.toFloat(), a.z.toFloat())
+                    .setColor(argb).setNormal(last, nx, ny, nz).setLineWidth(lineWidth)
+                buf.addVertex(m, b.x.toFloat(), b.y.toFloat(), b.z.toFloat())
+                    .setColor(argb).setNormal(last, nx, ny, nz).setLineWidth(lineWidth)
+            }
         }
         pose.popPose()
-        consumers.endBatch(rt)
     }
 
     /**
@@ -457,18 +445,16 @@ object ESP {
     ) {
         if (pts.size < 4) return
         val pose = ctx.poseStack()
-        val consumers = ctx.bufferSource()
-        val cam = Meridian.mc.gameRenderer.mainCamera.position()
+        val cam = Meridian.mc.gameRenderer.mainCamera().position()
         pose.pushPose()
         pose.translate(-cam.x, -cam.y, -cam.z)
-        val rt = filledBoxType(depth)
-        val buf = consumers.getBuffer(rt)
-        val m = pose.last().pose()
-        fun v(p: Vec3) { buf.addVertex(m, p.x.toFloat(), p.y.toFloat(), p.z.toFloat()).setColor(argb) }
-        v(pts[0]); v(pts[1]); v(pts[2]); v(pts[3])
-        v(pts[3]); v(pts[2]); v(pts[1]); v(pts[0])
+        ctx.submitNodeCollector().submitCustomGeometry(pose, filledBoxType(depth)) { last, buf ->
+            val m = last.pose()
+            fun v(p: Vec3) { buf.addVertex(m, p.x.toFloat(), p.y.toFloat(), p.z.toFloat()).setColor(argb) }
+            v(pts[0]); v(pts[1]); v(pts[2]); v(pts[3])
+            v(pts[3]); v(pts[2]); v(pts[1]); v(pts[0])
+        }
         pose.popPose()
-        consumers.endBatch(rt)
     }
 
     private fun drawBoxAt(
@@ -479,15 +465,13 @@ object ESP {
         depth: Boolean,
     ) {
         val pose = ctx.poseStack()
-        val consumers = ctx.bufferSource()
-        val cam = Meridian.mc.gameRenderer.mainCamera.position()
+        val cam = Meridian.mc.gameRenderer.mainCamera().position()
         pose.pushPose()
         pose.translate(-cam.x, -cam.y, -cam.z)
-        val rt = linesType(depth)
-        val buf = consumers.getBuffer(rt)
-        drawWireBox(buf, pose.last(), x0.toFloat(), y0.toFloat(), z0.toFloat(), x1.toFloat(), y1.toFloat(), z1.toFloat(), argb)
+        ctx.submitNodeCollector().submitCustomGeometry(pose, linesType(depth)) { last, buf ->
+            drawWireBox(buf, last, x0.toFloat(), y0.toFloat(), z0.toFloat(), x1.toFloat(), y1.toFloat(), z1.toFloat(), argb)
+        }
         pose.popPose()
-        consumers.endBatch(rt)
     }
 
     private fun drawFilledAt(
@@ -498,24 +482,22 @@ object ESP {
         depth: Boolean,
     ) {
         val pose = ctx.poseStack()
-        val consumers = ctx.bufferSource()
-        val cam = Meridian.mc.gameRenderer.mainCamera.position()
+        val cam = Meridian.mc.gameRenderer.mainCamera().position()
         pose.pushPose()
         pose.translate(-cam.x, -cam.y, -cam.z)
-        val rt = filledBoxType(depth)
-        val buf = consumers.getBuffer(rt)
-        val m = pose.last().pose()
-        val fx0 = x0.toFloat(); val fy0 = y0.toFloat(); val fz0 = z0.toFloat()
-        val fx1 = x1.toFloat(); val fy1 = y1.toFloat(); val fz1 = z1.toFloat()
-        fun v(px: Float, py: Float, pz: Float) { buf.addVertex(m, px, py, pz).setColor(argb) }
-        v(fx0, fy0, fz0); v(fx1, fy0, fz0); v(fx1, fy0, fz1); v(fx0, fy0, fz1)        // -Y
-        v(fx0, fy1, fz0); v(fx0, fy1, fz1); v(fx1, fy1, fz1); v(fx1, fy1, fz0)        // +Y
-        v(fx0, fy0, fz0); v(fx0, fy1, fz0); v(fx1, fy1, fz0); v(fx1, fy0, fz0)        // -Z
-        v(fx0, fy0, fz1); v(fx1, fy0, fz1); v(fx1, fy1, fz1); v(fx0, fy1, fz1)        // +Z
-        v(fx0, fy0, fz0); v(fx0, fy0, fz1); v(fx0, fy1, fz1); v(fx0, fy1, fz0)        // -X
-        v(fx1, fy0, fz0); v(fx1, fy1, fz0); v(fx1, fy1, fz1); v(fx1, fy0, fz1)        // +X
+        ctx.submitNodeCollector().submitCustomGeometry(pose, filledBoxType(depth)) { last, buf ->
+            val m = last.pose()
+            val fx0 = x0.toFloat(); val fy0 = y0.toFloat(); val fz0 = z0.toFloat()
+            val fx1 = x1.toFloat(); val fy1 = y1.toFloat(); val fz1 = z1.toFloat()
+            fun v(px: Float, py: Float, pz: Float) { buf.addVertex(m, px, py, pz).setColor(argb) }
+            v(fx0, fy0, fz0); v(fx1, fy0, fz0); v(fx1, fy0, fz1); v(fx0, fy0, fz1)        // -Y
+            v(fx0, fy1, fz0); v(fx0, fy1, fz1); v(fx1, fy1, fz1); v(fx1, fy1, fz0)        // +Y
+            v(fx0, fy0, fz0); v(fx0, fy1, fz0); v(fx1, fy1, fz0); v(fx1, fy0, fz0)        // -Z
+            v(fx0, fy0, fz1); v(fx1, fy0, fz1); v(fx1, fy1, fz1); v(fx0, fy1, fz1)        // +Z
+            v(fx0, fy0, fz0); v(fx0, fy0, fz1); v(fx0, fy1, fz1); v(fx0, fy1, fz0)        // -X
+            v(fx1, fy0, fz0); v(fx1, fy1, fz0); v(fx1, fy1, fz1); v(fx1, fy0, fz1)        // +X
+        }
         pose.popPose()
-        consumers.endBatch(rt)
     }
 
     private fun drawWireBox(

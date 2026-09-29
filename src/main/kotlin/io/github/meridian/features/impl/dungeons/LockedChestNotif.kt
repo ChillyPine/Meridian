@@ -16,10 +16,10 @@ object LockedChestNotif : SwitchFeature(
     init {
         onChat { text, _, _ ->
             if (!text.startsWith("That chest is locked!")) return@onChat
-            // mc.gui.setTimes(fadeIn, stay, fadeOut)
-            mc.gui.setTimes(0, 30, 0)
-            mc.gui.setTitle(Component.empty())
-            mc.gui.setSubtitle(Component.literal("§cLOCKED CHEST"))
+            // mc.gui.hud.setTimes(fadeIn, stay, fadeOut)
+            mc.gui.hud.setTimes(0, 30, 0)
+            mc.gui.hud.setTitle(Component.empty())
+            mc.gui.hud.setSubtitle(Component.literal("§cLOCKED CHEST"))
         }
     }
 }

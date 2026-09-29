@@ -25,7 +25,7 @@ object NonRemover : ButtonFeature(
     subcategory = "Miscellaneous",
     buttonLabel = "Click",
     onClick = {
-        Meridian.mc.execute { Meridian.mc.setScreen(null) }
+        Meridian.mc.execute { Meridian.mc.gui.setScreen(null) }
         CompletableFuture.delayedExecutor(2500, TimeUnit.MILLISECONDS).execute {
             sendCommand("limbo", delayMs = 0)
         }

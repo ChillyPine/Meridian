@@ -101,7 +101,7 @@ object ChatBlockerButton : ButtonFeature(
     subcategory = "Chat Blockers",
     buttonLabel = "Open GUI",
     onClick = {
-        Meridian.mc.execute { Meridian.mc.setScreen(ChatBlockerScreen()) }
+        Meridian.mc.execute { Meridian.mc.gui.setScreen(ChatBlockerScreen()) }
     }
 )
 
@@ -303,7 +303,7 @@ private object DiscordWarning {
         }
         while (kept.isNotEmpty() && kept.last().string.isBlank()) kept.removeAt(kept.size - 1)
         kept.forEach { rebuilt.append(it) }
-        if (rebuilt.string.isNotBlank()) Meridian.mc.gui.chat.addClientSystemMessage(rebuilt)
+        if (rebuilt.string.isNotBlank()) Meridian.mc.gui.hud.chat.addClientSystemMessage(rebuilt)
         return true
     }
 }

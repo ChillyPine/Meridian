@@ -28,11 +28,11 @@ fun sendCommand(command: String, delayMs: Long = CHAT_ORDER_DELAY_MS) {
 }
 
 fun sendClientMessage(message: Component, delayMs: Long = CHAT_ORDER_DELAY_MS) {
-    dispatch(delayMs) { mc.gui.chat.addClientSystemMessage(message) }
+    dispatch(delayMs) { mc.gui.hud.chat.addClientSystemMessage(message) }
 }
 
 fun sendClientMessage(message: String, delayMs: Long = CHAT_ORDER_DELAY_MS) {
-    dispatch(delayMs) { mc.gui.chat.addClientSystemMessage(Component.literal(message)) }
+    dispatch(delayMs) { mc.gui.hud.chat.addClientSystemMessage(Component.literal(message)) }
 }
 
 // Simulates a game message as if the server sent it — runs the full receive
@@ -44,7 +44,7 @@ fun simulateGameMessage(message: Component) {
             .allowReceiveGameMessage(message, false)
         if (!allowed) return@execute
         ClientReceiveMessageEvents.GAME.invoker().onReceiveGameMessage(message, false)
-        mc.gui.chat.addClientSystemMessage(message)
+        mc.gui.hud.chat.addClientSystemMessage(message)
     }
 }
 
@@ -61,7 +61,7 @@ fun modMessage(
 ) {
     val text = Component.literal("$prefix$message")
     chatStyle?.let { text.setStyle(chatStyle) }
-    dispatch(delayMs) { mc.gui.chat.addClientSystemMessage(text) }
+    dispatch(delayMs) { mc.gui.hud.chat.addClientSystemMessage(text) }
 }
 
 // Used for rich messages, meaning hover-able text, clickable links, etc
@@ -73,7 +73,7 @@ fun modMessage(
 ) {
     val text = Component.literal(prefix).append(message)
     chatStyle?.let { text.setStyle(chatStyle) }
-    dispatch(delayMs) { mc.gui.chat.addClientSystemMessage(text) }
+    dispatch(delayMs) { mc.gui.hud.chat.addClientSystemMessage(text) }
 }
 
 //fun devMessage(message: Any?) {

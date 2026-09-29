@@ -19,7 +19,7 @@ public class MixinKeyboardHandler {
 
     @Inject(method = "charTyped(JLnet/minecraft/client/input/CharacterEvent;)V", at = @At("HEAD"), cancellable = true)
     private void meridian$searchCharTyped(long window, CharacterEvent event, CallbackInfo ci) {
-        var screen = Minecraft.getInstance().screen;
+        var screen = Minecraft.getInstance().gui.screen();
         if (screen instanceof AbstractContainerScreen<?> && !(screen instanceof CreativeModeInventoryScreen)
                 && InventorySearch.INSTANCE.charTyped(event)) {
             ci.cancel();

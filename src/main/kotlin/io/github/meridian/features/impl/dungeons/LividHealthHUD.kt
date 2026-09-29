@@ -9,6 +9,7 @@ import net.minecraft.ChatFormatting
 import net.minecraft.core.BlockPos
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.Style
+import net.minecraft.network.chat.TextColor
 import net.minecraft.world.entity.decoration.ArmorStand
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
@@ -24,15 +25,15 @@ object LividHealthHUD : SwitchFeature(
     private val LIVID_BLOCK = BlockPos(5, 108, 42)
 
     private val blockToColor: Map<Block, String> = mapOf(
-        Blocks.WHITE_STAINED_GLASS to "§f",   // Vendetta Livid
-        Blocks.LIME_STAINED_GLASS to "§a",    // Smile Livid
-        Blocks.GREEN_STAINED_GLASS to "§2",   // Frog Livid
-        Blocks.RED_STAINED_GLASS to "§c",     // Hockey Livid
-        Blocks.MAGENTA_STAINED_GLASS to "§d", // Crossed Livid
-        Blocks.PURPLE_STAINED_GLASS to "§5",  // Purple Livid
-        Blocks.GRAY_STAINED_GLASS to "§7",    // Doctor Livid
-        Blocks.BLUE_STAINED_GLASS to "§9",    // Scream Livid
-        Blocks.YELLOW_STAINED_GLASS to "§e",  // Arcade Livid
+        Blocks.STAINED_GLASS.white() to "§f",   // Vendetta Livid
+        Blocks.STAINED_GLASS.lime() to "§a",    // Smile Livid
+        Blocks.STAINED_GLASS.green() to "§2",   // Frog Livid
+        Blocks.STAINED_GLASS.red() to "§c",     // Hockey Livid
+        Blocks.STAINED_GLASS.magenta() to "§d", // Crossed Livid
+        Blocks.STAINED_GLASS.purple() to "§5",  // Purple Livid
+        Blocks.STAINED_GLASS.gray() to "§7",    // Doctor Livid
+        Blocks.STAINED_GLASS.blue() to "§9",    // Scream Livid
+        Blocks.STAINED_GLASS.yellow() to "§e",  // Arcade Livid
     )
 
     @Volatile private var lividHealth: String? = null
@@ -109,8 +110,8 @@ private fun Style.toLegacyCodes(): String {
 // The §-code for this style's color, or null if it has none / isn't a named color.
 private fun Style.colorCode(): String? {
     val rgb = color?.value ?: return null
-    val fmt = ChatFormatting.entries.firstOrNull { it.isColor && it.color == rgb } ?: return null
-    return "§${fmt.char}"
+    val fmt = ChatFormatting.entries.firstOrNull { TextColor.fromLegacyFormat(it)?.value == rgb } ?: return null
+    return fmt.toString()
 }
 
 // The §-color of the first text segment containing [needle], or null if absent.

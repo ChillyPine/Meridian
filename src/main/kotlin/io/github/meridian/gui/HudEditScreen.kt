@@ -1,5 +1,6 @@
 package io.github.meridian.gui
 
+import com.mojang.blaze3d.platform.InputConstants
 import io.github.meridian.features.FeatureManager
 import io.github.meridian.hud.HudElement
 import io.github.meridian.hud.HudManager
@@ -8,7 +9,6 @@ import net.minecraft.client.gui.screens.Screen
 import net.minecraft.client.input.KeyEvent
 import net.minecraft.client.input.MouseButtonEvent
 import net.minecraft.network.chat.Component
-import org.lwjgl.glfw.GLFW
 
 // Full-screen editor opened with `/md hud`. Every HUD element whose feature is
 // toggled on is drawn with its preview content (so data-less elements can still
@@ -135,7 +135,7 @@ class HudEditScreen : Screen(Component.literal("Meridian HUD Editor")) {
 
     override fun keyPressed(event: KeyEvent): Boolean {
         val h = hovered
-        if (event.key == GLFW.GLFW_KEY_R && h != null) {
+        if (event.key == InputConstants.KEY_R && h != null) {
             h.resetToDefault()
             FeatureManager.save()
             return true

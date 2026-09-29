@@ -1,8 +1,8 @@
 package io.github.meridian.utils
 
-import com.mojang.blaze3d.pipeline.DepthStencilState
-import com.mojang.blaze3d.pipeline.RenderPipeline
-import com.mojang.blaze3d.platform.CompareOp
+import com.mojang.renderpearl.api.pipeline.CompareOp
+import com.mojang.renderpearl.api.pipeline.DepthStencilState
+import com.mojang.renderpearl.api.pipeline.RenderPipeline
 import io.github.meridian.mixin.accessor.RenderPipelinesAccessor
 import io.github.meridian.mixin.accessor.RenderTypeInvoker
 import net.minecraft.client.renderer.rendertype.RenderSetup

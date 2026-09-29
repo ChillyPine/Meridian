@@ -12,7 +12,7 @@ import net.minecraft.network.chat.ClickEvent
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.HoverEvent
 import net.minecraft.network.chat.Style
-import net.minecraft.util.Util
+import com.mojang.blaze3d.Blaze3D
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -104,6 +104,6 @@ object LatestGHAction : ButtonFeature(
     subcategory = "Miscellaneous",
     buttonLabel = "Open",
     onClick = {
-        Util.getPlatform().openUri(URI.create("https://github.com/ChillyPine/Meridian/actions?query=branch%3Amain+is%3Asuccess"))
+        Blaze3D.openUri(URI.create("https://github.com/ChillyPine/Meridian/actions?query=branch%3Amain+is%3Asuccess"))
     },
 )

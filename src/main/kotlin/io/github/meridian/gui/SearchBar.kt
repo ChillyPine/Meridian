@@ -1,7 +1,9 @@
 package io.github.meridian.gui
 
+import com.mojang.blaze3d.platform.InputConstants
 import io.github.meridian.features.types.TextFeature
 import io.github.meridian.utils.playClickSound
+import io.github.meridian.utils.setTextInputFocus
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphicsExtractor
@@ -37,9 +39,13 @@ class SearchBar(
     fun focus() {
         focused = true
         TextFeature.clearFocus()
+        setTextInputFocus(this, true)
     }
 
-    fun unfocus() { focused = false }
+    fun unfocus() {
+        focused = false
+        setTextInputFocus(this, false)
+    }
 
     fun clear() {
         query = ""
@@ -149,25 +155,25 @@ class SearchBar(
 
         val shift = event.hasShiftDown()
         when (event.key) {
-            259 -> { // Backspace
+            InputConstants.KEY_BACKSPACE -> {
                 if (hasSelection) replaceSelection("")
                 else if (cursorPos > 0) {
                     query = query.removeRange(cursorPos - 1, cursorPos)
                     cursorPos--; selectionAnchor = cursorPos
                 }
             }
-            261 -> { // Delete
+            InputConstants.KEY_DELETE -> {
                 if (hasSelection) replaceSelection("")
                 else if (cursorPos < query.length) {
                     query = query.removeRange(cursorPos, cursorPos + 1)
                 }
             }
-            263 -> moveCaret(cursorPos - 1, shift)
-            262 -> moveCaret(cursorPos + 1, shift)
-            268 -> moveCaret(0, shift)
-            269 -> moveCaret(query.length, shift)
-            257, 335 -> unfocus()
-            256 -> {
+            InputConstants.KEY_LEFT -> moveCaret(cursorPos - 1, shift)
+            InputConstants.KEY_RIGHT -> moveCaret(cursorPos + 1, shift)
+            InputConstants.KEY_HOME -> moveCaret(0, shift)
+            InputConstants.KEY_END -> moveCaret(query.length, shift)
+            InputConstants.KEY_RETURN, InputConstants.KEY_NUMPADENTER -> unfocus()
+            InputConstants.KEY_ESCAPE -> {
                 if (query.isNotEmpty()) clear() else unfocus()
             }
             else -> return false
@@ -219,9 +225,7 @@ class SearchBar(
         private const val DOUBLE_CLICK_MS = 400L
 
         private fun hasShift(): Boolean {
-            val window = Minecraft.getInstance().window.handle()
-            return org.lwjgl.glfw.GLFW.glfwGetKey(window, org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT_SHIFT) == org.lwjgl.glfw.GLFW.GLFW_PRESS ||
-                   org.lwjgl.glfw.GLFW.glfwGetKey(window, org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT_SHIFT) == org.lwjgl.glfw.GLFW.GLFW_PRESS
+            return InputConstants.isKeyDown(InputConstants.KEY_LSHIFT) || InputConstants.isKeyDown(InputConstants.KEY_RSHIFT)
         }
     }
 }

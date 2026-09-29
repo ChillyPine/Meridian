@@ -29,9 +29,9 @@ object FFTimer : SwitchFeature(
             cancelPending()
             ffTitles.forEach { (delay, title) ->
                 pending += TickScheduler.schedule(delay) {
-                    mc.gui.setTimes(0, 20, 0)
-                    mc.gui.setTitle(Component.literal(title))
-                    mc.gui.setSubtitle(Component.empty())
+                    mc.gui.hud.setTimes(0, 20, 0)
+                    mc.gui.hud.setTitle(Component.literal(title))
+                    mc.gui.hud.setSubtitle(Component.empty())
                 }
             }
         }

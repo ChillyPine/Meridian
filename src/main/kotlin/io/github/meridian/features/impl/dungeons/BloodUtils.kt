@@ -29,10 +29,10 @@ object BloodOpen : SwitchFeature(
     init {
         onChat { text, _, _ ->
             if (!text.startsWith("The BLOOD DOOR has been opened!")) return@onChat
-            // mc.gui.setTimes(fadeIn, stay, fadeOut)
-            mc.gui.setTimes(0, 50, 0)
-            mc.gui.setTitle(Component.literal("§cBlood Opened!"))
-            mc.gui.setSubtitle(Component.empty())
+            // mc.gui.hud.setTimes(fadeIn, stay, fadeOut)
+            mc.gui.hud.setTimes(0, 50, 0)
+            mc.gui.hud.setTitle(Component.literal("§cBlood Opened!"))
+            mc.gui.hud.setSubtitle(Component.empty())
             modMessage("§fBlood Opened!")
             if (SendBloodToParty.enabled) {
                 sendCommand("pc Blood Opened!")
@@ -52,10 +52,10 @@ object BloodFull : SwitchFeature(
     init {
         onChat { text, _, _ ->
             if (!text.startsWith("[BOSS] The Watcher: That will be enough for now.")) return@onChat
-            // mc.gui.setTimes(fadeIn, stay, fadeOut)
-            mc.gui.setTimes(0, 50, 0)
-            mc.gui.setTitle(Component.literal("§cBlood Full!"))
-            mc.gui.setSubtitle(Component.empty())
+            // mc.gui.hud.setTimes(fadeIn, stay, fadeOut)
+            mc.gui.hud.setTimes(0, 50, 0)
+            mc.gui.hud.setTitle(Component.literal("§cBlood Full!"))
+            mc.gui.hud.setSubtitle(Component.empty())
             modMessage("§fBlood Full!")
             if (SendBloodToParty.enabled) {
                 sendCommand("pc Blood Full!")
@@ -75,10 +75,10 @@ object BloodCleared : SwitchFeature(
     init {
         onChat { text, _, _ ->
             if (!text.startsWith("[BOSS] The Watcher: You have proven yourself. You may pass.")) return@onChat
-            // mc.gui.setTimes(fadeIn, stay, fadeOut)
-            mc.gui.setTimes(0, 50, 0)
-            mc.gui.setTitle(Component.literal("§cBlood Cleared!"))
-            mc.gui.setSubtitle(Component.empty())
+            // mc.gui.hud.setTimes(fadeIn, stay, fadeOut)
+            mc.gui.hud.setTimes(0, 50, 0)
+            mc.gui.hud.setTitle(Component.literal("§cBlood Cleared!"))
+            mc.gui.hud.setSubtitle(Component.empty())
             modMessage("§fBlood Cleared!")
             if (SendBloodToParty.enabled) {
                 sendCommand("pc Blood Cleared!")

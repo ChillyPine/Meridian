@@ -20,10 +20,10 @@ object M5WishNotif : SwitchFeature(
     init {
         onChat(F5State.state) { text, _, _ ->
             if (!text.startsWith("[BOSS] Livid: I respect you for making it to here, but I'll be your undoing.")) return@onChat
-            // mc.gui.setTimes(fadeIn, stay, fadeOut)
-            mc.gui.setTimes(0, 60, 0)
-            mc.gui.setTitle(Component.literal("§4WISH"))
-            mc.gui.setSubtitle(Component.empty())
+            // mc.gui.hud.setTimes(fadeIn, stay, fadeOut)
+            mc.gui.hud.setTimes(0, 60, 0)
+            mc.gui.hud.setTitle(Component.literal("§4WISH"))
+            mc.gui.hud.setSubtitle(Component.empty())
             // forUI(sound, pitch, volume): zombie "remedy" cure sound
             Minecraft.getInstance().soundManager.play(
                 SimpleSoundInstance.forUI(SoundEvents.ZOMBIE_VILLAGER_CURE, 0.5f, 0.9f)
@@ -42,10 +42,10 @@ object M6WishNotif : SwitchFeature(
     init {
         onChat(F6State.state) { text, _, _ ->
             if (!text.startsWith("[BOSS] Sadan: My giants! Unleashed!")) return@onChat
-            // mc.gui.setTimes(fadeIn, stay, fadeOut)
-            mc.gui.setTimes(0, 60, 0)
-            mc.gui.setTitle(Component.literal("§4WISH"))
-            mc.gui.setSubtitle(Component.empty())
+            // mc.gui.hud.setTimes(fadeIn, stay, fadeOut)
+            mc.gui.hud.setTimes(0, 60, 0)
+            mc.gui.hud.setTitle(Component.literal("§4WISH"))
+            mc.gui.hud.setSubtitle(Component.empty())
             // forUI(sound, pitch, volume): zombie "remedy" cure sound
             Minecraft.getInstance().soundManager.play(
                 SimpleSoundInstance.forUI(SoundEvents.ZOMBIE_VILLAGER_CURE, 0.5f, 0.9f)
@@ -67,9 +67,9 @@ object P1WishNotif : SwitchFeature(
             // Hypixel pushes its own title on this same chat line; delay ours a
             // few ticks so it lands after Hypixel's instead of being overwritten.
             TickScheduler.schedule(3) {
-                mc.gui.setTimes(0, 40, 0)
-                mc.gui.setTitle(Component.literal("§4WISH"))
-                mc.gui.setSubtitle(Component.empty())
+                mc.gui.hud.setTimes(0, 40, 0)
+                mc.gui.hud.setTitle(Component.literal("§4WISH"))
+                mc.gui.hud.setSubtitle(Component.empty())
             }
         }
     }
@@ -88,9 +88,9 @@ object P3WishNotif : SwitchFeature(
             // Hypixel pushes its own title on this same chat line; delay ours a
             // few ticks so it lands after Hypixel's instead of being overwritten.
             TickScheduler.schedule(3) {
-                mc.gui.setTimes(0, 40, 0)
-                mc.gui.setTitle(Component.literal("§4WISH"))
-                mc.gui.setSubtitle(Component.empty())
+                mc.gui.hud.setTimes(0, 40, 0)
+                mc.gui.hud.setTitle(Component.literal("§4WISH"))
+                mc.gui.hud.setSubtitle(Component.empty())
             }
         }
     }

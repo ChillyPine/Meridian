@@ -5,7 +5,6 @@ import io.github.meridian.Meridian
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper
 import net.minecraft.client.KeyMapping
 import net.minecraft.resources.Identifier
-import org.lwjgl.glfw.GLFW
 
 /**
  * Meridian's entries in the vanilla Controls screen. Names here are translation
@@ -22,8 +21,8 @@ object Keybinds {
 
     val beeheemothWarp = KeyMapping(
         "key.meridian.beeheemoth_warp",
-        InputConstants.Type.KEYSYM,
-        GLFW.GLFW_KEY_H,
+        InputConstants.Type.KEYBOARD,
+        InputConstants.KEY_H,
         CATEGORY,
     )
 

@@ -1,7 +1,7 @@
 package io.github.meridian.features.impl.general
 
 import io.github.meridian.features.types.ButtonFeature
-import net.minecraft.util.Util
+import com.mojang.blaze3d.Blaze3D
 import java.net.URI
 
 object SoundListButton : ButtonFeature (
@@ -12,6 +12,6 @@ object SoundListButton : ButtonFeature (
     subcategory = "Miscellaneous",
     buttonLabel = "Open Website",
     onClick = {
-        Util.getPlatform().openUri(URI.create("https://www.digminecraft.com/lists/sound_list_pc.php"))
+        Blaze3D.openUri(URI.create("https://www.digminecraft.com/lists/sound_list_pc.php"))
     },
 )

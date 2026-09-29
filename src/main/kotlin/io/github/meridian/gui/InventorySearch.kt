@@ -1,5 +1,6 @@
 package io.github.meridian.gui
 
+import com.mojang.blaze3d.platform.InputConstants
 import io.github.meridian.Meridian.mc
 import io.github.meridian.features.impl.general.ItemSearchBar
 import io.github.meridian.utils.ItemSearch
@@ -82,12 +83,11 @@ object InventorySearch {
     // query survives and a second Escape closes the screen as usual.
     fun keyPressed(event: KeyEvent): Boolean {
         if (!active() || !bar.focused) return false
-        if (event.key == KEY_ESCAPE) bar.unfocus() else bar.keyPressed(event)
+        if (event.key == InputConstants.KEY_ESCAPE) bar.unfocus() else bar.keyPressed(event)
         return true
     }
 
     fun charTyped(event: CharacterEvent) = active() && bar.charTyped(event)
 
     private const val SLOT_SIZE = 16
-    private const val KEY_ESCAPE = 256
 }

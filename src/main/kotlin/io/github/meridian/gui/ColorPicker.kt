@@ -1,7 +1,9 @@
 package io.github.meridian.gui
 
+import com.mojang.blaze3d.platform.InputConstants
 import com.mojang.blaze3d.platform.NativeImage
 import io.github.meridian.utils.playClickSound
+import io.github.meridian.utils.setTextInputFocus
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.screens.Screen
@@ -310,6 +312,7 @@ class ColorPicker(
         val mx = event.x.toInt(); val my = event.y.toInt()
 
         hexFocused = mx in hexX until (hexX + hexW) && my in hexY until (hexY + HEX_HEIGHT)
+        setTextInputFocus(this, hexFocused)
 
         if (mx in svX until (svX + svW) && my in svY until (svY + SV_HEIGHT)) {
             dragging = Drag.SV; updateSV(mx, my); return true
@@ -322,13 +325,13 @@ class ColorPicker(
         }
         if (mx in backX until (backX + backW) && my in backY until (backY + BUTTON_HEIGHT)) {
             playClickSound()
-            Minecraft.getInstance().setScreen(parent)
+            Minecraft.getInstance().gui.setScreen(parent)
             return true
         }
         if (mx in confirmX until (confirmX + confirmW) && my in confirmY until (confirmY + BUTTON_HEIGHT)) {
             onConfirm(currentArgb())
             playClickSound()
-            Minecraft.getInstance().setScreen(parent)
+            Minecraft.getInstance().gui.setScreen(parent)
             return true
         }
         return super.mouseClicked(event, bl)
@@ -353,23 +356,23 @@ class ColorPicker(
     override fun keyPressed(event: KeyEvent): Boolean {
         if (!hexFocused) return super.keyPressed(event)
         when (event.key) {
-            259 -> {
+            InputConstants.KEY_BACKSPACE -> {
                 if (hexCursorPos > 0) {
                     hexInput = hexInput.removeRange(hexCursorPos - 1, hexCursorPos)
                     hexCursorPos--
                     applyHexInput()
                 }
             }
-            261 -> {
+            InputConstants.KEY_DELETE -> {
                 if (hexCursorPos < hexInput.length) {
                     hexInput = hexInput.removeRange(hexCursorPos, hexCursorPos + 1)
                     applyHexInput()
                 }
             }
-            263 -> if (hexCursorPos > 0) hexCursorPos--
-            262 -> if (hexCursorPos < hexInput.length) hexCursorPos++
-            268 -> hexCursorPos = 0
-            269 -> hexCursorPos = hexInput.length
+            InputConstants.KEY_LEFT -> if (hexCursorPos > 0) hexCursorPos--
+            InputConstants.KEY_RIGHT -> if (hexCursorPos < hexInput.length) hexCursorPos++
+            InputConstants.KEY_HOME -> hexCursorPos = 0
+            InputConstants.KEY_END -> hexCursorPos = hexInput.length
             else -> return super.keyPressed(event)
         }
         return true
