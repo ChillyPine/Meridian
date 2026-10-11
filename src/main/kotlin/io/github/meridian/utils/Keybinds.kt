@@ -25,8 +25,14 @@ object Keybinds {
         InputConstants.KEY_H,
         CATEGORY,
     )
+    val pestSetSpawn = KeyMapping(
+        "key.meridian.pest_set_spawn",
+        InputConstants.Type.KEYBOARD,
+        InputConstants.KEY_V,
+        CATEGORY,
+    )
 
-    private val all = listOf(beeheemothWarp)
+    private val all = listOf(beeheemothWarp, pestSetSpawn)
 
     fun init() {
         all.forEach { KeyMappingHelper.registerKeyMapping(it) }

@@ -78,6 +78,7 @@ import io.github.meridian.features.impl.dungeons.OutRangeColor
 import io.github.meridian.features.impl.dungeons.SuperBounceHUD
 import io.github.meridian.features.impl.dungeons.TerminalHitboxes
 import io.github.meridian.features.impl.farming.PestSpawnNoti
+import io.github.meridian.features.impl.farming.SetSpawnKeybind
 import io.github.meridian.features.impl.foraging.BeeheemothQuickWarp
 import io.github.meridian.features.impl.foraging.BeeheemothWaypoints
 import io.github.meridian.features.impl.foraging.BoxBloodbat
@@ -266,6 +267,7 @@ object FeatureList {
 
         BoxTrapperMobs,
         PestSpawnNoti,
+        SetSpawnKeybind,
 
         // ================================================== //
         //                      FORAGING                      //
