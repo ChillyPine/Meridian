@@ -4,6 +4,7 @@ import io.github.meridian.Meridian.mc
 import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.Keybinds
 import io.github.meridian.utils.Keybinds.boundKeyLabel
+import io.github.meridian.utils.modMessage
 import io.github.meridian.utils.sendCommand
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.minecraft.client.resources.sounds.SimpleSoundInstance
@@ -14,9 +15,14 @@ private val pestRegex = Regex("""(\d+)\s+\S+\s+Pests?\s+ha(?:s|ve)\s+spawned in 
 private val colorCodes = Regex("§.")
 private fun stripColors(text: String) = colorCodes.replace(text, "")
 
+// pray people dont name their plots random shit
+private val plotNameRegex = Regex("""[\w-]+""")
+
 // tick timers
 private const val TITLE_TICKS = 45
 private const val PROMPT_TICKS = 1000
+private const val PLOT_WINDOW_TICKS = 1000 // stop letting you warp after time
+private const val COMMAND_COOLDOWN_TICKS = 20 // prevent spamming and getting kicked
 
 object PestSpawnNoti : SwitchFeature(
     name = "Pest Spawn Notification",
@@ -80,6 +86,7 @@ object SetSpawnKeybind : SwitchFeature(
     subcategory = "Pests"
 ) {
     @Volatile private var promptTicksLeft = 0
+    @Volatile private var cooldownTicks = 0
     val promptActive get() = promptTicksLeft > 0
 
     init {
@@ -95,21 +102,26 @@ object SetSpawnKeybind : SwitchFeature(
         }
 
         onTick {
+            if (cooldownTicks > 0) cooldownTicks--
             if (promptTicksLeft > 0 && --promptTicksLeft == 0) mc.gui.hud.clearTitles()
 
+            // drain every tick so presses made during the cooldown never queue up
             var pressed = false
             while (Keybinds.pestSetSpawn.consumeClick()) pressed = true
-            if (!pressed) return@onTick
+            if (!pressed || cooldownTicks > 0) return@onTick
 
+            // remember whether this press is answering a pest spawn before the prompt is cleared
             val pestsJustSpawned = promptTicksLeft > 0
 
             if (pestsJustSpawned) {
                 promptTicksLeft = 0
                 mc.gui.hud.clearTitles()
             }
+            modMessage("§7Set your spawn")
             sendCommand("setspawn")
+            cooldownTicks = COMMAND_COOLDOWN_TICKS
 
-            // only offer the plot teleport if this press was answering a pest spawn
+            // must come after clearTitles(), otherwise the clear wipes the new subtitle
             if (pestsJustSpawned) PestPlotTpKeybind.showPrompt()
         }
     }
@@ -117,28 +129,31 @@ object SetSpawnKeybind : SwitchFeature(
     override fun onDeactivate() {
         if (promptTicksLeft > 0) mc.gui.hud.clearTitles()
         promptTicksLeft = 0
+        cooldownTicks = 0
     }
 }
 
 object PestPlotTpKeybind : SwitchFeature(
-    name = "Quick Plot Warp",
-    description = "Warps you to the plot with pests.\nSet Keybind in Minecraft controls.",
+    name = "Quick Plot Teleport",
+    description = "Runs /plot tp to the last pest plot when you press the keybind.\nSet Keybind in Minecraft controls.",
     category = "Farming",
     configKey = "pest_plot_tp_keybind",
     subcategory = "Pests"
 ) {
     @Volatile private var lastPlot: String? = null
+    @Volatile private var plotTicksLeft = 0   // > 0 means pests spawned recently
     @Volatile private var promptTicksLeft = 0
+    @Volatile private var cooldownTicks = 0
     val promptActive get() = promptTicksLeft > 0
 
-    // shows the tp subtitle. Called after setspawn is pressed if setspawn is on
+    /** Shows the tp subtitle. Called after setspawn is pressed. */
     fun showPrompt() {
         val plot = lastPlot
         if (!enabled || plot == null) return
         mc.gui.hud.setTimes(0, PROMPT_TICKS, 0)
         mc.gui.hud.setTitle(Component.empty()) // starts the display timer so the subtitle shows immediately
         mc.gui.hud.setSubtitle(
-            Component.literal("§7Press §e[${Keybinds.pestPlotTp.boundKeyLabel()}] §7to warp to §c$plot")
+            Component.literal("§7Press §e[${Keybinds.pestPlotTp.boundKeyLabel()}] §7to teleport to §c$plot")
         )
         promptTicksLeft = PROMPT_TICKS
     }
@@ -146,7 +161,11 @@ object PestPlotTpKeybind : SwitchFeature(
     init {
         onChat { text, _, _ ->
             val match = pestRegex.find(stripColors(text)) ?: return@onChat
-            lastPlot = match.groupValues[2].trim()
+            val plot = match.groupValues[2].trim()
+            if (!plotNameRegex.matches(plot)) return@onChat
+
+            lastPlot = plot
+            plotTicksLeft = PLOT_WINDOW_TICKS
 
             // If quick set spawn is off, there's nothing to wait for, so show immediately
             if (!SetSpawnKeybind.enabled) {
@@ -156,24 +175,31 @@ object PestPlotTpKeybind : SwitchFeature(
         }
 
         onTick {
+            if (cooldownTicks > 0) cooldownTicks--
+            if (plotTicksLeft > 0 && --plotTicksLeft == 0) lastPlot = null
             if (promptTicksLeft > 0 && --promptTicksLeft == 0) mc.gui.hud.clearTitles()
 
+            // drain every tick so presses made during the cooldown never queue up
             var pressed = false
             while (Keybinds.pestPlotTp.consumeClick()) pressed = true
-            if (!pressed) return@onTick
+            if (!pressed || cooldownTicks > 0) return@onTick
 
             val plot = lastPlot ?: return@onTick
             if (promptTicksLeft > 0) {
                 promptTicksLeft = 0
                 mc.gui.hud.clearTitles()
             }
+            modMessage("§7Warping you to $plot")
             sendCommand("plot tp $plot")
+            cooldownTicks = COMMAND_COOLDOWN_TICKS
         }
     }
 
     override fun onDeactivate() {
         if (promptTicksLeft > 0) mc.gui.hud.clearTitles()
         promptTicksLeft = 0
+        plotTicksLeft = 0
+        cooldownTicks = 0
         lastPlot = null
     }
 }
