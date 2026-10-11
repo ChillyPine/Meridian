@@ -2,6 +2,7 @@ package io.github.meridian.utils
 
 import com.mojang.blaze3d.platform.InputConstants
 import io.github.meridian.Meridian
+import io.github.meridian.features.impl.farming.PestPlotTpKeybind
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper
 import net.minecraft.client.KeyMapping
 import net.minecraft.resources.Identifier
@@ -31,8 +32,14 @@ object Keybinds {
         InputConstants.KEY_V,
         CATEGORY,
     )
+    val pestPlotTp = KeyMapping(
+        "key.meridian.pest_quick_warp",
+        InputConstants.Type.KEYBOARD,
+        InputConstants.KEY_F,
+        CATEGORY,
+    )
 
-    private val all = listOf(beeheemothWarp, pestSetSpawn)
+    private val all = listOf(beeheemothWarp, pestSetSpawn, pestPlotTp)
 
     fun init() {
         all.forEach { KeyMappingHelper.registerKeyMapping(it) }

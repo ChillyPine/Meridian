@@ -36,7 +36,7 @@ object PestSpawnNoti : SwitchFeature(
     init {
         ClientTickEvents.END_CLIENT_TICK.register {
             if (titleTicksLeft > 0 && --titleTicksLeft == 0) {
-                if (SetSpawnKeybind.promptActive) mc.gui.hud.setTitle(Component.empty())
+                if (SetSpawnKeybind.promptActive || PestPlotTpKeybind.promptActive) mc.gui.hud.setTitle(Component.empty())
                 else mc.gui.hud.clearTitles()
             }
 
@@ -53,7 +53,11 @@ object PestSpawnNoti : SwitchFeature(
             val match = pestRegex.find(stripColors(text)) ?: return@onChat
             val (count, plot) = match.destructured
 
-            mc.gui.hud.setTimes(0, if (SetSpawnKeybind.enabled) PROMPT_TICKS else TITLE_TICKS, 0)
+            mc.gui.hud.setTimes(
+                0,
+                if (SetSpawnKeybind.enabled || PestPlotTpKeybind.enabled) PROMPT_TICKS else TITLE_TICKS,
+                0
+            )
             mc.gui.hud.setTitle(Component.literal("§c$count §7Pests in §c$plot"))
             titleTicksLeft = TITLE_TICKS
 
@@ -97,16 +101,79 @@ object SetSpawnKeybind : SwitchFeature(
             while (Keybinds.pestSetSpawn.consumeClick()) pressed = true
             if (!pressed) return@onTick
 
-            if (promptTicksLeft > 0) {
+            val pestsJustSpawned = promptTicksLeft > 0
+
+            if (pestsJustSpawned) {
                 promptTicksLeft = 0
                 mc.gui.hud.clearTitles()
             }
             sendCommand("setspawn")
+
+            // only offer the plot teleport if this press was answering a pest spawn
+            if (pestsJustSpawned) PestPlotTpKeybind.showPrompt()
         }
     }
 
     override fun onDeactivate() {
         if (promptTicksLeft > 0) mc.gui.hud.clearTitles()
         promptTicksLeft = 0
+    }
+}
+
+object PestPlotTpKeybind : SwitchFeature(
+    name = "Quick Plot Warp",
+    description = "Warps you to the plot with pests.\nSet Keybind in Minecraft controls.",
+    category = "Farming",
+    configKey = "pest_plot_tp_keybind",
+    subcategory = "Pests"
+) {
+    @Volatile private var lastPlot: String? = null
+    @Volatile private var promptTicksLeft = 0
+    val promptActive get() = promptTicksLeft > 0
+
+    // shows the tp subtitle. Called after setspawn is pressed if setspawn is on
+    fun showPrompt() {
+        val plot = lastPlot
+        if (!enabled || plot == null) return
+        mc.gui.hud.setTimes(0, PROMPT_TICKS, 0)
+        mc.gui.hud.setTitle(Component.empty()) // starts the display timer so the subtitle shows immediately
+        mc.gui.hud.setSubtitle(
+            Component.literal("§7Press §e[${Keybinds.pestPlotTp.boundKeyLabel()}] §7to warp to §c$plot")
+        )
+        promptTicksLeft = PROMPT_TICKS
+    }
+
+    init {
+        onChat { text, _, _ ->
+            val match = pestRegex.find(stripColors(text)) ?: return@onChat
+            lastPlot = match.groupValues[2].trim()
+
+            // If quick set spawn is off, there's nothing to wait for, so show immediately
+            if (!SetSpawnKeybind.enabled) {
+                if (!PestSpawnNoti.enabled) mc.gui.hud.setTitle(Component.empty())
+                showPrompt()
+            }
+        }
+
+        onTick {
+            if (promptTicksLeft > 0 && --promptTicksLeft == 0) mc.gui.hud.clearTitles()
+
+            var pressed = false
+            while (Keybinds.pestPlotTp.consumeClick()) pressed = true
+            if (!pressed) return@onTick
+
+            val plot = lastPlot ?: return@onTick
+            if (promptTicksLeft > 0) {
+                promptTicksLeft = 0
+                mc.gui.hud.clearTitles()
+            }
+            sendCommand("plot tp $plot")
+        }
+    }
+
+    override fun onDeactivate() {
+        if (promptTicksLeft > 0) mc.gui.hud.clearTitles()
+        promptTicksLeft = 0
+        lastPlot = null
     }
 }
