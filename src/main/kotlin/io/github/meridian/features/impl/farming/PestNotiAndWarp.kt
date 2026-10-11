@@ -190,7 +190,7 @@ object PestPlotTpKeybind : SwitchFeature(
                 mc.gui.hud.clearTitles()
             }
             modMessage("§7Warping you to $plot")
-            sendCommand("plot tp $plot")
+            sendCommand("plottp $plot")
             cooldownTicks = COMMAND_COOLDOWN_TICKS
         }
     }
