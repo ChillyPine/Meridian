@@ -3,6 +3,7 @@ package io.github.meridian.hud
 import com.google.gson.JsonObject
 import io.github.meridian.Meridian
 import io.github.meridian.Meridian.mc
+import io.github.meridian.features.Feature
 import io.github.meridian.gui.HudEditScreen
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
 import net.minecraft.client.gui.Font
@@ -30,11 +31,14 @@ object HudManager {
 
     // Idempotent — feature `object` singletons may run their init more than once
     // across class reloads in dev.
-    fun register(element: HudElement) {
+    fun register(element: HudElement, owner: Feature) {
+        element.owner = owner
         if (elements.none { it.id == element.id }) elements += element
     }
 
     fun elements(): List<HudElement> = elements.toList()
+
+    fun enabledElements(): List<HudElement> = elements.filter { it.isEnabled() }
 
     // Registers the live HUD layer. Drawn last so it sits above vanilla HUD.
     fun init() {
@@ -45,12 +49,13 @@ object HudManager {
     }
 
     private fun renderLive(g: GuiGraphicsExtractor) {
-        if (mc.options.hideGui) return
+        if (mc.gui.hud.isHidden) return
         if (mc.level == null) return
         // The editor renders its own (preview) copies — don't double-draw.
-        if (mc.screen is HudEditScreen) return
+        if (mc.gui.screen() is HudEditScreen) return
         val font = mc.font
         for (el in elements) {
+            if (!el.isEnabled()) continue
             val lines = el.content()
             if (lines.isEmpty()) continue
             draw(g, font, el, lines)

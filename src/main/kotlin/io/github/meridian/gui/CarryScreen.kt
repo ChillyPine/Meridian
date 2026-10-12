@@ -1,5 +1,6 @@
 package io.github.meridian.gui
 
+import com.mojang.blaze3d.platform.InputConstants
 import io.github.meridian.features.impl.dungeons.CarryManager
 import io.github.meridian.utils.playClickSound
 import net.minecraft.client.gui.GuiGraphicsExtractor
@@ -8,7 +9,6 @@ import net.minecraft.client.input.CharacterEvent
 import net.minecraft.client.input.KeyEvent
 import net.minecraft.client.input.MouseButtonEvent
 import net.minecraft.network.chat.Component
-import org.lwjgl.glfw.GLFW
 
 
 class CarryScreen : Screen(Component.literal("Carry Manager")) {
@@ -314,7 +314,7 @@ class CarryScreen : Screen(Component.literal("Carry Manager")) {
 
     override fun keyPressed(event: KeyEvent): Boolean {
         // Enter submits the add field instead of just unfocusing it.
-        if (input.focused && (event.key == GLFW.GLFW_KEY_ENTER || event.key == GLFW.GLFW_KEY_KP_ENTER)) {
+        if (input.focused && (event.key == InputConstants.KEY_RETURN || event.key == InputConstants.KEY_NUMPADENTER)) {
             submitAdd()
             return true
         }

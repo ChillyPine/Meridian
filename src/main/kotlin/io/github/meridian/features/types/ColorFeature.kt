@@ -71,9 +71,9 @@ open class ColorFeature(
         ) {
             playClickSound()
             val mc = Minecraft.getInstance()
-            val parent = mc.screen
+            val parent = mc.gui.screen()
             mc.execute {
-                mc.setScreen(ColorPicker(color, parent) { newColor ->
+                mc.gui.setScreen(ColorPicker(color, parent) { newColor ->
                     color = newColor
                     FeatureManager.save()
                 })

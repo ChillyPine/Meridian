@@ -14,7 +14,7 @@ object ChatEraser : SwitchFeature(
 ) {
     fun eraseHoveredMessage(): Boolean {
         val window = mc.window
-        val acc = mc.gui.chat as ChatComponentAccessor
+        val acc = mc.gui.hud.chat as ChatComponentAccessor
 
         val trimmed = acc.`meridian$getTrimmedMessages`()
         if (trimmed.isEmpty()) return false
@@ -33,7 +33,7 @@ object ChatEraser : SwitchFeature(
         if (localX < -4.0 || localX > maxWidth + 8.0) return false
 
         val scrollPos = acc.`meridian$getChatScrollbarPos`()
-        val visible = minOf(trimmed.size - scrollPos, mc.gui.chat.linesPerPage)
+        val visible = minOf(trimmed.size - scrollPos, mc.gui.hud.chat.linesPerPage)
         for (i in 0 until visible) {
             val entryBottom = chatBottom - i * lineHeight
             val entryTop = entryBottom - lineHeight
@@ -43,7 +43,7 @@ object ChatEraser : SwitchFeature(
             acc.`meridian$setChatScrollbarPos`(0)
             acc.`meridian$getAllMessages`().removeAll { it === parent }
             acc.`meridian$refreshTrimmedMessages`()
-            val maxScroll = maxOf(0, acc.`meridian$getTrimmedMessages`().size - mc.gui.chat.linesPerPage)
+            val maxScroll = maxOf(0, acc.`meridian$getTrimmedMessages`().size - mc.gui.hud.chat.linesPerPage)
             acc.`meridian$setChatScrollbarPos`(minOf(scrollPos, maxScroll))
             return true
         }

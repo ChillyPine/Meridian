@@ -26,7 +26,7 @@ object CooldownTimerHUD : SwitchFeature(
     }
 
     init {
-        HudManager.register(element)
+        HudManager.register(element, this)
 
         var endTime: Long = -1L  // System.currentTimeMillis() target
 

@@ -55,7 +55,7 @@ object QuizFeatures : SwitchFeature(
     }
 
     init {
-        HudManager.register(element)
+        HudManager.register(element, this)
 
         // The gate only detaches the chat listener — it doesn't clear what's already on screen.
         DungeonState.state.listen { inDungeon -> if (!inDungeon) reset() }
@@ -129,7 +129,7 @@ object QuizCountdownFeature : SwitchFeature(
     }
 
     init {
-        HudManager.register(element)
+        HudManager.register(element, this)
 
         DungeonState.state.listen { inDungeon -> if (!inDungeon) countdownEndAt = null }
 

@@ -31,7 +31,7 @@ object LoadoutHudFeature : SwitchFeature(
     }
 
     init {
-        HudManager.register(element)
+        HudManager.register(element, this)
 
         onChat { text, _, _ ->
             equipRegex.find(text)?.let { match ->

@@ -2,10 +2,10 @@ package io.github.meridian.utils
 
 import com.mojang.blaze3d.platform.InputConstants
 import io.github.meridian.Meridian
+import io.github.meridian.features.impl.farming.PestPlotTpKeybind
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper
 import net.minecraft.client.KeyMapping
 import net.minecraft.resources.Identifier
-import org.lwjgl.glfw.GLFW
 
 /**
  * Meridian's entries in the vanilla Controls screen. Names here are translation
@@ -22,12 +22,30 @@ object Keybinds {
 
     val beeheemothWarp = KeyMapping(
         "key.meridian.beeheemoth_warp",
-        InputConstants.Type.KEYSYM,
-        GLFW.GLFW_KEY_H,
+        InputConstants.Type.KEYBOARD,
+        InputConstants.KEY_H,
+        CATEGORY,
+    )
+    val pestSetSpawn = KeyMapping(
+        "key.meridian.pest_set_spawn",
+        InputConstants.Type.KEYBOARD,
+        InputConstants.KEY_V,
+        CATEGORY,
+    )
+    val pestPlotTp = KeyMapping(
+        "key.meridian.pest_quick_warp",
+        InputConstants.Type.KEYBOARD,
+        InputConstants.KEY_F,
+        CATEGORY,
+    )
+    val warpToFarm = KeyMapping(
+        "key.meridian.back_to_farm",
+        InputConstants.Type.KEYBOARD,
+        InputConstants.KEY_B,
         CATEGORY,
     )
 
-    private val all = listOf(beeheemothWarp)
+    private val all = listOf(beeheemothWarp, pestSetSpawn, pestPlotTp, warpToFarm)
 
     fun init() {
         all.forEach { KeyMappingHelper.registerKeyMapping(it) }

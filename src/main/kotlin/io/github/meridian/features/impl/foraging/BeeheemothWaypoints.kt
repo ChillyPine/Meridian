@@ -119,9 +119,9 @@ object BeeheemothQuickWarp : SwitchFeature(
         pending = spawn
         windowTask = TickScheduler.schedule(WINDOW_TICKS) { closeWindow() }
 
-        mc.gui.setTimes(0, TITLE_TICKS, 0)
-        mc.gui.setSubtitle(Component.empty())
-        mc.gui.setTitle(
+        mc.gui.hud.setTimes(0, TITLE_TICKS, 0)
+        mc.gui.hud.setSubtitle(Component.empty())
+        mc.gui.hud.setTitle(
             Component.literal("[${Keybinds.beeheemothWarp.boundKeyLabel()}] warp ${spawn.warpLabel}")
         )
     }

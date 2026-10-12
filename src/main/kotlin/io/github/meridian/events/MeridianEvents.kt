@@ -43,7 +43,7 @@ object MeridianEvents {
     val chat = ListenerBus<ChatMessage>()
 
     fun init() {
-        LevelRenderEvents.AFTER_SOLID_FEATURES.register { ctx -> render.fire(ctx) }
+        LevelRenderEvents.COLLECT_SUBMITS.register { ctx -> render.fire(ctx) }
         ClientTickEvents.END_CLIENT_TICK.register { tick.fire(Unit) }
         ClientReceiveMessageEvents.GAME.register { message, overlay ->
             chat.fire(ChatMessage(message.string.replace(COLOR_CODES, ""), message, overlay))

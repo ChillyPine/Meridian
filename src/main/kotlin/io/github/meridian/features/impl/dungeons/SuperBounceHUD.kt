@@ -28,7 +28,7 @@ object SuperBounceHUD : SwitchFeature(
     }
 
     init {
-        HudManager.register(element)
+        HudManager.register(element, this)
 
         onTick {
             if (!BossState.inP3) return@onTick

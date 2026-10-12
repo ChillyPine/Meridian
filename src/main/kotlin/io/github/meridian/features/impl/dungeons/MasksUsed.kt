@@ -20,9 +20,9 @@ object MaskUsed : SwitchFeature(
         onChat { text, _, _ ->
             when {
                 text.startsWith("Your \uE068 Bonzo's Mask saved your life!") -> {
-                    mc.gui.setTimes(0, 50, 0)
-                    mc.gui.setTitle(Component.empty())
-                    mc.gui.setSubtitle(Component.literal("§cBonzo Mask Used!"))
+                    mc.gui.hud.setTimes(0, 50, 0)
+                    mc.gui.hud.setTitle(Component.empty())
+                    mc.gui.hud.setSubtitle(Component.literal("§cBonzo Mask Used!"))
                     if (PlayProcSound.enabled) {
                         mc.soundManager.play(SimpleSoundInstance.forUI(SoundEvents.TOTEM_USE, 1.0f))
                     }
@@ -32,9 +32,9 @@ object MaskUsed : SwitchFeature(
                 }
 
                 text.startsWith("Second Wind Activated! Your Spirit Mask saved your life!") -> {
-                    mc.gui.setTimes(0, 50, 0)
-                    mc.gui.setTitle(Component.empty())
-                    mc.gui.setSubtitle(Component.literal("§cSpirit Mask Used!"))
+                    mc.gui.hud.setTimes(0, 50, 0)
+                    mc.gui.hud.setTitle(Component.empty())
+                    mc.gui.hud.setSubtitle(Component.literal("§cSpirit Mask Used!"))
                     if (PlayProcSound.enabled) {
                         mc.soundManager.play(SimpleSoundInstance.forUI(SoundEvents.TOTEM_USE, 1.0f))
                     }
@@ -44,9 +44,9 @@ object MaskUsed : SwitchFeature(
                 }
 
                 text.startsWith("Your Phoenix Pet saved you from certain death!") -> {
-                    mc.gui.setTimes(0, 50, 0)
-                    mc.gui.setTitle(Component.empty())
-                    mc.gui.setSubtitle(Component.literal("§cPhoenix Pet Used!"))
+                    mc.gui.hud.setTimes(0, 50, 0)
+                    mc.gui.hud.setTitle(Component.empty())
+                    mc.gui.hud.setSubtitle(Component.literal("§cPhoenix Pet Used!"))
                     if (PlayProcSound.enabled) {
                         mc.soundManager.play(SimpleSoundInstance.forUI(SoundEvents.TOTEM_USE, 1.0f))
                     }

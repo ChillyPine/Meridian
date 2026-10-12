@@ -33,7 +33,7 @@ object IRLTime : SwitchFeature(
     }
 
     init {
-        HudManager.register(element)
+        HudManager.register(element, this)
     }
 }
 

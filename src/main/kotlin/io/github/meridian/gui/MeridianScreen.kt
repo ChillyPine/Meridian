@@ -1,5 +1,6 @@
 package io.github.meridian.gui
 
+import com.mojang.blaze3d.platform.InputConstants
 import io.github.meridian.features.Feature
 import io.github.meridian.features.FeatureManager
 import kotlin.math.roundToInt
@@ -47,9 +48,7 @@ class MeridianScreen : Screen(Component.literal("Meridian")) {
         private const val CTRL_SCROLL_MULTIPLIER = 6
 
         private fun hasControlDown(): Boolean {
-            val window = net.minecraft.client.Minecraft.getInstance().window.handle()
-            return org.lwjgl.glfw.GLFW.glfwGetKey(window, org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT_CONTROL) == org.lwjgl.glfw.GLFW.GLFW_PRESS ||
-                   org.lwjgl.glfw.GLFW.glfwGetKey(window, org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT_CONTROL) == org.lwjgl.glfw.GLFW.GLFW_PRESS
+            return InputConstants.isKeyDown(InputConstants.KEY_LCONTROL) || InputConstants.isKeyDown(InputConstants.KEY_RCONTROL)
         }
 
         private const val SEARCH_TOP_GAP = 6

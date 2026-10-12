@@ -46,7 +46,7 @@ object ArchCritChecker : SwitchFeature(
     }
 
     init {
-        HudManager.register(element)
+        HudManager.register(element, this)
         // horrible ass way of reseting the vals
         ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick {
             val inP2 = BossState.inP2
