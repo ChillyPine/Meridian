@@ -4,9 +4,9 @@ import io.github.meridian.Meridian
 import io.github.meridian.features.types.ColorFeature
 import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.ESP
-import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.Style
+import net.minecraft.network.chat.TextColor
 import net.minecraft.world.entity.decoration.ArmorStand
 import net.minecraft.world.entity.monster.zombie.Zombie
 import java.util.Optional
@@ -16,7 +16,7 @@ import java.util.UUID
 private fun Component.hasPurpleBracket(): Boolean {
     var found = false
     this.visit({ style, text ->
-        if (style.color?.value == ChatFormatting.DARK_PURPLE.color && text.contains("[")) {
+        if (style.color?.value == TextColor.DARK_PURPLE.value && text.contains("[")) {
             found = true
         }
         Optional.empty<Any>()

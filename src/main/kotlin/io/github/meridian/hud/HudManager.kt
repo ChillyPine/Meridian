@@ -49,10 +49,10 @@ object HudManager {
     }
 
     private fun renderLive(g: GuiGraphicsExtractor) {
-        if (mc.options.hideGui) return
+        if (mc.gui.hud.isHidden) return
         if (mc.level == null) return
         // The editor renders its own (preview) copies — don't double-draw.
-        if (mc.screen is HudEditScreen) return
+        if (mc.gui.screen() is HudEditScreen) return
         val font = mc.font
         for (el in elements) {
             if (!el.isEnabled()) continue

@@ -1,5 +1,6 @@
 package io.github.meridian.gui
 
+import com.mojang.blaze3d.platform.InputConstants
 import io.github.meridian.features.impl.dungeons.ShitterList
 import io.github.meridian.utils.playClickSound
 import net.minecraft.client.gui.GuiGraphicsExtractor
@@ -8,7 +9,6 @@ import net.minecraft.client.input.CharacterEvent
 import net.minecraft.client.input.KeyEvent
 import net.minecraft.client.input.MouseButtonEvent
 import net.minecraft.network.chat.Component
-import org.lwjgl.glfw.GLFW
 
 // Opened with `/md shitter gui` (and the "Open GUI" button in Dungeons). A
 // centered panel with an add-input + Add button on top and a scrollable list of
@@ -387,13 +387,13 @@ class ShitterListScreen : Screen(Component.literal("Shitter List")) {
         // editor (not the whole screen) and Enter saves.
         if (editingName != null) {
             when (event.key) {
-                GLFW.GLFW_KEY_ENTER, GLFW.GLFW_KEY_KP_ENTER -> { saveReason(); return true }
-                GLFW.GLFW_KEY_ESCAPE -> { closeEdit(); return true }
+                InputConstants.KEY_RETURN, InputConstants.KEY_NUMPADENTER -> { saveReason(); return true }
+                InputConstants.KEY_ESCAPE -> { closeEdit(); return true }
                 else -> { reasonArea.keyPressed(event); return true }
             }
         }
         // Enter submits the add field instead of just unfocusing it.
-        if (input.focused && (event.key == GLFW.GLFW_KEY_ENTER || event.key == GLFW.GLFW_KEY_KP_ENTER)) {
+        if (input.focused && (event.key == InputConstants.KEY_RETURN || event.key == InputConstants.KEY_NUMPADENTER)) {
             submitAdd()
             return true
         }

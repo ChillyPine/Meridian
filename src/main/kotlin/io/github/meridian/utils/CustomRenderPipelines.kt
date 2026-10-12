@@ -1,8 +1,9 @@
 package io.github.meridian.utils
 
-import com.mojang.blaze3d.pipeline.DepthStencilState
-import com.mojang.blaze3d.pipeline.RenderPipeline
-import com.mojang.blaze3d.platform.CompareOp
+import com.mojang.renderpearl.api.pipeline.ColorTargetState
+import com.mojang.renderpearl.api.pipeline.CompareOp
+import com.mojang.renderpearl.api.pipeline.DepthStencilState
+import com.mojang.renderpearl.api.pipeline.RenderPipeline
 import io.github.meridian.mixin.accessor.RenderPipelinesAccessor
 import io.github.meridian.mixin.accessor.RenderTypeInvoker
 import net.minecraft.client.renderer.rendertype.RenderSetup
@@ -17,6 +18,10 @@ object CustomRenderPipelines {
     val LINES_NO_DEPTH: RenderPipeline = RenderPipelinesAccessor.`meridian$callRegister`(
         RenderPipeline.builder(RenderPipelinesAccessor.`meridian$getLinesSnippet`())
             .withLocation(Identifier.fromNamespaceAndPath("meridian", "pipeline/lines_no_depth"))
+            // Since 26.3 LINES_SNIPPET carries no color target (its OIT variant needs
+            // different ones); without this the pipeline declares 0 targets and the
+            // pass's color-attachment check crashes the frame. Vanilla LINES does the same.
+            .withColorTargetState(ColorTargetState.DEFAULT)
             .withDepthStencilState(DepthStencilState(CompareOp.ALWAYS_PASS, false))
             .build()
     )

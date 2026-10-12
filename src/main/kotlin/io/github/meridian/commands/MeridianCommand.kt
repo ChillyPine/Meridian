@@ -41,13 +41,13 @@ object MeridianCommand {
                         literal("hud").executes { _ ->
                             // Defer: the chat screen is still closing as this lambda
                             // runs and would wipe a synchronously-set screen.
-                            Meridian.mc.execute { Meridian.mc.setScreen(HudEditScreen()) }
+                            Meridian.mc.execute { Meridian.mc.gui.setScreen(HudEditScreen()) }
                             1
                         }
                     )
                     .then(
                         literal("blockers").executes { _ ->
-                            Meridian.mc.execute { Meridian.mc.setScreen(ChatBlockerScreen()) }
+                            Meridian.mc.execute { Meridian.mc.gui.setScreen(ChatBlockerScreen()) }
                             1
                         }
                     )
@@ -115,7 +115,7 @@ object MeridianCommand {
                             )
                             .then(
                                 literal("gui").executes { _ ->
-                                    Meridian.mc.execute { Meridian.mc.setScreen(ShitterListScreen()) }
+                                    Meridian.mc.execute { Meridian.mc.gui.setScreen(ShitterListScreen()) }
                                     1
                                 }
                             )
@@ -186,7 +186,7 @@ object MeridianCommand {
                             )
                             .then(
                                 literal("gui").executes { _ ->
-                                    Meridian.mc.execute { Meridian.mc.setScreen(CarryScreen()) }
+                                    Meridian.mc.execute { Meridian.mc.gui.setScreen(CarryScreen()) }
                                     1
                                 }
                             )
@@ -201,7 +201,7 @@ object MeridianCommand {
                     )
                     .then(
                         literal("calc").executes { _ ->
-                            Meridian.mc.execute { Meridian.mc.setScreen(CalculatorScreen()) }
+                            Meridian.mc.execute { Meridian.mc.gui.setScreen(CalculatorScreen()) }
                             1
                         }
                     )
@@ -225,7 +225,7 @@ object MeridianCommand {
     private fun openGui(source: FabricClientCommandSource) {
         Meridian.logger.info("openGui called — deferring setScreen to next tick")
         Meridian.mc.execute {
-            Meridian.mc.setScreen(MeridianScreen())
+            Meridian.mc.gui.setScreen(MeridianScreen())
         }
     }
 

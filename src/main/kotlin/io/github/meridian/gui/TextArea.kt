@@ -1,13 +1,14 @@
 package io.github.meridian.gui
 
+import com.mojang.blaze3d.platform.InputConstants
 import io.github.meridian.features.types.TextFeature
 import io.github.meridian.utils.playClickSound
+import io.github.meridian.utils.setTextInputFocus
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.input.CharacterEvent
 import net.minecraft.client.input.KeyEvent
-import org.lwjgl.glfw.GLFW
 
 // Multi-line, word-wrapped text editor. Unlike [SearchBar] it lays the text out
 // as a left-aligned paragraph across as many lines as needed and grows
@@ -40,9 +41,13 @@ class TextArea(private val placeholderText: String = "") {
     fun focus() {
         focused = true
         TextFeature.clearFocus()
+        setTextInputFocus(this, true)
     }
 
-    fun unfocus() { focused = false }
+    fun unfocus() {
+        focused = false
+        setTextInputFocus(this, false)
+    }
 
     fun clear() {
         text = ""
@@ -165,23 +170,23 @@ class TextArea(private val placeholderText: String = "") {
 
         val shift = event.hasShiftDown()
         when (event.key) {
-            259 -> { // Backspace
+            InputConstants.KEY_BACKSPACE -> {
                 if (hasSelection) replaceSelection("")
                 else if (cursorPos > 0) {
                     text = text.removeRange(cursorPos - 1, cursorPos)
                     cursorPos--; selectionAnchor = cursorPos
                 }
             }
-            261 -> { // Delete
+            InputConstants.KEY_DELETE -> {
                 if (hasSelection) replaceSelection("")
                 else if (cursorPos < text.length) text = text.removeRange(cursorPos, cursorPos + 1)
             }
-            263 -> moveCaret(cursorPos - 1, shift) // Left
-            262 -> moveCaret(cursorPos + 1, shift) // Right
-            265 -> moveVertical(-1, shift)         // Up
-            264 -> moveVertical(1, shift)          // Down
-            268 -> moveCaret(0, shift)             // Home
-            269 -> moveCaret(text.length, shift)   // End
+            InputConstants.KEY_LEFT -> moveCaret(cursorPos - 1, shift)
+            InputConstants.KEY_RIGHT -> moveCaret(cursorPos + 1, shift)
+            InputConstants.KEY_UP -> moveVertical(-1, shift)
+            InputConstants.KEY_DOWN -> moveVertical(1, shift)
+            InputConstants.KEY_HOME -> moveCaret(0, shift)
+            InputConstants.KEY_END -> moveCaret(text.length, shift)
             else -> return false
         }
         return true
@@ -297,9 +302,7 @@ class TextArea(private val placeholderText: String = "") {
         private const val DOUBLE_CLICK_MS = 400L
 
         private fun hasShift(): Boolean {
-            val window = Minecraft.getInstance().window.handle()
-            return GLFW.glfwGetKey(window, GLFW.GLFW_KEY_LEFT_SHIFT) == GLFW.GLFW_PRESS ||
-                   GLFW.glfwGetKey(window, GLFW.GLFW_KEY_RIGHT_SHIFT) == GLFW.GLFW_PRESS
+            return InputConstants.isKeyDown(InputConstants.KEY_LSHIFT) || InputConstants.isKeyDown(InputConstants.KEY_RSHIFT)
         }
     }
 }

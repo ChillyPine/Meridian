@@ -138,6 +138,11 @@ Meridian is a client side Minecraft mod for Hypixel Skyblock primarily focused o
 **Boxes**
 - **Box Trapper Mobs** — Boxes trapper mobs. Works in Oasis!
 
+**Pests**
+- **Pest Spawn Notification** — Shows where and when a pest spawns!
+- **Quick Set Spawn** — Lets you quickly set your spawn when a pest spawns (via keybind)!
+- **Quick Plot Warp** — Warps you to the plot that pests have spawned in (via keybind)!
+
 </details>
 
 <details>

@@ -1,6 +1,8 @@
 package io.github.meridian.gui
 
+import com.mojang.blaze3d.platform.InputConstants
 import io.github.meridian.utils.playClickSound
+import io.github.meridian.utils.setTextInputFocus
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.client.input.CharacterEvent
@@ -24,6 +26,12 @@ class CalculatorScreen : Screen(Component.literal("Calculator")) {
     private var panelY = 0
     private data class BtnRect(val label: String, val x: Int, val y: Int, val w: Int, val h: Int, val isOp: Boolean)
     private val buttons = mutableListOf<BtnRect>()
+
+    // Typed digits/operators arrive via charTyped, which needs text input running.
+    override fun init() {
+        super.init()
+        setTextInputFocus(this, true)
+    }
 
     override fun extractBackground(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
         guiGraphics.fill(0, 0, width, height, BG_DIM)
@@ -113,7 +121,7 @@ class CalculatorScreen : Screen(Component.literal("Calculator")) {
 
     override fun keyPressed(event: KeyEvent): Boolean {
         when (event.key) {
-            256 -> {
+            InputConstants.KEY_ESCAPE -> {
                 if (displayValue != "0" || pendingOp != null || expressionLine.isNotEmpty()) {
                     handleButton("AC")
                     playClickSound()
@@ -122,14 +130,16 @@ class CalculatorScreen : Screen(Component.literal("Calculator")) {
                 }
                 return true
             }
-            257, 335 -> { handleButton("="); playClickSound(); return true }
-            259      -> { handleButton("⌫"); playClickSound(); return true }
-            in 320..329 -> { handleButton((event.key - 320).toString()); playClickSound(); return true }
-            331 -> { handleButton("+"); playClickSound(); return true }
-            333 -> { handleButton("−"); playClickSound(); return true }
-            332 -> { handleButton("×"); playClickSound(); return true }
-            334 -> { handleButton("÷"); playClickSound(); return true }
-            330 -> { handleButton("."); playClickSound(); return true }
+            InputConstants.KEY_RETURN, InputConstants.KEY_NUMPADENTER -> { handleButton("="); playClickSound(); return true }
+            InputConstants.KEY_BACKSPACE -> { handleButton("⌫"); playClickSound(); return true }
+            InputConstants.KEY_NUMPAD0 -> { handleButton("0"); playClickSound(); return true }
+            // SDL scancodes: keypad 1-9 are contiguous, but keypad 0 comes after 9.
+            in InputConstants.KEY_NUMPAD1..InputConstants.KEY_NUMPAD9 -> { handleButton((event.key - InputConstants.KEY_NUMPAD1 + 1).toString()); playClickSound(); return true }
+            InputConstants.KEY_ADD -> { handleButton("+"); playClickSound(); return true }
+            KEY_NUMPAD_SUBTRACT -> { handleButton("−"); playClickSound(); return true }
+            InputConstants.KEY_MULTIPLY -> { handleButton("×"); playClickSound(); return true }
+            KEY_NUMPAD_DIVIDE -> { handleButton("÷"); playClickSound(); return true }
+            KEY_NUMPAD_DECIMAL -> { handleButton("."); playClickSound(); return true }
         }
         return super.keyPressed(event)
     }
@@ -263,6 +273,11 @@ class CalculatorScreen : Screen(Component.literal("Calculator")) {
         private const val BTN_GAP      = 4
         private const val BTN_H        = 18
         private const val MAX_DIGITS   = 14
+
+        // SDL scancodes InputConstants doesn't name.
+        private const val KEY_NUMPAD_DIVIDE   = 84
+        private const val KEY_NUMPAD_SUBTRACT = 86
+        private const val KEY_NUMPAD_DECIMAL  = 99
 
         private const val PANEL_COLOR   = 0x1E1E22
         private const val PANEL_OPACITY = 210

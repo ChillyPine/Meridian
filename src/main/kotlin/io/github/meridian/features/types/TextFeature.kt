@@ -1,16 +1,17 @@
 package io.github.meridian.features.types
 
+import com.mojang.blaze3d.platform.InputConstants
 import com.google.gson.JsonObject
 import io.github.meridian.features.Feature
 import io.github.meridian.features.FeatureManager
 import io.github.meridian.gui.ACCENT_COLOR
 import io.github.meridian.utils.playClickSound
+import io.github.meridian.utils.setTextInputFocus
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.input.CharacterEvent
 import net.minecraft.client.input.KeyEvent
-import org.lwjgl.glfw.GLFW
 
 // A feature row with an inline text input on the right. Value is a free-form
 // string the feature owns — typically read by other features (player allowlists,
@@ -37,8 +38,14 @@ open class TextFeature(
     private var lastClickMs = 0L
 
     private val focused: Boolean get() = currentFocus === this
-    private fun focus() { currentFocus = this }
-    private fun unfocus() { if (currentFocus === this) currentFocus = null }
+    private fun focus() {
+        currentFocus = this
+        setTextInputFocus(this, true)
+    }
+    private fun unfocus() {
+        if (currentFocus === this) currentFocus = null
+        setTextInputFocus(this, false)
+    }
 
     private var inputX = 0
     private var inputY = 0
@@ -197,7 +204,7 @@ open class TextFeature(
 
         val shift = event.hasShiftDown()
         when (event.key) {
-            259 -> { // Backspace
+            InputConstants.KEY_BACKSPACE -> {
                 if (hasSelection) replaceSelection("")
                 else if (cursorPos > 0) {
                     value = value.removeRange(cursorPos - 1, cursorPos)
@@ -205,19 +212,19 @@ open class TextFeature(
                     FeatureManager.save()
                 }
             }
-            261 -> { // Delete
+            InputConstants.KEY_DELETE -> {
                 if (hasSelection) replaceSelection("")
                 else if (cursorPos < value.length) {
                     value = value.removeRange(cursorPos, cursorPos + 1)
                     FeatureManager.save()
                 }
             }
-            263 -> moveCaret(cursorPos - 1, shift)                     // Left
-            262 -> moveCaret(cursorPos + 1, shift)                     // Right
-            268 -> moveCaret(0, shift)                                 // Home
-            269 -> moveCaret(value.length, shift)                      // End
-            257, 335 -> unfocus()                                      // Enter / KP-Enter
-            256 -> unfocus()                                           // Escape
+            InputConstants.KEY_LEFT -> moveCaret(cursorPos - 1, shift)
+            InputConstants.KEY_RIGHT -> moveCaret(cursorPos + 1, shift)
+            InputConstants.KEY_HOME -> moveCaret(0, shift)
+            InputConstants.KEY_END -> moveCaret(value.length, shift)
+            InputConstants.KEY_RETURN, InputConstants.KEY_NUMPADENTER -> unfocus()
+            InputConstants.KEY_ESCAPE -> unfocus()
             else -> return false
         }
         return true
@@ -287,16 +294,17 @@ open class TextFeature(
         private var currentFocus: TextFeature? = null
 
         // Allows other focusable widgets (e.g. the search bar) to steal focus.
-        fun clearFocus() { currentFocus = null }
+        fun clearFocus() {
+            currentFocus?.let { setTextInputFocus(it, false) }
+            currentFocus = null
+        }
 
         // We can't reach Screen.hasShiftDown() from outside a Screen, but we don't
-        // actually need GLFW directly — shift+arrow uses event.hasShiftDown(). For
+        // actually need to poll directly — shift+arrow uses event.hasShiftDown(). For
         // shift+click we read the modifier off MouseButtonEvent if exposed; if not,
-        // we fall back to the static GLFW poll below.
+        // we fall back to the static key-state poll below.
         private fun hasShift(): Boolean {
-            val window = Minecraft.getInstance().window.handle()
-            return GLFW.glfwGetKey(window, GLFW.GLFW_KEY_LEFT_SHIFT) == GLFW.GLFW_PRESS ||
-                   GLFW.glfwGetKey(window, GLFW.GLFW_KEY_RIGHT_SHIFT) == GLFW.GLFW_PRESS
+            return InputConstants.isKeyDown(InputConstants.KEY_LSHIFT) || InputConstants.isKeyDown(InputConstants.KEY_RSHIFT)
         }
     }
 }

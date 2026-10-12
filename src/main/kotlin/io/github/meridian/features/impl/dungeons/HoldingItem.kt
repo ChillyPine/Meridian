@@ -17,9 +17,9 @@ object HoldingCrystal : SwitchFeature(
     init {
         onTick {
             if (hasItem("Energy Crystal") && BossState.inP1) {
-                mc.gui.setTimes(0, 5, 0)
-                mc.gui.setTitle(Component.literal("§cHolding Crystal"))
-                mc.gui.setSubtitle(Component.empty())
+                mc.gui.hud.setTimes(0, 5, 0)
+                mc.gui.hud.setTitle(Component.literal("§cHolding Crystal"))
+                mc.gui.hud.setSubtitle(Component.empty())
             }
         }
     }
@@ -35,9 +35,9 @@ object HoldingRelic : SwitchFeature(
     init {
         onTick {
             if (hasItem("Relic") && BossState.inP5) {
-                mc.gui.setTimes(0, 5, 0)
-                mc.gui.setTitle(Component.empty())
-                mc.gui.setSubtitle(Component.literal("§cHolding Relic"))
+                mc.gui.hud.setTimes(0, 5, 0)
+                mc.gui.hud.setTitle(Component.empty())
+                mc.gui.hud.setSubtitle(Component.literal("§cHolding Relic"))
             }
         }
     }

@@ -33,9 +33,9 @@ object JerryNotif : SwitchFeature(
 
             // Delay a few ticks in case Hypixel pushes its own title here too.
             TickScheduler.schedule(3) {
-                mc.gui.setTimes(0, 35, 0)
-                mc.gui.setSubtitle(Component.empty())
-                mc.gui.setTitle(
+                mc.gui.hud.setTimes(0, 35, 0)
+                mc.gui.hud.setSubtitle(Component.empty())
+                mc.gui.hud.setTitle(
                     Component.literal("Jerry").withStyle(color.value)
                 )
             }

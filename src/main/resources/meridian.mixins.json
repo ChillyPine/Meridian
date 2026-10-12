@@ -6,7 +6,7 @@
 		"ConnectionMixin"
 	],
 	"client": [
-		"MixinGui",
+		"MixinHud",
 		"MixinChatTagBackground",
 		"MixinChatTagFocused",
 		"MixinChatIndent",
