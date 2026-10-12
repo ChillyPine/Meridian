@@ -7,9 +7,9 @@ Meridian is a client side Minecraft mod for Hypixel Skyblock primarily focused o
 
 <div align="center">
 
-![Fabric](https://img.shields.io/badge/Fabric-26.1.2-blue?style=flat-square)
+![Fabric](https://img.shields.io/badge/Fabric-26.3-blue?style=flat-square)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)
-![Version](https://img.shields.io/badge/Version-1.0.9-orange?style=flat-square)
+![Version](https://img.shields.io/badge/Version-1.1.0-orange?style=flat-square)
 ---
 </div>
 
