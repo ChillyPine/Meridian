@@ -80,6 +80,7 @@ import io.github.meridian.features.impl.dungeons.TerminalHitboxes
 import io.github.meridian.features.impl.farming.PestPlotTpKeybind
 import io.github.meridian.features.impl.farming.PestSpawnNoti
 import io.github.meridian.features.impl.farming.SetSpawnKeybind
+import io.github.meridian.features.impl.farming.WarpBackToFarm
 import io.github.meridian.features.impl.foraging.BeeheemothQuickWarp
 import io.github.meridian.features.impl.foraging.BeeheemothWaypoints
 import io.github.meridian.features.impl.foraging.BoxBloodbat
@@ -270,6 +271,7 @@ object FeatureList {
         PestSpawnNoti,
         SetSpawnKeybind,
         PestPlotTpKeybind,
+        WarpBackToFarm,
 
         // ================================================== //
         //                      FORAGING                      //

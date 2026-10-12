@@ -38,8 +38,14 @@ object Keybinds {
         InputConstants.KEY_F,
         CATEGORY,
     )
+    val warpToFarm = KeyMapping(
+        "key.meridian.back_to_farm",
+        InputConstants.Type.KEYBOARD,
+        InputConstants.KEY_B,
+        CATEGORY,
+    )
 
-    private val all = listOf(beeheemothWarp, pestSetSpawn, pestPlotTp)
+    private val all = listOf(beeheemothWarp, pestSetSpawn, pestPlotTp, warpToFarm)
 
     fun init() {
         all.forEach { KeyMappingHelper.registerKeyMapping(it) }

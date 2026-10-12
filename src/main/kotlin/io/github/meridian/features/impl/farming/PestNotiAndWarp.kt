@@ -203,3 +203,53 @@ object PestPlotTpKeybind : SwitchFeature(
         lastPlot = null
     }
 }
+
+private val infestEndRegex = Regex("""Your Garden is no longer infested""")
+
+object WarpBackToFarm : SwitchFeature(
+    name = "Quick Warp To Farm",
+    description = "Warps you back to the farm when you press the keybind.\nSet Keybind in Minecraft controls.",
+    category = "Farming",
+    configKey = "quick_warp_to_farm",
+    subcategory = "Pests"
+) {
+    @Volatile private var promptTicksLeft = 0
+    @Volatile private var cooldownTicks = 0
+
+    init {
+        onChat { text, _, _ ->
+            if (!infestEndRegex.containsMatchIn(stripColors(text))) return@onChat
+
+            mc.gui.hud.setTimes(0, PROMPT_TICKS, 0)
+            mc.gui.hud.setTitle(Component.empty())
+            mc.gui.hud.setSubtitle(
+                Component.literal("§7Press §e[${Keybinds.warpToFarm.boundKeyLabel()}] §7to warp to farm")
+            )
+            promptTicksLeft = PROMPT_TICKS
+        }
+
+        onTick {
+            if (cooldownTicks > 0) cooldownTicks--
+            if (promptTicksLeft > 0 && --promptTicksLeft == 0) mc.gui.hud.clearTitles()
+
+            // drain every tick so presses made during the cooldown never queue up
+            var pressed = false
+            while (Keybinds.warpToFarm.consumeClick()) pressed = true
+            if (!pressed || cooldownTicks > 0) return@onTick
+
+            if (promptTicksLeft > 0) {
+                promptTicksLeft = 0
+                mc.gui.hud.clearTitles()
+            }
+            modMessage("§7Warping you to the farm")
+            sendCommand("warp garden")
+            cooldownTicks = COMMAND_COOLDOWN_TICKS
+        }
+    }
+
+    override fun onDeactivate() {
+        if (promptTicksLeft > 0) mc.gui.hud.clearTitles()
+        promptTicksLeft = 0
+        cooldownTicks = 0
+    }
+}
