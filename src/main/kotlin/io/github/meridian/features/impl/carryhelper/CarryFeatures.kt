@@ -14,8 +14,112 @@ import net.minecraft.network.chat.MutableComponent
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.decoration.ArmorStand
 import net.minecraft.world.entity.player.Player
+import net.minecraft.world.phys.Vec3
 import java.time.Duration
 import java.time.LocalDateTime
+
+// hypixel removed igns from slayer boss nameplates so we figure out the owner ourselves
+// When we detect a new armor stand with SLAYER BOSS in it we look for nearby players
+// the colest player becomes the owner. tweak this distance in SPAWN_RADIUS if it is
+// becoming a problem. Once a owner is decided do not look that that armor stand again.
+// It will also not allow 1 player to have multiple slayer bosses spawned at once.
+internal object BossAttribution {
+
+    class Boss(
+        val id: Int,
+        var client: String? = null,
+        var lastSeen: Long = 0L,
+        var pos: Vec3 = Vec3.ZERO,
+    )
+
+    private val BOSS_NAME = Regex("SLAYER BOSS", RegexOption.IGNORE_CASE)
+
+    // distance to look for possible owner
+    private const val SPAWN_RADIUS = 5.0
+    private const val DESPAWN_DELAY = 1000L
+    // max scaning distance so it doesnt scan forever
+    private const val RENDER_RANGE = 100.0
+    // if true debug messages appear
+    private const val DEBUG = false
+
+    private val bosses = mutableMapOf<Int, Boss>()
+    private var lastTick = Long.MIN_VALUE
+
+    // current visable boss that has been assigned an owner
+    fun live(): List<Boss> = bosses.values.filter { it.client != null }
+
+    fun reset() {
+        bosses.clear()
+        lastTick = Long.MIN_VALUE
+    }
+
+    // safe to call in same tick but only first call per tick will work
+    fun update() {
+        val level = Meridian.mc.level ?: run { reset(); return }
+        val me = Meridian.mc.player ?: return
+        if (level.gameTime == lastTick) return
+        lastTick = level.gameTime
+        val now = System.currentTimeMillis()
+
+        val clientKeys = CarryManager.all().map { it.lowercase() }.toSet()
+        if (clientKeys.isEmpty()) {
+            bosses.clear()
+            return
+        }
+
+        // you are never a client normally but if youre on the list (solo testing) you count
+        val myName = me.gameProfile.name?.lowercase()
+        val selfIsClient = myName != null && myName in clientKeys
+        val allPlayers = level.players().filter { it !== me || selfIsClient }
+
+        // players who already own a boss, updated as we assign so two bosses on the same tick cant claim the same player
+        val busy = bosses.values.mapNotNull { it.client }.toMutableSet()
+
+        // refresh known bosses, find and assign new ones
+        for (ent in level.entitiesForRendering()) {
+            if (ent !is ArmorStand) continue
+            if (ent.distanceToSqr(me.x, me.y, me.z) > RENDER_RANGE * RENDER_RANGE) continue
+            val name = ent.customName?.string ?: continue
+            if (!BOSS_NAME.containsMatchIn(name)) continue
+
+            val existing = bosses[ent.id]
+            if (existing != null) {
+                existing.lastSeen = now
+                existing.pos = ent.position()
+                continue
+            }
+
+            // first sighting, decide once and never again
+            val boss = Boss(ent.id, lastSeen = now, pos = ent.position())
+
+            val nearest = allPlayers
+                .filter { p -> p.gameProfile.name?.lowercase() !in busy }
+                .minByOrNull { it.position().distanceTo(boss.pos) }
+
+            val ign = nearest?.gameProfile?.name?.lowercase()
+            if (nearest != null && ign != null &&
+                nearest.position().distanceTo(boss.pos) <= SPAWN_RADIUS &&
+                ign in clientKeys
+            ) {
+                boss.client = ign
+                busy += ign
+                if (DEBUG) modMessage("§7[BossAttribution] stand ${ent.id} -> §b$ign")
+            } else if (DEBUG) {
+                modMessage("§7[BossAttribution] stand ${ent.id} left unowned (nearest=${ign ?: "none"})")
+            }
+
+            // store it even if unowned so it never gets rechecked
+            bosses[ent.id] = boss
+        }
+
+        // remove bosses that havent been seen in a while
+        val iter = bosses.iterator()
+        while (iter.hasNext()) {
+            val boss = iter.next().value
+            if (now - boss.lastSeen > DESPAWN_DELAY) iter.remove()
+        }
+    }
+}
 
 internal object ClientTimingData {
     val spawnTimes = mutableMapOf<String, Long>()
@@ -105,27 +209,23 @@ object BoxClientsBosses : SwitchFeature(
     init {
         onRender { ctx ->
             val level = Meridian.mc.level ?: return@onRender
-            val player = Meridian.mc.player ?: return@onRender
+
+            // no ign on boss nameplates anymore so the owner is picked by proximity
+            BossAttribution.update()
+
             val list = CarryManager.all()
             if (list.isEmpty()) return@onRender
 
-            for (ent in level.entitiesForRendering()) {
-                if (ent !is ArmorStand) continue
-                if (ent.distanceToSqr(player.x, player.y, player.z) > 100 * 100) continue
-                val name = ent.customName?.string ?: continue
-
-                //if names are similar just like dont cook them
-                val match = list.firstOrNull { c ->
-                    Regex("\\b${Regex.escape(c)}\\b", RegexOption.IGNORE_CASE).containsMatchIn(name)
-                } ?: continue
-                val index = list.indexOf(match)
+            for (boss in BossAttribution.live()) {
+                val ent = level.getEntity(boss.id) as? ArmorStand ?: continue
+                val index = list.indexOfFirst { it.equals(boss.client, ignoreCase = true) }
+                if (index < 0) continue
 
                 ESP.drawBox(ctx, ent, w = 0.75, h = 2.0, wz = 0.75, yOffset = -2.2, argb = colorFor(index))
                 if (DrawLineToClientBoss.enabled) {
                     val p = ent.getPosition(Meridian.mc.deltaTracker.getGameTimeDeltaPartialTick(true))
                     ESP.drawTracer(ctx, p.x, p.y, p.z, colorFor(index))
                 }
-
             }
         }
     }
@@ -160,26 +260,18 @@ object AutoTrackClientProgress : SwitchFeature(
     init {
         onTick {
 
-            val level = Meridian.mc.level ?: return@onTick
-            val player = Meridian.mc.player ?: return@onTick
-            val clients = CarryManager.all()
+            Meridian.mc.level ?: return@onTick
+            Meridian.mc.player ?: return@onTick
+
+            // no ign on boss nameplates anymore so the owner is picked by proximity
+            BossAttribution.update()
 
             val now = System.currentTimeMillis()
 
             // Update every boss currently visible
-            for (entity in level.entitiesForRendering()) {
-
-                if (entity !is ArmorStand) continue
-                if (entity.distanceToSqr(player.x, player.y, player.z) > 100.0 * 100.0) continue
-
-                val name = entity.customName?.string ?: continue
-
-                val client = clients
-                    .sortedByDescending { it.length }
-                    .firstOrNull { name.contains(it, ignoreCase = true) }
-                    ?: continue
-
-                val key = client.lowercase()
+            for (boss in BossAttribution.live()) {
+                val key = boss.client ?: continue
+                val client = CarryManager.all().firstOrNull { it.equals(key, ignoreCase = true) } ?: continue
 
                 trackedBosses.getOrPut(key) {
                     announceSpawnTime(key, client, now)
