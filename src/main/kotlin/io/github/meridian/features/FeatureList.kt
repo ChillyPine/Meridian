@@ -314,14 +314,14 @@ object FeatureList {
         // --- General ---
         CarryManagerButton,
         AutoTrackClientProgress,
-        HighlightClients,
-        BoxClientsBosses,
-        DrawLineToClientBoss,
         AnnounceProgressClient,
         DontCountDeaths,
         TrackClientSpawnTime,
         TrackClientKillTime,
         TrackSessionTime,
+        HighlightClients,
+        BoxClientsBosses,
+        DrawLineToClientBoss,
         AutoTrackDungeonProgress,
         AutoDetectTrade,
 

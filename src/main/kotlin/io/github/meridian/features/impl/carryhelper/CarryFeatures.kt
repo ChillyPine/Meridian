@@ -17,8 +17,6 @@ import net.minecraft.world.entity.player.Player
 import java.time.Duration
 import java.time.LocalDateTime
 
-// TODO: Add Warn if Healer (after we add class detection)
-
 internal object ClientTimingData {
     val spawnTimes = mutableMapOf<String, Long>()
     val lastDeathTimes = mutableMapOf<String, Long>()
