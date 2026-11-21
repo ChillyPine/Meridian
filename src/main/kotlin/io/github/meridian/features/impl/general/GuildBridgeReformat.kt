@@ -25,9 +25,6 @@ object GuildBridgeReformat : SwitchFeature(
         blockChatRaw { message ->
             val plain = message.string.replace(formattingRegex, "").trim()
 
-            // TEMP DEBUG: remove once it works
-            if (plain.contains(BOT_NAME)) println("[GuildBridgeReformat] raw='${message.string}' plain='$plain'")
-
             val match = discordRegex.find(plain) ?: return@blockChatRaw false
             val (ign, text) = match.destructured
 
