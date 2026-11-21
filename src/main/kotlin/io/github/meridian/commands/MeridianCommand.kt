@@ -9,6 +9,7 @@ import io.github.meridian.gui.HudEditScreen
 import io.github.meridian.gui.MeridianScreen
 import io.github.meridian.gui.ShitterListScreen
 import io.github.meridian.features.impl.dungeons.ShitterList
+import io.github.meridian.utils.NameGradients
 import io.github.meridian.utils.modMessage
 import io.github.meridian.utils.sendClientMessage
 import io.github.meridian.utils.simulateGameMessage
@@ -200,6 +201,17 @@ object MeridianCommand {
                             )
                     )
                     .then(
+                        literal("namecolors").then(
+                            literal("reload").executes { _ ->
+                                modMessage("Reloading name colors...")
+                                NameGradients.reload { count ->
+                                    Meridian.mc.execute { modMessage("Loaded $count subscriber name colors.") }
+                                }
+                                1
+                            }
+                        )
+                    )
+                    .then(
                         literal("calc").executes { _ ->
                             Meridian.mc.execute { Meridian.mc.gui.setScreen(CalculatorScreen()) }
                             1
@@ -239,6 +251,7 @@ object MeridianCommand {
         sendClientMessage("§6/meridian hud§f: Opens the HUD editor.")
         sendClientMessage("§6/meridian calc§f: Opens an in-game calculator.")
         sendClientMessage("§6/meridian blockers§f: Opens the chat blocker list.")
+        sendClientMessage("§6/meridian namecolors reload§f: Re-downloads subscriber name colors.")
         sendClientMessage("§6/md§f: Alias")
         sendClientMessage(EMPTYLINE)
         sendClientMessage("§r§6§lShitter List Commands")

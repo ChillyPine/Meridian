@@ -4,7 +4,12 @@
 # against bad commits.
 
 name: build
-on: [pull_request, push]
+# ignore these paths so people cant change them themselves
+on:
+  push:
+    paths-ignore: ['data/**']
+  pull_request:
+    paths-ignore: ['data/**']
 
 jobs:
   build:
