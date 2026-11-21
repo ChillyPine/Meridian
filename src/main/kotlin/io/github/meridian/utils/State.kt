@@ -5,8 +5,8 @@ import java.util.UUID
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicReference
 
-val userIGN: String? get() = Meridian.mc.user?.name
-val userUUID: UUID? get() = Meridian.mc.user?.profileId
+val userIGN: String? get() = Meridian.mc.user.name
+val userUUID: UUID? get() = Meridian.mc.user.profileId
 /**
  * Alternatively, we can use the below one-liner to get both values.
  * val gameProfile: com.mojang.authlib.GameProfile? get() = Meridian.mc.gameProfile

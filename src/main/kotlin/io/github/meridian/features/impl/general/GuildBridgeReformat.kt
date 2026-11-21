@@ -6,11 +6,11 @@ package io.github.meridian.features.impl.general
 import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.simulateGameMessage
 
-object GuildBotReform : SwitchFeature(
-    name = "Guild Message Reform",
-    description = "Reformats 2b_Determined's guild bots messages to be actually readable",
+object GuildBridgeReformat : SwitchFeature(
+    name = "Reformat Guild Bridge Messages",
+    description = "Reformats 2_B_Determined's guild bridge messages for readability.",
     category = "General",
-    configKey = "guild_bot_reform",
+    configKey = "guild_bridge_reformat",
     subcategory = "Miscellaneous",
 ) {
     private const val BOT_NAME = "2BridgeD"
@@ -26,7 +26,7 @@ object GuildBotReform : SwitchFeature(
             val plain = message.string.replace(formattingRegex, "").trim()
 
             // TEMP DEBUG: remove once it works
-            if (plain.contains(BOT_NAME)) println("[GuildBotReform] raw='${message.string}' plain='$plain'")
+            if (plain.contains(BOT_NAME)) println("[GuildBridgeReformat] raw='${message.string}' plain='$plain'")
 
             val match = discordRegex.find(plain) ?: return@blockChatRaw false
             val (ign, text) = match.destructured

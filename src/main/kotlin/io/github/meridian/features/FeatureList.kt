@@ -113,7 +113,7 @@ import io.github.meridian.features.impl.vanilla.RemoveNausea
 import io.github.meridian.features.impl.vanilla.RemoveRealms
 import io.github.meridian.features.impl.general.RunicMobColor
 import io.github.meridian.features.impl.general.BoxRunicMobs
-import io.github.meridian.features.impl.general.GuildBotReform
+import io.github.meridian.features.impl.general.GuildBridgeReformat
 import io.github.meridian.features.impl.general.LatestGHAction
 import io.github.meridian.features.impl.general.LoadoutHudFeature
 import io.github.meridian.features.impl.vanilla.RemoveChatBar
@@ -128,7 +128,6 @@ import io.github.meridian.features.impl.mining.BoxGoldenGoblins
 import io.github.meridian.features.impl.mining.BoxKeyGuardians
 import io.github.meridian.features.impl.mining.BoxLittleFoot
 import io.github.meridian.features.impl.vanilla.ChatEraser
-import org.apache.commons.lang3.arch.Processor
 
 // Manifest of every feature in the mod — the only place that needs updating
 // when a new feature file is added. Similar in spirit to ChatTriggers' index.js.
@@ -177,7 +176,7 @@ object FeatureList {
         SoundListButton,
         UpdateChecker,
         LatestGHAction,
-        GuildBotReform,
+        GuildBridgeReformat,
         // ================================================== //
         //                     DUNGEONS                       //
         // ================================================== //

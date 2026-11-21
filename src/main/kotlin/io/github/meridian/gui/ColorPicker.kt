@@ -191,7 +191,7 @@ class ColorPicker(
         }
         if (svTexHue != hue) {
             val tex = svTex!!
-            val img = tex.pixels!!
+            val img = tex.pixels
             val hueRgb = hsvToRgb(hue, 1f, 1f)
             val hr = (hueRgb shr 16) and 0xFF
             val hg = (hueRgb shr 8) and 0xFF
@@ -239,7 +239,7 @@ class ColorPicker(
             alphaTexW = w
         }
         val tex = alphaTex!!
-        val img = tex.pixels!!
+        val img = tex.pixels
         for (x in 0 until w) {
             val a = (x.toFloat() / (w - 1) * 255).toInt()
             val abgr = argbToAbgr((a shl 24) or rgb)
