@@ -1,9 +1,9 @@
-# Subscriber name colors
+# Custom name colors
 
-`name_colors.json` is downloaded by every Meridian client on startup and every
-10 minutes after. Edit it on `main` and changes show up in-game within about
+`name_colors.json` is fetched by every Meridian client on startup
+Edit it on `main` and changes show up in-game within about
 10–15 minutes (GitHub caches raw files for ~5 min). Run
-`/md namecolors reload` to pull right away.
+`/md namecolors reload` to pull(test) right away.
 
 ```json
 {
