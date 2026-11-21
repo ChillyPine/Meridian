@@ -113,7 +113,6 @@ import io.github.meridian.features.impl.vanilla.RemoveNausea
 import io.github.meridian.features.impl.vanilla.RemoveRealms
 import io.github.meridian.features.impl.general.RunicMobColor
 import io.github.meridian.features.impl.general.BoxRunicMobs
-import io.github.meridian.features.impl.general.GuildBridgeReformat
 import io.github.meridian.features.impl.general.LatestGHAction
 import io.github.meridian.features.impl.general.LoadoutHudFeature
 import io.github.meridian.features.impl.vanilla.RemoveChatBar
@@ -176,7 +175,6 @@ object FeatureList {
         SoundListButton,
         UpdateChecker,
         LatestGHAction,
-        GuildBridgeReformat,
         // ================================================== //
         //                     DUNGEONS                       //
         // ================================================== //
