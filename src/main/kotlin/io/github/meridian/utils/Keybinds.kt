@@ -45,7 +45,14 @@ object Keybinds {
         CATEGORY,
     )
 
-    private val all = listOf(beeheemothWarp, pestSetSpawn, pestPlotTp, warpToFarm)
+    val devHudDecimals = KeyMapping(
+        "key.meridian.dev_hud_decimals",
+        InputConstants.Type.KEYBOARD,
+        InputConstants.KEY_RCONTROL,
+        CATEGORY,
+    )
+
+    private val all = listOf(beeheemothWarp, pestSetSpawn, pestPlotTp, warpToFarm, devHudDecimals)
 
     fun init() {
         all.forEach { KeyMappingHelper.registerKeyMapping(it) }
