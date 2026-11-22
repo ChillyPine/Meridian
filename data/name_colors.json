@@ -1,15 +1,9 @@
 {
   "players": {
-    "ExamplePlayer1": {
-      "colors": ["#FF5555", "#FFAA00", "#FFFF55"],
+    "Timefish": {
+      "colors": ["#5e1082, #b00b69"],
       "bold": true,
       "italic": true,
-      "underlined": true
-    },
-    "ExamplePlayer2": {
-      "colors": ["#FF5555", "#FFAA00", "#FFFF55"],
-      "bold": true,
-      "italic": false,
       "underlined": true
     }
   }
