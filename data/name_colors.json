@@ -1,10 +1,10 @@
 {
   "players": {
     "Timefish": {
-      "colors": ["#58339C", "#9043B7", "#C180D2", "#E8D3E9", "#F3EEF1"],
+      "colors": ["#610000", "#690000", "#720000", "#7A0001", "#830001", "#8B0001"],
       "bold": true,
-      "italic": true,
-      "underlined": true
+      "italic": false,
+      "underlined": false
     }
   }
 }
