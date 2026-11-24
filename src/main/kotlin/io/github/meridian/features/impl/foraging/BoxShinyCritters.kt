@@ -32,8 +32,8 @@ object BoxShinyCritters : SwitchFeature(
 object ShinyCritterColor : ColorFeature(
     name = "Shinny Critter Color",
     description = "",
-    category = "Foraging",
+    category = "Safari",
     configKey = "shiny_critter_color",
-    subcategory = "Safari",
+    subcategory = "General",
     dependsOn = BoxShinyCritters,
 )

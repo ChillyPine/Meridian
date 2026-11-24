@@ -11,9 +11,9 @@ import net.minecraft.world.entity.ambient.Bat
 object BoxBloodbat : SwitchFeature(
     name = "Box Bloodbats",
     description = "",
-    category = "Foraging",
+    category = "Safari",
     configKey = "box_bloodbat",
-    subcategory = "Safari"
+    subcategory = "Haunted"
 ) {
     private val HAUNTED = Identifier.parse("hypixel:haunted")
 
