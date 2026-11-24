@@ -21,7 +21,7 @@ import java.util.Locale
 
 object DeveloperHUD : SwitchFeature(
     name = "Developer HUD",
-    description = "Displays info you prob don't need unless ur making code for this mod",
+    description = "Displays info you probably don't need unless you're a developer for this mod.",
     category = "General",
     configKey = "developer_hud",
     subcategory = "Developer",
