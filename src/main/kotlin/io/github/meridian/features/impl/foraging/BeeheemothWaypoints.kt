@@ -86,7 +86,7 @@ object BeeheemothQuickWarp : SwitchFeature(
     subcategory = "Torrhus Canyon",
     dependsOn = BeeheemothWaypoints,
 ) {
-    private const val TITLE_TICKS = 30   // 1.5s on screen
+    private const val TITLE_TICKS = 40   // 1.5s on screen
     private const val WINDOW_TICKS = 200 // 10s to press the key
 
     @Volatile private var pending: BeeSpawn? = null
