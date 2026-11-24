@@ -88,9 +88,8 @@ import io.github.meridian.features.impl.foraging.BoxBloodbat
 import io.github.meridian.features.impl.foraging.BoxPangolins
 import io.github.meridian.features.impl.foraging.HoneyhiveWaypoints
 import io.github.meridian.features.impl.foraging.BoxShinyCritters
-import io.github.meridian.features.impl.foraging.BoxShulkers
+import io.github.meridian.features.impl.foraging.BoxHideonsun
 import io.github.meridian.features.impl.foraging.ShinyCritterColor
-import io.github.meridian.features.impl.foraging.ShulkerColor
 import io.github.meridian.features.impl.general.CoordsCommand
 import io.github.meridian.features.impl.general.DeveloperHUD
 import io.github.meridian.features.impl.general.IRLClockColor
@@ -282,15 +281,19 @@ object FeatureList {
         //                      FORAGING                      //
         // ================================================== //
 
-        BoxShulkers,
-        ShulkerColor,
+        BoxHideonsun,
         BoxPangolins,
         HoneyhiveWaypoints,
         BeeheemothWaypoints,
         BeeheemothQuickWarp,
-        BoxBloodbat,
+
+        // ================================================== //
+        //                      Safari                        //
+        // ================================================== //
+
         BoxShinyCritters,
         ShinyCritterColor,
+        BoxBloodbat,
 
         // ================================================== //
         //                      MINING                        //
