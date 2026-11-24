@@ -5,6 +5,7 @@ import io.github.meridian.features.types.SwitchFeature
 import io.github.meridian.utils.ESP
 import io.github.meridian.utils.Island
 import io.github.meridian.utils.SkyblockLocation
+import net.minecraft.resources.Identifier
 import net.minecraft.world.entity.ambient.Bat
 
 object BoxBloodbat : SwitchFeature(
@@ -14,11 +15,13 @@ object BoxBloodbat : SwitchFeature(
     configKey = "box_bloodbat",
     subcategory = "Safari"
 ) {
-    // uhhh so this currently also boxes Flitters or whatever in the safari so we gotta fix that at some point but fuhhhh that rn, good luck future me or dawn
+    private val HAUNTED = Identifier.parse("hypixel:haunted")
+
     init {
         onRender(SkyblockLocation.on(Island.SAFARI)) { ctx ->
             val level = Meridian.mc.level ?: return@onRender
             val player = Meridian.mc.player ?: return@onRender
+            if (!level.getBiome(player.blockPosition()).`is`(HAUNTED)) return@onRender
             val bats = level.entitiesForRendering().filterIsInstance<Bat>()
             for (bat in bats) {
                 if (bat.distanceToSqr(player.x, player.y, player.z) > 100 * 100) continue
