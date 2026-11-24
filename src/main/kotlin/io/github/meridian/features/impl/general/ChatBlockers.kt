@@ -165,6 +165,18 @@ private val ENTRIES: List<ChatBlockerEntry> = listOf(
         regex = listOf("^You can disable this messaging by toggling (Lottery|Sky Mall) in your (/hotf!|/hotm!)$"),
     ),
     blocker(
+        id = "block_stealth_pangolin",
+        group = GENERAL,
+        label = "The Pangolin didn't notice your presence thanks to your Stealth enchantment!",
+        regex = listOf("^The Pangolin didn't notice your presence thanks to your Stealth enchantment!$"),
+    ),
+    blocker(
+        id = "block_stealth_timil",
+        group = GENERAL,
+        label = "The Timil didn't notice your presence thanks to your Stealth enchantment!",
+        regex = listOf("^The Timil didn't notice your presence thanks to your Stealth enchantment!$"),
+    ),
+    blocker(
         id = "block_discord",
         group = GENERAL,
         label = "Please be mindful of Discord links in chat as they may pose a security risk",
