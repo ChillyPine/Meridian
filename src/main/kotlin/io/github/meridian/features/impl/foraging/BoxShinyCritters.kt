@@ -11,9 +11,9 @@ import net.minecraft.world.entity.decoration.ArmorStand
 object BoxShinyCritters : SwitchFeature(
     name = "Box Shiny Critters",
     description = "",
-    category = "Foraging",
+    category = "Safari",
     configKey = "box_shiny_critters",
-    subcategory = "Safari",
+    subcategory = "General",
 ) {
     init {
         onRender(SkyblockLocation.on(Island.SAFARI)) { ctx ->
