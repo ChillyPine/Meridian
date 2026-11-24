@@ -13,6 +13,7 @@ import io.github.meridian.utils.F6State
 import io.github.meridian.utils.Keybinds
 import io.github.meridian.utils.SkyblockLocation
 import io.github.meridian.utils.Keybinds.boundKeyLabel
+import io.github.meridian.utils.isDeveloper
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.HitResult
@@ -32,13 +33,14 @@ object DeveloperHUD : SwitchFeature(
     init {
         onTick {
             // drain fully so multiple presses in one tick each toggle
-            while (Keybinds.devHudDecimals.consumeClick()) showDecimals = !showDecimals
+            val key = Keybinds.devHudDecimals ?: return@onTick
+            while (key.consumeClick()) showDecimals = !showDecimals
         }
     }
 
     private fun maxLookRange(): Double = (mc.options.effectiveRenderDistance + 1) * 16.0
 
-    private fun keyLabel(): String = "§7[${Keybinds.devHudDecimals.boundKeyLabel()}]"
+    private fun keyLabel(): String = "§7[${Keybinds.devHudDecimals?.boundKeyLabel() ?: "?"}]"
 
     private fun lines(): List<String> {
         val player = mc.player ?: return emptyList()
@@ -124,6 +126,8 @@ object DeveloperHUD : SwitchFeature(
     }
 
     init {
-        HudManager.register(element, this)
+        if (isDeveloper) {
+            HudManager.register(element, this)
+        }
     }
 }

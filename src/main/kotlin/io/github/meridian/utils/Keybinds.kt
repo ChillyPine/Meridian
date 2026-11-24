@@ -45,14 +45,15 @@ object Keybinds {
         CATEGORY,
     )
 
-    val devHudDecimals = KeyMapping(
+    // Null for non-devs: constructing a KeyMapping adds it to vanilla's global key map even if never registered.
+    val devHudDecimals: KeyMapping? = if (isDeveloper) KeyMapping(
         "key.meridian.dev_hud_decimals",
         InputConstants.Type.KEYBOARD,
         InputConstants.KEY_RCONTROL,
         CATEGORY,
-    )
+    ) else null
 
-    private val all = listOf(beeheemothWarp, pestSetSpawn, pestPlotTp, warpToFarm, devHudDecimals)
+    private val all = listOfNotNull(beeheemothWarp, pestSetSpawn, pestPlotTp, warpToFarm, devHudDecimals)
 
     fun init() {
         all.forEach { KeyMappingHelper.registerKeyMapping(it) }

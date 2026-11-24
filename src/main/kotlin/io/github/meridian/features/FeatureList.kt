@@ -1,5 +1,6 @@
 package io.github.meridian.features
 
+import io.github.meridian.utils.isDeveloper
 import io.github.meridian.features.impl.dungeons.AnnounceShitter
 import io.github.meridian.features.impl.dungeons.AutoKickShitter
 import io.github.meridian.features.impl.dungeons.BoxBats
@@ -344,6 +345,6 @@ object FeatureList {
     )
 
     fun registerAll() {
-        all.forEach(FeatureManager::register)
+        all.filter { it !== DeveloperHUD || isDeveloper }.forEach(FeatureManager::register)
     }
 }
