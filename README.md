@@ -58,8 +58,12 @@ Meridian is a client side Minecraft mod for Hypixel Skyblock primarily focused o
 - **IRL Time** — Displays the real-world time on-screen.
 - **Latest Version Sound List Button** — Adds a button to preview the sound list included in the latest version.
 - **Check for Updates** — Checks whether a newer version of Meridian is available.
+- **Inventory Search Bar** — Adds a search bar to containers.
+
+
+**Developer**
+- **Developer HUD** — Displays info you won't need unless ur making a mod.
 - **Download Latest Build** — Downloads the latest build of Meridian directly.
-- **Inventory Search Bar** — Adds a search bar to containers. 
 
 </details>
 
