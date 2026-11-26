@@ -52,8 +52,14 @@ object Keybinds {
         InputConstants.KEY_RCONTROL,
         CATEGORY,
     ) else null
+    val devInspectEntity: KeyMapping? = if (isDeveloper) KeyMapping(
+        "key.meridian.dev_inspect_entity",
+        InputConstants.Type.KEYBOARD,
+        InputConstants.KEY_I,
+        CATEGORY,
+    ) else null
 
-    private val all = listOfNotNull(beeheemothWarp, pestSetSpawn, pestPlotTp, warpToFarm, devHudDecimals)
+    private val all = listOfNotNull(beeheemothWarp, pestSetSpawn, pestPlotTp, warpToFarm, devHudDecimals, devInspectEntity)
 
     fun init() {
         all.forEach { KeyMappingHelper.registerKeyMapping(it) }

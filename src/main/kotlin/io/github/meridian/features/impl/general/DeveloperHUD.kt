@@ -69,9 +69,20 @@ object DeveloperHUD : SwitchFeature(
             "§7XYZ: §f$xyz ${keyLabel()}",
             "§7Looking At: §f$target",
             "§7Target Block: §f$targetBlock",
+        ) + entityLines() + listOf(
             "§7Biome: §f$biome",
             "",
         ) + locationLines()
+    }
+
+    // Only shown while Entity Inspector is on, so the key hint points at something that works.
+    private fun entityLines(): List<String> {
+        if (!EntityInspector.isActive()) return emptyList()
+        val player = mc.player ?: return emptyList()
+        val key = "§7[${Keybinds.devInspectEntity?.boundKeyLabel() ?: "?"}]"
+        val ent = EntityInspector.pickEntity() ?: return listOf("§7Target Entity: §fNone $key")
+        val dist = String.format(Locale.ROOT, "%.1f", player.distanceTo(ent))
+        return listOf("§7Target Entity: §f${ent.type.description.string} §8#${ent.id} §7[$dist blocks] $key")
     }
 
     // What the mod itself thinks about where we are (SkyblockLocation / PlayerLocation),
@@ -114,6 +125,7 @@ object DeveloperHUD : SwitchFeature(
                 "§7XYZ: §f0, 64, 0 ${keyLabel()}",
                 "§7Looking At: §f0, 63, 1 §7[2.4 blocks]",
                 "§7Target Block: §fGrass Block §8(minecraft:grass_block)",
+                "§7Target Entity: §fZombie §8#1234 §7[8.4 blocks] §7[${Keybinds.devInspectEntity?.boundKeyLabel() ?: "?"}]",
                 "§7Biome: §fminecraft:plains",
                 "",
                 "§7Hypixel: §fYes §7Skyblock: §fYes",

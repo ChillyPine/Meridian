@@ -92,6 +92,7 @@ import io.github.meridian.features.impl.foraging.BoxHideonsun
 import io.github.meridian.features.impl.foraging.ShinyCritterColor
 import io.github.meridian.features.impl.general.CoordsCommand
 import io.github.meridian.features.impl.general.DeveloperHUD
+import io.github.meridian.features.impl.general.EntityInspector
 import io.github.meridian.features.impl.general.IRLClockColor
 import io.github.meridian.features.impl.general.IRLTime
 import io.github.meridian.features.impl.general.ItemSearchBar
@@ -179,6 +180,7 @@ object FeatureList {
 
         // --- Developer ---
         DeveloperHUD,
+        EntityInspector,
 
         // ================================================== //
         //                     DUNGEONS                       //
@@ -348,6 +350,6 @@ object FeatureList {
     )
 
     fun registerAll() {
-        all.filter { it !== DeveloperHUD || isDeveloper }.forEach(FeatureManager::register)
+        all.filter { it.subcategory != "Developer" || isDeveloper }.forEach(FeatureManager::register)
     }
 }
